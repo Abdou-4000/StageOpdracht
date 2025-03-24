@@ -23,7 +23,7 @@ class Teacher extends Model
         return $this->belongsTo(City::class);
     }
 
-    public function categories() {
+    public function category() {
         return $this->belongsToMany(Category::class);
     }
 }

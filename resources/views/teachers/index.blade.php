@@ -17,8 +17,10 @@
                     <td>{{ $teacher->firstname }}</td>
                     <td>{{ $teacher->lastname }}</td>
                     <td>{{ $teacher->companyname }}</td>
-                    <td>{{ $teacher->city_id}}</td>
                     <td>{{ $teacher->city->name}}</td>
+                    @foreach ($teacher->category as $category)
+                        <td>{{$category->name}}</td>
+                    @endforeach
                     <td>
                         <a href="{{ route('teachers.edit', $teacher) }}">Edit</a>
                         <form method="POST" action="{{ route('teachers.destroy', $teacher) }}"> 

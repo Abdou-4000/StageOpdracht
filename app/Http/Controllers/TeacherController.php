@@ -12,7 +12,7 @@ class TeacherController extends Controller
      * Display a listing of the resource.
      */
     public function index() {
-        $teachers = Teacher::with('city')->get(); 
+        $teachers = Teacher::with('city', 'category')->get(); 
         return view('teachers.index', compact('teachers'));
     }
 
