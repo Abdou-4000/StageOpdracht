@@ -16,6 +16,15 @@
             <input type="text" name="street" id="street" value="{{ $teacher->street }}">
             <input type="number" name="streetnumber" id="streetnumber" value="{{ $teacher->streetnumber }}">
             <input type="text" name="city_name" id="city_name" value="{{ $teacher->city->name }}">
+             @foreach ($categories as $category)
+                <label>
+                    <input type="checkbox" value="{{$category->id}}" name="categories[]"
+                    @if ($teacher->category->contains($category->id)) 
+                        checked 
+                    @endif>
+                    {{$category->name}}
+                </label>
+            @endforeach
             @error('city_name')
                 <p>{{$message}}</p>
             @enderror

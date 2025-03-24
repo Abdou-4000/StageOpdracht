@@ -66,8 +66,10 @@ class TeacherController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Teacher $teacher) {
-        return view('teachers.edit', compact('teacher'));
+    public function edit($id) {
+        $teacher = Teacher::with('category')->findOrFail($id);
+        $categories = Category::get();
+        return view('teachers.edit', compact('teacher', 'categories'));
     }
 
     /**
@@ -93,6 +95,11 @@ class TeacherController extends Controller
             'streetnumber' => $request->input('streetnumber'),
             'city_id' => $city->id,
         ]);
+
+        if ($request->has('categories')) {
+            $teacher->category()->sync($request->categories);
+        }
+
         return redirect()->route('teachers.index'); 
     }
 
