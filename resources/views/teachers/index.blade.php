@@ -18,6 +18,7 @@
                     <td>{{ $teacher->lastname }}</td>
                     <td>{{ $teacher->companyname }}</td>
                     <td>{{ $teacher->city_id}}</td>
+                    <td>{{ $teacher->city->name}}</td>
                     <td>
                         <a href="{{ route('teachers.edit', $teacher) }}">Edit</a>
                         <form method="POST" action="{{ route('teachers.destroy', $teacher) }}"> 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Teacher;
+use App\Models\City;
 
 class TeacherController extends Controller
 {
@@ -11,7 +12,7 @@ class TeacherController extends Controller
      * Display a listing of the resource.
      */
     public function index() {
-        $teachers = Teacher::all(); 
+        $teachers = Teacher::with('city')->get(); 
         return view('teachers.index', compact('teachers'));
     }
 
@@ -26,7 +27,15 @@ class TeacherController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        teacher::create([
+        // Look for the city id matching the city name
+        $city = City::where('name', $request->city_name)->first();
+
+        // Return error if city name is incorrect
+        if (!$city) {
+            return back()->withErrors(['city_name' => 'City not found.'])->withInput();
+        }
+
+        Teacher::create([
             'firstname' => $request->input('firstname'),
             'lastname' => $request->input('lastname'),
             'email' => $request->input('email'),
@@ -35,7 +44,7 @@ class TeacherController extends Controller
             'companyname' => $request->input('companyname'),
             'street' => $request->input('street'),
             'streetnumber' => $request->input('streetnumber'),
-            'city_id' => $request->input('city_id'),
+            'city_id' => $city->id,
         ]);
  
         return redirect()->route('teachers.index');
@@ -59,8 +68,24 @@ class TeacherController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Teacher $teacher) {
+        // Look for the city id matching the city name
+        $city = City::where('name', $request->city_name)->first();
+
+        // Return error if city name is incorrect
+        if (!$city) {
+            return back()->withErrors(['city_name' => 'City not found.'])->withInput();
+        }
+
         $teacher->update([
             'firstname' => $request->input('firstname'),
+            'lastname' => $request->input('lastname'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'companynumber' => $request->input('companynumber'),
+            'companyname' => $request->input('companyname'),
+            'street' => $request->input('street'),
+            'streetnumber' => $request->input('streetnumber'),
+            'city_id' => $city->id,
         ]);
         return redirect()->route('teachers.index'); 
     }
