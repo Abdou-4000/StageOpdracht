@@ -107,6 +107,7 @@ class TeacherController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Teacher $teacher) {
+        $teacher->category()->detach();
         $teacher->delete();
         return redirect()->route('teachers.index');
     }
