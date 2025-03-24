@@ -379,7 +379,15 @@
           // Open popup for the company
           const marker = markers[company.name.toLowerCase()];
           if (marker) {
-            marker.openPopup();
+            // trigger hover popup instead of click popup
+            marker.unbindPopup();
+            const hoverPopupContent = `<strong>${company.name}</strong>`;
+            const hoverPopup = L.popup({
+              closeButton: false,
+              autoClose: true,
+              className: 'hover-popup'
+            }).setContent(hoverPopupContent);
+            marker.bindPopup(hoverPopup).openPopup();
           }
           
           // Hide search results
