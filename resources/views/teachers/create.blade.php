@@ -12,6 +12,12 @@
             <input type="text" name="street" id="street" placeholder="street">
             <input type="number" name="streetnumber" id="streetnumber" placeholder="street number">
             <input type="text" name="city_name" id="city_name" placeholder="city">
+            @foreach ($categories as $category)
+                <label>
+                    <input type="checkbox" value="{{$category->id}}" name="categories[]">
+                    {{$category->name}}
+                </label>
+            @endforeach
             @error('city_name')
                 <p>{{$message}}</p>
             @enderror

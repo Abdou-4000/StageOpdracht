@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Teacher;
 use App\Models\City;
+use App\Models\Category;
 
 class TeacherController extends Controller
 {
@@ -20,7 +21,8 @@ class TeacherController extends Controller
      * Show the form for creating a new resource.
      */
     public function create() {
-        return view('teachers.create'); 
+        $categories = Category::get();
+        return view('teachers.create', compact('categories')); 
     }
 
     /**
@@ -35,7 +37,7 @@ class TeacherController extends Controller
             return back()->withErrors(['city_name' => 'City not found.'])->withInput();
         }
 
-        Teacher::create([
+        $teacher = Teacher::create([
             'firstname' => $request->input('firstname'),
             'lastname' => $request->input('lastname'),
             'email' => $request->input('email'),
@@ -47,6 +49,10 @@ class TeacherController extends Controller
             'city_id' => $city->id,
         ]);
  
+        if ($request->has('categories')) {
+            $teacher->category()->attach($request->categories);
+        }
+
         return redirect()->route('teachers.index');
     }
 
