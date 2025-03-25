@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leaflet Map with Company Search and Category Filter</title>
+  <title>SyntraPXL TeacherMap</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
@@ -24,6 +24,7 @@
       position: relative;
       height: 79vh; /* 79% of the screen height */
       width: 75vw;  /* 75% of the screen width */
+      overflow: hidden;
     }
 
     /* Set the map to be 35% of the screen size */
@@ -32,11 +33,11 @@
       width: 75vw;
       border-radius: 40px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
     }
+    // padding to make sure the zoom and tag is not clipping
     .leaflet-top,
     .leaflet-bottom {
-      padding: 15px;
+      padding: 25px;
     }
 
     /* Search and filter container */
@@ -52,6 +53,7 @@
       width: 300px;
       display: flex;
       flex-direction: column;
+      gap: 10px;
     }
 
     .search-box {
@@ -100,16 +102,24 @@
     /* Filter dropdown styles */
     .filter-dropdown {
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .filter-row {
+      display: flex;
       align-items: center;
+      gap: 10px;
     }
 
     .filter-label {
       font-size: 14px;
       margin-right: 10px;
       font-weight: bold;
+      white-space: nowrap;
     }
 
-    .filter-select {
+    .filter-select, .radius-input {
       flex-grow: 1;
       padding: 8px;
       border: 1px solid #ccc;
@@ -140,14 +150,21 @@
       
       <!-- Category filter dropdown -->
       <div class="filter-dropdown">
-        <span class="filter-label">Filter by:</span>
-        <select id="category-filter" class="filter-select">
-          <option value="all">All Categories</option>
+        <div class="filter-row">
+          <span class="filter-label">Category:</span>
+          <select id="category-filter" class="filter-select">
+            <option value="all">All Categories</option>
           <!-- Categories will be added here dynamically -->
-        </select>
+          </select>
+        </div>
+        <div class="filter-row">
+          <span class="filter-label">Radius (km):</span>
+          <input type="number" id="radius-filter" class="radius-input" 
+                 min="1" max="50" value="15" 
+                 placeholder="Max distance">
+        </div>
       </div>
     </div>
-    
     <div id="map"></div>
   </div>
 
@@ -173,29 +190,6 @@
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-
-    // function to handle geolocation
-    function onLocationFound(e) {
-      const radius = e.accuracy / 2;
-
-      // Add a marker at the users location
-      L.marker(e.latlng).addTo(map)
-        .bindPopup("You are within " + radius + " meters from this point").openPopup();
-
-      // Set the map view to user's location
-      map.setView(e.latlng, 17);
-
-      // Create company markers
-      createMarkers();
-    }
-
-    // function to handle geolocation error
-    function onLocationError(e) {
-      alert(e.message);
-      // if geolocation fails, set default view and load markers
-      map.setView([50.996, 5.538], 17);
-      createMarkers();
-    }
 
     // Company database with locations and categories
     const companies = [
@@ -251,6 +245,22 @@
       }
     ];
 
+    // Global variables to store user location
+    let userLocation = null;
+
+    // Function to calculate distance between two points using Haversine formula
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Radius of the earth in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c; // Distance in kilometers
+    }
+
     // Create a layer group for all markers
     const markersLayer = L.layerGroup().addTo(map);
 
@@ -269,18 +279,56 @@
     // Create markers for all companies
     const markers = {};
     
-    function createMarkers(filteredCompanies = companies) {
+    function createMarkers() {
       // Clear all existing markers
       markersLayer.clearLayers();
       
+      // Get filter values
+      const selectedCategory = categorySelect.value;
+      const maxRadius = parseFloat(document.getElementById('radius-filter').value);
+      const searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+      
+      // Filter companies
+      let filteredCompanies = companies;
+      
+      // Filter by category if not 'all'
+      if (selectedCategory !== 'all') {
+        filteredCompanies = filteredCompanies.filter(company => 
+          company.category === selectedCategory
+        );
+      }
+      
+      // Filter by search query
+      if (searchQuery) {
+        filteredCompanies = filteredCompanies.filter(company => 
+          company.name.toLowerCase().includes(searchQuery)
+        );
+      }
+      
+      // Filter by radius if user location is known
+      if (userLocation) {
+        filteredCompanies = filteredCompanies.filter(company => {
+          const distance = calculateDistance(
+            userLocation.lat, userLocation.lng, 
+            company.lat, company.lng
+          );
+          return distance <= maxRadius;
+        });
+      }
+      
       filteredCompanies.forEach(company => {
-        // Create popup contents
+        // Calculate distance
+        const distance = userLocation 
+          ? calculateDistance(userLocation.lat, userLocation.lng, company.lat, company.lng).toFixed(2)
+          : 'N/A';
+        
         const hoverPopupContent = `<strong>${company.name}</strong>`;
         const clickPopupContent = `
           <strong>${company.name}</strong><br>
           Category: ${company.category}<br>
           Location: ${company.details.location}<br>
-          Working Hours: ${company.details.hours}
+          Working Hours: ${company.details.hours}<br>
+          Distance: ${distance} km
         `;
         
         // Create marker
@@ -337,6 +385,35 @@
       });
     }
 
+    // Function to handle geolocation
+    function onLocationFound(e) {
+      const radius = e.accuracy / 2;
+
+      // Store user location
+      userLocation = {
+        lat: e.latlng.lat,
+        lng: e.latlng.lng
+      };
+
+      // Add a marker at the user's location
+      L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+      // Set the map view to user's location
+      map.setView(e.latlng, 17);
+
+      // Create markers with location-based filtering
+      createMarkers();
+    }
+
+    // Function to handle geolocation error
+    function onLocationError(e) {
+      alert(e.message);
+      // If geolocation fails, set default view and create markers
+      map.setView([50.996, 5.538], 17);
+      createMarkers();
+    }
+
     // Request user's location
     map.locate({setView: false, maxZoom: 17});
 
@@ -344,20 +421,9 @@
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
 
-    // Apply filter function when dropdown changes
-    categorySelect.addEventListener('change', function() {
-      const selectedCategory = this.value;
-      
-      let filteredCompanies;
-      if (selectedCategory === 'all') {
-        filteredCompanies = companies;
-      } else {
-        filteredCompanies = companies.filter(company => company.category === selectedCategory);
-      }
-      
-      // Update markers
-      createMarkers(filteredCompanies);
-    });
+    // Add event listeners for filters
+    categorySelect.addEventListener('change', createMarkers);
+    document.getElementById('radius-filter').addEventListener('change', createMarkers);
 
     // Search functionality
     const searchInput = document.getElementById('search-input');
@@ -372,17 +438,34 @@
       // Clear previous search results
       searchResults.innerHTML = '';
       
-      // Get the currently visible companies based on selected filter
-      const selectedCategory = categorySelect.value;
-      let visibleCompanies;
+      // Perform filtering using createMarkers
+      createMarkers();
       
-      if (selectedCategory === 'all') {
-        visibleCompanies = companies;
-      } else {
-        visibleCompanies = companies.filter(company => company.category === selectedCategory);
+      // Get currently filtered companies
+      const selectedCategory = categorySelect.value;
+      const maxRadius = parseFloat(document.getElementById('radius-filter').value);
+      
+      let visibleCompanies = companies;
+      
+      // Apply category filter
+      if (selectedCategory !== 'all') {
+        visibleCompanies = visibleCompanies.filter(company => 
+          company.category === selectedCategory
+        );
       }
       
-      // Filter visible companies based on the query
+      // Apply radius filter
+      if (userLocation) {
+        visibleCompanies = visibleCompanies.filter(company => {
+          const distance = calculateDistance(
+            userLocation.lat, userLocation.lng, 
+            company.lat, company.lng
+          );
+          return distance <= maxRadius;
+        });
+      }
+      
+      // Filter by search query
       const filteredCompanies = visibleCompanies.filter(company => 
         company.name.toLowerCase().includes(query)
       );
@@ -398,7 +481,14 @@
       filteredCompanies.forEach(company => {
         const resultItem = document.createElement('div');
         resultItem.className = 'search-result-item';
-        resultItem.innerHTML = `${company.name} - ${company.category}`;
+        
+        // Calculate and display distance if user location is known
+        const distance = userLocation 
+          ? calculateDistance(userLocation.lat, userLocation.lng, company.lat, company.lng).toFixed(2)
+          : 'N/A';
+        
+        resultItem.innerHTML = `${company.name} - ${company.category} (${distance} km)`;
+        
         resultItem.addEventListener('click', () => {
           // Center map on company
           map.setView([company.lat, company.lng], 15);
@@ -406,7 +496,7 @@
           // Open popup for the company
           const marker = markers[company.name.toLowerCase()];
           if (marker) {
-            // trigger hover popup instead of click popup
+            // trigger hover popup instead on search
             marker.unbindPopup();
             const hoverPopupContent = `<strong>${company.name}</strong>`;
             const hoverPopup = L.popup({
