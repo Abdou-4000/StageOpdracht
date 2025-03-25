@@ -174,6 +174,29 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    // function to handle geolocation
+    function onLocationFound(e) {
+      const radius = e.accuracy / 2;
+
+      // Add a marker at the users location
+      L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+      // Set the map view to user's location
+      map.setView(e.latlng, 17);
+
+      // Create company markers
+      createMarkers();
+    }
+
+    // function to handle geolocation error
+    function onLocationError(e) {
+      alert(e.message);
+      // if geolocation fails, set default view and load markers
+      map.setView([50.996, 5.538], 17);
+      createMarkers();
+    }
+
     // Company database with locations and categories
     const companies = [
       {
@@ -314,8 +337,12 @@
       });
     }
 
-    // Initialize all markers
-    createMarkers();
+    // Request user's location
+    map.locate({setView: false, maxZoom: 17});
+
+    // Add event listeners for geolocation
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
 
     // Apply filter function when dropdown changes
     categorySelect.addEventListener('change', function() {
