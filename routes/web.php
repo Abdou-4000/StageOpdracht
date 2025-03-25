@@ -20,5 +20,7 @@ Route::get('/map-test', function () {
 Route::resource('teachers', TeacherController::class);
 Route::resource('categories', CategoryController::class);
 
+Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

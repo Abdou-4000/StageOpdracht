@@ -47,6 +47,11 @@
             </tbody>
         </table>
     </div>
+    <form action="{{ route('teachers.import') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file" required>
+        <button type="submit">Import Teachers</button>
+    </form>
 </div>
 
 @endsection

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Teacher;
 use App\Models\City;
 use App\Models\Category;
+use App\Imports\TeachersImport;
 
 class TeacherController extends Controller
 {
@@ -192,5 +194,18 @@ class TeacherController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * csv import.
+     */
+    public function import(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:csv,txt'
+        ]);
+
+        Excel::import(new TeachersImport, $request->file('file'));
+
+        return back()->with('success', 'Teachers imported successfully.');
     }
 }
