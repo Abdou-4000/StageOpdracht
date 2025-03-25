@@ -35,19 +35,31 @@ class TeacherController extends Controller
 
         // Return error if city name is incorrect
         if (!$city) {
-            return back()->withErrors(['city_name' => 'City not found.'])->withInput();
+            return back()->withErrors(['city_name' => 'Stad niet gevonden.'])->withInput();
         }
+
+        // Validate inputs
+        $request->validate([
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|min:10|max:15',
+            'companynumber' => 'required|string|max:255',
+            'companyname' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'streetnumber' => 'required|string|max:10',
+        ]);
 
         // Create the teacher
         $teacher = Teacher::create([
-            'firstname' => $request->input('firstname'),
-            'lastname' => $request->input('lastname'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'companynumber' => $request->input('companynumber'),
-            'companyname' => $request->input('companyname'),
-            'street' => $request->input('street'),
-            'streetnumber' => $request->input('streetnumber'),
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'companynumber' => $request->companynumber,
+            'companyname' => $request->companyname,
+            'street' => $request->street,
+            'streetnumber' => $request->streetnumber,
             'city_id' => $city->id,
         ]);
  
@@ -97,19 +109,31 @@ class TeacherController extends Controller
 
         // Return error if city name is incorrect
         if (!$city) {
-            return back()->withErrors(['city_name' => 'City not found.'])->withInput();
+            return back()->withErrors(['city_name' => 'Stad niet gevonden'])->withInput();
         }
+
+        // Validate inputs
+        $request->validate([
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|min:10|max:15',
+            'companynumber' => 'required|string|max:255',
+            'companyname' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'streetnumber' => 'required|string|max:10',
+        ]);
 
         // Update teacher
         $teacher->update([
-            'firstname' => $request->input('firstname'),
-            'lastname' => $request->input('lastname'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'companynumber' => $request->input('companynumber'),
-            'companyname' => $request->input('companyname'),
-            'street' => $request->input('street'),
-            'streetnumber' => $request->input('streetnumber'),
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'companynumber' => $request->companynumber,
+            'companyname' => $request->companyname,
+            'street' => $request->street,
+            'streetnumber' => $request->streetnumber,
             'city_id' => $city->id,
         ]);
 
@@ -143,13 +167,20 @@ class TeacherController extends Controller
         return redirect()->route('teachers.index');
     }
 
+    /**
+     * Fetches the coordinates for an address.
+     */
     public function getCoordinates($address) {
         $url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=".urlencode($address);
 
+        // Send the request
         $response = Http::withHeaders([
             'User-Agent' => 'SyntraPXL map (Zoe.Dreessen@cursist.syntrapxl.be)'
-        ])->get($url);
+        ])
+        ->withoutVerifying()
+        ->get($url);
 
+        // Save the results
         $coordinates = $response->json();
 
         // Check if coordinates are found in the response
