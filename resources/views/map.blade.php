@@ -21,24 +21,43 @@
 
     /* Container for map and search box */
     .map-container {
-      position: relative;
-      height: 79vh; /* 79% of the screen height */
-      width: 75vw;  /* 75% of the screen width */
-      overflow: hidden;
-    }
+  position: relative;
+  height: 79vh;
+  width: 75vw;
+  /* Add overflow hidden to contain rounded corners */
+  overflow: hidden;
+  border-radius: 40px;
+}
 
-    /* Set the map to be 35% of the screen size */
-    #map {
-      height: 79vh;
-      width: 75vw;
-      border-radius: 40px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-    // padding to make sure the zoom and tag is not clipping
-    .leaflet-top,
-    .leaflet-bottom {
-      padding: 25px;
-    }
+#map {
+  height: 79vh;
+  width: 75vw;
+  border-radius: 40px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure zoom controls respect rounded corners */
+.leaflet-control-zoom {
+  border-radius: 10px;
+  margin: 10px;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.leaflet-control-zoom a {
+  border-radius: 5px;
+  margin: 2px;
+}
+
+/* Adjust attribution control */
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  right: 10px;
+  left: auto;
+}
 
     /* Search and filter container */
     .control-container {
