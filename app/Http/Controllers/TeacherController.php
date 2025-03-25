@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use App\Models\Teacher;
 use App\Models\City;
 use App\Models\Category;
@@ -37,6 +38,7 @@ class TeacherController extends Controller
             return back()->withErrors(['city_name' => 'City not found.'])->withInput();
         }
 
+        // Create the teacher
         $teacher = Teacher::create([
             'firstname' => $request->input('firstname'),
             'lastname' => $request->input('lastname'),
@@ -49,10 +51,24 @@ class TeacherController extends Controller
             'city_id' => $city->id,
         ]);
  
+        // Attach categories if selected
         if ($request->has('categories')) {
             $teacher->category()->attach($request->categories);
         }
 
+        // Construct the address string
+        $address = $request->input('street').' '.$request->input('streetnumber').', '.$request->input('city_name');
+
+        // Fetch coordinates
+        $coordinates = $this->getCoordinates($address);
+
+        // Round coordinates to 3 decimal places
+        if ($coordinates) {
+            $teacher->lat = round($coordinates['lat'], 3);
+            $teacher->lng = round($coordinates['lon'], 3);
+            $teacher->save();
+        }
+    
         return redirect()->route('teachers.index');
     }
 
@@ -84,6 +100,7 @@ class TeacherController extends Controller
             return back()->withErrors(['city_name' => 'City not found.'])->withInput();
         }
 
+        // Update teacher
         $teacher->update([
             'firstname' => $request->input('firstname'),
             'lastname' => $request->input('lastname'),
@@ -96,11 +113,25 @@ class TeacherController extends Controller
             'city_id' => $city->id,
         ]);
 
+        // Update teachers categories
         if ($request->has('categories')) {
             $teacher->category()->sync($request->categories);
         }
 
-        return redirect()->route('teachers.index'); 
+        // Construct the address string
+        $address = $request->input('street').' '.$request->input('streetnumber').', '.$request->input('city_name');
+
+        // Fetch coordinates
+        $coordinates = $this->getCoordinates($address);
+
+        // Round coordinates to 3 decimal places
+        if ($coordinates) {
+            $teacher->lat = round($coordinates['lat'], 3);
+            $teacher->lng = round($coordinates['lon'], 3);
+            $teacher->save();
+        }
+
+        return redirect()->route('teachers.index');
     }
 
     /**
@@ -110,5 +141,25 @@ class TeacherController extends Controller
         $teacher->category()->detach();
         $teacher->delete();
         return redirect()->route('teachers.index');
+    }
+
+    public function getCoordinates($address) {
+        $url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=".urlencode($address);
+
+        $response = Http::withHeaders([
+            'User-Agent' => 'SyntraPXL map (Zoe.Dreessen@cursist.syntrapxl.be)'
+        ])->get($url);
+
+        $coordinates = $response->json();
+
+        // Check if coordinates are found in the response
+        if (isset($coordinates[0]['lat']) && isset($coordinates[0]['lon'])) {
+            return [
+                'lat' => $coordinates[0]['lat'],
+                'lon' => $coordinates[0]['lon']
+            ];
+        }
+
+        return null;
     }
 }
