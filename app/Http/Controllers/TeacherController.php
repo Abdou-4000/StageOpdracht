@@ -167,6 +167,8 @@ class TeacherController extends Controller
 
         // Save coordinates if found
         if (!$coordinates) {
+            $teacher->lat = null;
+            $teacher->lng = null;
             $teacher->flagged = true;
             $teacher->save();
         } else {

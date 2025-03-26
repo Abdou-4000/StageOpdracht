@@ -1,6 +1,9 @@
 @extends('layout')
 
 @section('content')
+<div class="flex flex-wrap justify-center">
+    <input class="w-2/3 m-2 p-1.5 pl-4 text-gray-light border border-gray-200 rounded-3xl" id="searchbar" type="text" placeholder="Zoek">
+</div>
 <div class="w-screen p-6">
     <!-- Table container with horizontal and vertical scroll -->
     <div class="overflow-x-auto relative">
@@ -67,4 +70,20 @@
         </button>
     </form>
 </div>
+<script>
+    // Searchbar
+    function search() {
+        const searchbar = document.getElementById('searchbar');
+        const searchTerm = searchbar.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            row.style.display = rowText.includes(searchTerm) ? '' : 'none';
+        });
+    }
+
+    // Attach event listener
+    document.getElementById('searchbar').addEventListener('input', search);
+</script>
 @endsection
