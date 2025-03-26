@@ -20,6 +20,16 @@ export default {
                 sm: 'calc(var(--radius) - 4px)',
             },
             colors: {
+                red: '#ff3521',
+                accentPurple: '#9C91c5',
+                accentPink: '#e76',
+                accentBlue: '#71bdba',
+                accentYellow: '#fbba00',
+                gray: {
+                    light: '#343943',
+                    middle: '#22262d',
+                    dark: '#1a1d22',
+                },
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 card: {
