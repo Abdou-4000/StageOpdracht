@@ -1,18 +1,13 @@
-<div class="p-6 text-gray-900">
-    <form method="POST" action="{{ route('teachers.update', $teacher) }}"> 
-        @csrf
-        @method('PUT')
+@extends('layout')
 
-        <div> 
-            <div>
-                <label for="firstname">Firstname:</label>
-            </div>
-            <input type="text" name="firstname" id="firstname" value="{{ $teacher->firstname }}">
-        </div>
-        <div>
-            <button type="submit">
-                Save
-            </button>
-        </div> 
-    </form>
-</div>
+@section('content')
+    <div class="p-6 text-gray-900">
+        <h1>Edit Teacher</h1>
+        @include('teachers._form', [
+            'action' => route('teachers.update', $teacher->id),
+            'isEdit' => true,
+            'teacher' => $teacher,
+            'categories' => $categories
+        ])
+    </div>
+@endsection

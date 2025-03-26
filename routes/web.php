@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\CategoryController;
+
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
@@ -17,8 +19,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
-
-
 
 
 Route::get('/', function () {
@@ -38,7 +38,12 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/map-test', function () {
+    return view('map');
+});
+
 Route::resource('teachers', TeacherController::class);
+Route::resource('categories', CategoryController::class);
 
 Route::get('/debug-role', function () {
     $user = auth()->user()->load('roles', 'permissions');
