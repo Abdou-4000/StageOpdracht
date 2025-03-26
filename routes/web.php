@@ -50,7 +50,9 @@ Route::get('/debug-role', function () {
         'is_admin' => $user->hasRole('admin'),
         'role_name' => $user->getRoleNames(),
         'user_id' => $user->id,
-        'auth_status' => auth()->check()
+        'auth_status' => auth()->check(),
+        'can_manage_teachers' => $user->hasPermissionTo('view_teachers'),
+        'can_manage_roles' => $user->hasPermissionTo('manage_roles'),
     ]);
 })->middleware(['auth']);
 

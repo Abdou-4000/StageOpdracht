@@ -15,40 +15,6 @@ class DatabaseSeeder extends Seeder
     
     public function run(): void
     {
-        $this->call(RolesAndPermissionsSeeder::class);
-        //$this->call(CreateFirstSuperAdminSeeder::class);
-
-
-        /*
-
-        // check
-        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
-
-        // Create or find super admin user
-        $user = User::firstOrCreate(
-            [
-                'email' => 'super@admin.com'
-            ],
-            [
-                'name' => 'Super Admin',
-                'password' => Hash::make('password123'),
-            ]
-        );
-
-        // if not, assign
-        if (!$user->hasRole('super_admin')) {
-            $user->assignRole('super_admin');
-        }
-
-        // Create a normal admin user
-        /*$user = User::create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('password321'),
-        ]);
-        $user-> assignRole('admin');
-        */
-
-        
+        $this->call(CreateFirstSuperAdminSeeder::class);
     }
 }
