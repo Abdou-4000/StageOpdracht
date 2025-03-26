@@ -1,89 +1,100 @@
-<form method="POST" action="{{ $action }}">
+<form method="POST" action="{{ $action }}" class="m-3">
     @csrf
     @if($isEdit)
         @method('PUT')
     @endif
 
-    <div>
-        <div>
-            <input type="text" name="firstname" id="firstname" value="{{ old('firstname', isset($teacher) ? $teacher->firstname : '') }}" placeholder="First Name">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="col-span-2">
+            <label for="firstname" class="block text-gray-dark font-semibold mb-1">Voornaam</label>
+            <input type="text" name="firstname" id="firstname" value="{{ old('firstname', $teacher->firstname ?? '') }}" placeholder="Voornaam" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('firstname')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            <input type="text" name="lastname" id="lastname" value="{{ old('lastname', isset($teacher) ? $teacher->lastname : '') }}" placeholder="Last Name">
+        <div class="col-span-2">
+            <label for="lastname" class="block text-gray-dark font-semibold mb-1">Achternaam</label>
+            <input type="text" name="lastname" id="lastname" value="{{ old('lastname', $teacher->lastname ?? '') }}" placeholder="Achternaam" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('lastname')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            <input type="email" name="email" id="email" value="{{ old('email', isset($teacher) ? $teacher->email : '') }}" placeholder="Email">
+        <div class="col-span-2">
+            <label for="email" class="block text-gray-dark font-semibold mb-1">E-mail</label>
+            <input type="email" name="email" id="email" value="{{ old('email', $teacher->email ?? '') }}" placeholder="E-mail" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('email')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            <input type="number" name="phone" id="phone" value="{{ old('phone', isset($teacher) ? $teacher->phone : '') }}" placeholder="Phone">
+        <div class="col-span-2">
+            <label for="phone" class="block text-gray-dark font-semibold mb-1">Telefoon</label>
+            <input type="text" name="phone" id="phone" value="{{ old('phone', $teacher->phone ?? '') }}" placeholder="Telefoon" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('phone')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            <input type="number" name="companynumber" id="companynumber" value="{{ old('companynumber', isset($teacher) ? $teacher->companynumber : '') }}" placeholder="Company Number">
-            @error('companynumber')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <div>
-            <input type="text" name="companyname" id="companyname" value="{{ old('companyname', isset($teacher) ? $teacher->companyname : '') }}" placeholder="Company Name">
+        <div class="col-span-2">
+            <label for="companyname" class="block text-gray-dark font-semibold mb-1">Bedrijfsnaam</label>
+            <input type="text" name="companyname" id="companyname" value="{{ old('companyname', $teacher->companyname ?? '') }}" placeholder="Bedrijfsnaam" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('companyname')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            <input type="text" name="street" id="street" value="{{ old('street', isset($teacher) ? $teacher->street : '') }}" placeholder="Street">
+        <div class="col-span-2">
+            <label for="companynumber" class="block text-gray-dark font-semibold mb-1">Bedrijfsnummer</label>
+            <input type="text" name="companynumber" id="companynumber" value="{{ old('companynumber', $teacher->companynumber ?? '') }}" placeholder="Bedrijfsnummer" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
+            @error('companynumber')
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="col-span-3">
+            <label for="street" class="block text-gray-dark font-semibold mb-1">Straat</label>
+            <input type="text" name="street" id="street" value="{{ old('street', $teacher->street ?? '') }}" placeholder="Straat" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('street')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            <input type="number" name="streetnumber" id="streetnumber" value="{{ old('streetnumber', isset($teacher) ? $teacher->streetnumber : '') }}" placeholder="Street Number">
+        <div class="col-span-1">
+            <label for="streetnumber" class="block text-gray-dark font-semibold mb-1">Huisnummer</label>
+            <input type="number" name="streetnumber" id="streetnumber" value="{{ old('streetnumber', $teacher->streetnumber ?? '') }}" placeholder="Huisnummer" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('streetnumber')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            <input type="text" name="city_name" id="city_name" value="{{ old('city_name', isset($teacher) ? $teacher->city->name : '') }}" placeholder="City">
+        <div class="col-span-4">
+            <label for="city_name" class="block text-gray-dark font-semibold mb-1">Stad</label>
+            <input type="text" name="city_name" id="city_name" value="{{ old('city_name', $teacher->city->name ?? '') }}" placeholder="Stad" class="w-full p-1.5 pl-4 rounded-3xl border border-gray-300">
             @error('city_name')
-                <div class="error">{{ $message }}</div>
+                <div class="text-red text-sm mt-1">{{ $message }}</div>
             @enderror
         </div>
 
-        <div>
-            @foreach ($categories as $category)
-                <label>
-                    <input type="checkbox" value="{{$category->id}}" name="categories[]"
-                    @if ($teacher)
-                        @if ($teacher->category->contains($category->id)) 
-                            checked 
-                        @endif
-                    @endif>
-                    {{$category->name}}
-                </label>
-            @endforeach
+        <div class="col-span-4">
+            <label class="block text-gray-dark font-semibold mb-1">Categorieën</label>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                @foreach ($categories as $category)
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" value="{{$category->id}}" name="categories[]" 
+                            @if ($teacher && $teacher->category->contains($category->id)) checked 
+                            @endif>
+                        <span class="text-gray-dark text-sm">{{ $category->name }}</span>
+                    </label>
+                @endforeach
+            </div>
         </div>
     </div>
 
-    <div>
-        <button type="submit">Opslaan</button>
+    <div class="mt-6">
+        <button type="submit" class="w-full bg-red text-white font-semibold py-2 rounded-3xl">
+            Opslaan
+        </button>
     </div>
 </form>

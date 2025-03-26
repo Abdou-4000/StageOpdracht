@@ -4,12 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Teacher;
 use App\Models\City;
 use App\Models\Category;
+use App\Services\TeacherDataService;
+use App\Imports\TeachersImport;
 
 class TeacherController extends Controller
 {
+    /**
+     * Constructor.
+     */
+    protected $teacherDataService;
+
+    public function __construct(TeacherDataService $teacherDataService) {
+        $this->teacherDataService = $teacherDataService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -72,12 +84,16 @@ class TeacherController extends Controller
         $address = $request->input('street').' '.$request->input('streetnumber').', '.$request->input('city_name');
 
         // Fetch coordinates
-        $coordinates = $this->getCoordinates($address);
+        $coordinates = $this->teacherDataService->getCoordinates($address);
 
-        // Round coordinates to 3 decimal places
-        if ($coordinates) {
+        // Save coordinates if found
+        if (!$coordinates) {
+            $teacher->flagged = true;
+            $teacher->save();
+        } else {
             $teacher->lat = round($coordinates['lat'], 3);
             $teacher->lng = round($coordinates['lon'], 3);
+            $teacher->flagged = false;
             $teacher->save();
         }
     
@@ -109,7 +125,7 @@ class TeacherController extends Controller
 
         // Return error if city name is incorrect
         if (!$city) {
-            return back()->withErrors(['city_name' => 'Stad niet gevonden'])->withInput();
+            return back()->withErrors(['city_name' => 'Stad niet gevonden.'])->withInput();
         }
 
         // Validate inputs
@@ -144,14 +160,21 @@ class TeacherController extends Controller
 
         // Construct the address string
         $address = $request->input('street').' '.$request->input('streetnumber').', '.$request->input('city_name');
+        $flagged = false;
 
         // Fetch coordinates
-        $coordinates = $this->getCoordinates($address);
+        $coordinates = $this->teacherDataService->getCoordinates($address);
 
-        // Round coordinates to 3 decimal places
-        if ($coordinates) {
+        // Save coordinates if found
+        if (!$coordinates) {
+            $teacher->lat = null;
+            $teacher->lng = null;
+            $teacher->flagged = true;
+            $teacher->save();
+        } else {
             $teacher->lat = round($coordinates['lat'], 3);
             $teacher->lng = round($coordinates['lon'], 3);
+            $teacher->flagged = false;
             $teacher->save();
         }
 
@@ -168,29 +191,15 @@ class TeacherController extends Controller
     }
 
     /**
-     * Fetches the coordinates for an address.
+     * csv import.
      */
-    public function getCoordinates($address) {
-        $url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=".urlencode($address);
+    public function import(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:csv,txt'
+        ]);
 
-        // Send the request
-        $response = Http::withHeaders([
-            'User-Agent' => 'SyntraPXL map (Zoe.Dreessen@cursist.syntrapxl.be)'
-        ])
-        ->withoutVerifying()
-        ->get($url);
+        Excel::import(new TeachersImport, $request->file('file'));
 
-        // Save the results
-        $coordinates = $response->json();
-
-        // Check if coordinates are found in the response
-        if (isset($coordinates[0]['lat']) && isset($coordinates[0]['lon'])) {
-            return [
-                'lat' => $coordinates[0]['lat'],
-                'lon' => $coordinates[0]['lon']
-            ];
-        }
-
-        return null;
+        return back()->with('success', 'Teachers imported successfully.');
     }
 }

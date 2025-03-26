@@ -44,6 +44,7 @@ Route::get('/map-test', function () {
 
 Route::resource('teachers', TeacherController::class);
 Route::resource('categories', CategoryController::class);
+Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
 
 Route::get('/debug-role', function () {
     $user = auth()->user()->load('roles', 'permissions');
@@ -59,6 +60,7 @@ Route::get('/debug-role', function () {
         'can_manage_roles' => $user->hasPermissionTo('manage_roles'),
     ]);
 })->middleware(['auth']);
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -1,8 +1,8 @@
 @include('header')
 
 
-<div class="flex flex-wrap flex-row">
-    <div class="flex flex-col w-96 h-96 m-8 ml-16 bg-stone-200 rounded-3xl">
+<div class="flex flex-wrap flex-row bg-white">
+    <div class="flex flex-col w-1/5 h-96 m-8 ml-16 border border-gray-300 shadow-lg rounded-3xl">
         <div class="text-black text-2xl m-4 mt-8 mb-6">
             <p>Voornaam Achternaam</p>
         </div>
@@ -20,7 +20,7 @@
         </div>
         <div class="border border-black"></div>
     </div>
-    <div class="flex">
+    <div class="flex flex-wrap flex-col">
         @yield('content')
     </div>
 </div>
