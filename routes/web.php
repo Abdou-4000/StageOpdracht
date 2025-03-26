@@ -48,7 +48,6 @@ Route::get('/debug-role', function () {
         'permissions' => $user->getPermissionNames(),
         'is_super_admin' => $user->hasRole('super_admin'),
         'is_admin' => $user->hasRole('admin'),
-        'role_name' => $user->getRoleNames(),
         'user_id' => $user->id,
         'auth_status' => auth()->check(),
         'can_manage_teachers' => $user->hasPermissionTo('view_teachers'),
