@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Http\Controllers\TeacherController;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Illuminate\Support\Facades\Http;
 
 class TeachersImport implements ToModel, WithHeadingRow
 {
@@ -24,6 +25,21 @@ class TeachersImport implements ToModel, WithHeadingRow
         // If city is not found flag the teacher
         $flagged = false;
         if (!$city) {
+            $flagged = true;
+        }
+
+        // Validate firstname, lastname, email, etc.
+        $firstname = (empty($row['firstname']) || strlen($row['firstname']) > 255) ? null : $row['firstname'];
+        $lastname = (empty($row['lastname']) || strlen($row['lastname']) > 255) ? null : $row['lastname'];
+        $email = (empty($row['email']) || !filter_var($row['email'], FILTER_VALIDATE_EMAIL) || strlen($row['email']) > 255) ? null : $row['email'];
+        $phone = (empty($row['phone']) || strlen($row['phone']) < 10 || strlen($row['phone']) > 15) ? null : $row['phone'];
+        $companynumber = (empty($row['companynumber']) || strlen($row['companynumber']) > 255) ? null : $row['companynumber'];
+        $companyname = (empty($row['companyname']) || strlen($row['companyname']) > 255) ? null : $row['companyname'];
+        $street = (empty($row['street']) || strlen($row['street']) > 255) ? null : $row['street'];
+        $streetnumber = (empty($row['streetnumber']) || strlen($row['streetnumber']) > 10) ? null : $row['streetnumber'];
+
+        // If any required fields are null, flag the record
+        if (is_null($firstname) || is_null($lastname) || is_null($email) || is_null($phone) || is_null($companynumber) || is_null($companyname) || is_null($street) || is_null($streetnumber)) {
             $flagged = true;
         }
 
@@ -54,20 +70,19 @@ class TeachersImport implements ToModel, WithHeadingRow
             }
         }
 
-        // Make services
-        // $address = $row['street'].' '.$row['street'].', '.$row['city'];
+        $address = $row['street'].' '.$row['street'].', '.$row['city'];
 
-        // // Fetch coordinates
-        // $coordinates = $this->getCoordinates($address);
+        // Fetch coordinates
+        $coordinates = $this->getCoordinates($address);
 
-        // // Save coordinates if found
-        // if (!$coordinates) {
-        //     $flagged = true;
-        // } else {
-        //     $teacher->lat = round($coordinates['lat'], 3);
-        //     $teacher->lng = round($coordinates['lon'], 3);
-        //     $teacher->save();
-        // }
+        // Save coordinates if found
+        if (!$coordinates) {
+            $flagged = true;
+        } else {
+            $teacher->lat = round($coordinates['lat'], 3);
+            $teacher->lng = round($coordinates['lon'], 3);
+            $teacher->save();
+        }
 
         // Update flag if necessary
         if ($flagged) {
@@ -76,5 +91,32 @@ class TeachersImport implements ToModel, WithHeadingRow
         }
 
         return $teacher;
+    }
+
+    /**
+     * Fetches the coordinates for an address.
+     */
+    public function getCoordinates($address) {
+        $url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=".urlencode($address);
+
+        // Send the request
+        $response = Http::withHeaders([
+            'User-Agent' => 'SyntraPXL map (Zoe.Dreessen@cursist.syntrapxl.be)'
+        ])
+        ->withoutVerifying()
+        ->get($url);
+
+        // Save the results
+        $coordinates = $response->json();
+
+        // Check if coordinates are found in the response
+        if (isset($coordinates[0]['lat']) && isset($coordinates[0]['lon'])) {
+            return [
+                'lat' => $coordinates[0]['lat'],
+                'lon' => $coordinates[0]['lon']
+            ];
+        }
+
+        return null;
     }
 }
