@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SyntraPXL TeacherMap</title>
+  <title>Teacher Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
@@ -11,53 +11,52 @@
     body {
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Center horizontally */
-      align-items: center;     /* Center vertically */
-      height: 100vh;           /* Full screen height */
-      margin: 0;               /* Remove default margin */
-      background-color: #f0f0f0; /* Light background color */
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
       font-family: Arial, sans-serif;
     }
 
     /* Container for map and search box */
     .map-container {
-  position: relative;
-  height: 79vh;
-  width: 75vw;
-  /* Add overflow hidden to contain rounded corners */
-  overflow: hidden;
-  border-radius: 40px;
-}
+      position: relative;
+      height: 79vh;
+      width: 75vw;
+      overflow: hidden;
+      border-radius: 40px;
+    }
 
-#map {
-  height: 79vh;
-  width: 75vw;
-  border-radius: 40px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
+    #map {
+      height: 79vh;
+      width: 75vw;
+      border-radius: 40px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
 
-/* Ensure zoom controls respect rounded corners */
-.leaflet-control-zoom {
-  border-radius: 10px;
-  margin: 10px;
-  border: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
+    /* Ensure zoom controls respect rounded corners */
+    .leaflet-control-zoom {
+      border-radius: 10px;
+      margin: 10px;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
 
-.leaflet-control-zoom a {
-  border-radius: 5px;
-  margin: 2px;
-}
+    .leaflet-control-zoom a {
+      border-radius: 5px;
+      margin: 2px;
+    }
 
-/* Adjust attribution control */
-.leaflet-control-attribution {
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 5px;
-  padding: 5px;
-  margin: 10px;
-  right: 10px;
-  left: auto;
-}
+    /* Adjust attribution control */
+    .leaflet-control-attribution {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 5px;
+      padding: 5px;
+      margin: 10px;
+      right: 10px;
+      left: auto;
+    }
 
     /* Search and filter container */
     .control-container {
@@ -150,30 +149,39 @@
     .hover-popup .leaflet-popup-content-wrapper {
       background-color: #2c3e50;
       color: white;
+      padding: 5px 10px;
+      font-size: 14px;
     }
 
     .hover-popup .leaflet-popup-tip {
       background-color: #2c3e50;
     }
+
+    .click-popup .leaflet-popup-content-wrapper {
+      background-color: #f0f0f0;
+      color: black;
+    }
+
+    .click-popup .leaflet-popup-tip {
+      background-color: #f0f0f0;
+    }
   </style>
 </head>
 <body>
   <div class="map-container">
-    <!-- Combined search and filter panel -->
     <div class="control-container">
       <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search for a company...">
+        <input type="text" id="search-input" placeholder="Search for a teacher...">
         <button id="search-button"><i class="fas fa-search"></i></button>
       </div>
       <div id="search-results"></div>
       
-      <!-- Category filter dropdown -->
       <div class="filter-dropdown">
         <div class="filter-row">
           <span class="filter-label">Category:</span>
           <select id="category-filter" class="filter-select">
             <option value="all">All Categories</option>
-          <!-- Categories will be added here dynamically -->
+            <!-- Categories will be added here dynamically -->
           </select>
         </div>
         <div class="filter-row">
@@ -190,6 +198,9 @@
   <!-- Load Leaflet's JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+    // Expose teachers data to JavaScript
+    const teachersData = @json($teachers);
+
     // Initialize the map
     const map = L.map('map', {
       zoomControl: true,
@@ -199,8 +210,8 @@
     // Custom marker icon
     var Marker = L.icon({
         iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-        iconSize: [55, 55], // size of the icon
-        popupAnchor: [0, -25], // point from which the popup should open
+        iconSize: [55, 55],
+        popupAnchor: [0, -25],
         closeButton: true,
     });
 
@@ -210,59 +221,8 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Company database with locations and categories
-    const companies = [
-      {
-        name: "SyntraPXL",
-        lat: 50.9973,
-        lng: 5.5367,
-        category: "Education",
-        details: {
-          location: "T2-Campus",
-          hours: "Mon-Fri, 9:00 AM - 5:00 PM"
-        }
-      },
-      {
-        name: "Corda Campus",
-        lat: 50.9519,
-        lng: 5.3535,
-        category: "Business",
-        details: {
-          location: "Hasselt",
-          hours: "Mon-Fri, 8:00 AM - 6:00 PM"
-        }
-      },
-      {
-        name: "Thor Park",
-        lat: 50.9938,
-        lng: 5.5370,
-        category: "Technology",
-        details: {
-          location: "Genk",
-          hours: "Mon-Fri, 8:30 AM - 5:30 PM"
-        }
-      },
-      {
-        name: "PXL University",
-        lat: 50.9289,
-        lng: 5.3897,
-        category: "Education",
-        details: {
-          location: "Hasselt",
-          hours: "Mon-Fri, 8:00 AM - 10:00 PM"
-        }
-      },
-      {
-        name: "ucll University",
-        lat: 50.9279,
-        lng: 5.3850,
-        category: "Education",
-        details: {
-          location: "Diepenbeek",
-          hours: "Mon-Fri, 8:00 AM - 8:00 PM"
-        }
-      }
-    ];
+    // Companies now come from server-side data
+    const companies = teachersData;
 
     // Global variables to store user location
     let userLocation = null;
@@ -295,7 +255,7 @@
       categorySelect.appendChild(option);
     });
 
-    // Create markers for all companies
+    // Global markers object to support search
     const markers = {};
     
     function createMarkers() {
@@ -341,13 +301,23 @@
           ? calculateDistance(userLocation.lat, userLocation.lng, company.lat, company.lng).toFixed(2)
           : 'N/A';
         
-        const hoverPopupContent = `<strong>${company.name}</strong>`;
+        // Hover popup content (simplified)
+        const hoverPopupContent = `
+          <div class="hover-popup">
+            <strong>${company.compname}</strong>
+          </div>
+        `;
+        
+        // Click popup content
         const clickPopupContent = `
-          <strong>${company.name}</strong><br>
-          Category: ${company.category}<br>
-          Location: ${company.details.location}<br>
-          Working Hours: ${company.details.hours}<br>
-          Distance: ${distance} km
+          <div class="click-popup">
+            <strong>${company.compname}</strong><br>
+            Teacher: ${company.name}<br>
+            Location: ${company.details.location}<br>
+            Email: ${company.details.email}<br>
+            Phone: ${company.details.phone}<br>
+            Distance: ${distance} km
+          </div>
         `;
         
         // Create marker
@@ -355,54 +325,70 @@
           icon: Marker
         });
         
+        // Create hover popup
+        const hoverPopup = L.popup({
+          closeButton: false,
+          autoClose: false,
+          closeOnClick: false,
+          className: 'hover-popup'
+        }).setContent(hoverPopupContent);
+        
+        // Create click popup
+        const clickPopup = L.popup({
+          autoClose: false,
+          closeOnClick: false,
+          className: 'click-popup'
+        }).setContent(clickPopupContent);
+        
+        marker.on('mouseover', function(e) {
+  // Only show hover popup if no click popup is open
+  if (!marker.isPopupOpen()) {
+    // Adjust the popup position to account for marker icon size
+    const popupOptions = {
+      offset: L.point(0, -15), // Adjust this value based on your icon
+      className: 'hover-popup',
+      closeButton: false
+    };
+    
+    L.popup(popupOptions)
+      .setLatLng(marker.getLatLng()) // Use marker's center instead of event latlng
+      .setContent(hoverPopupContent)
+      .openOn(map);
+  }
+});
+        
+        marker.on('mouseout', function() {
+          // Close hover popup if it's open and no click popup is open
+          if (!marker.isPopupOpen()) {
+            map.closePopup(hoverPopup);
+          }
+        });
+        
+        // Modify click event to close hover popup
+        marker.on('click', function() {
+          // Close any existing hover popup
+          map.closePopup(hoverPopup);
+        });
+        
+        // Bind click popup
+        marker.bindPopup(clickPopup);
+        
         // Add to layer group
         markersLayer.addLayer(marker);
         
         // Store marker reference
         markers[company.name.toLowerCase()] = marker;
-        
-        // Create popups
-        const hoverPopup = L.popup({
-          closeButton: false,
-          autoClose: true,
-          className: 'hover-popup'
-        }).setContent(hoverPopupContent);
-        
-        const clickPopup = L.popup({
-          autoClose: false,
-          closeOnClick: false
-        }).setContent(clickPopupContent);
-        
-        // Define marker interaction
-        let isClickPopupOpen = false;
-        
-        marker.on('mouseover', function() {
-          if (!isClickPopupOpen) {
-            marker.bindPopup(hoverPopup).openPopup();
-          }
-        });
-        
-        marker.on('mouseout', function() {
-          if (!isClickPopupOpen) {
-            marker.closePopup();
-          }
-        });
-        
-        marker.on('click', function() {
-          marker.unbindPopup();
-          marker.bindPopup(clickPopup).openPopup();
-          isClickPopupOpen = true;
-        });
-        
-        // Close popups when clicking elsewhere
-        map.on('click', function(e) {
-          if (!marker.getLatLng().equals(map.mouseEventToLatLng(e.originalEvent)) && isClickPopupOpen) {
-            marker.closePopup();
-            isClickPopupOpen = false;
-          }
-        });
       });
     }
+
+    // Add global click event to close popups when clicking outside
+    map.on('click', function(e) {
+      // Check if the click is not on a marker
+      if (!e.originalEvent.target.closest('.leaflet-marker-icon')) {
+        // Close all popups
+        map.closePopup();
+      }
+    });
 
     // Function to handle geolocation
     function onLocationFound(e) {
@@ -493,7 +479,7 @@
       searchResults.style.display = filteredCompanies.length > 0 ? 'block' : 'none';
       
       if (filteredCompanies.length === 0) {
-        searchResults.innerHTML = '<div class="search-result-item">No companies found</div>';
+        searchResults.innerHTML = '<div class="search-result-item">No teachers found</div>';
         return;
       }
       
@@ -515,15 +501,7 @@
           // Open popup for the company
           const marker = markers[company.name.toLowerCase()];
           if (marker) {
-            // trigger hover popup instead on search
-            marker.unbindPopup();
-            const hoverPopupContent = `<strong>${company.name}</strong>`;
-            const hoverPopup = L.popup({
-              closeButton: false,
-              autoClose: true,
-              className: 'hover-popup'
-            }).setContent(hoverPopupContent);
-            marker.bindPopup(hoverPopup).openPopup();
+            marker.openPopup();
           }
           
           // Hide search results
@@ -549,6 +527,9 @@
         searchResults.style.display = 'none';
       }
     });
+
+    // Initial markers creation
+    createMarkers();
   </script>
 </body>
 </html>

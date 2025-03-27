@@ -13,9 +13,8 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/map-test', function () {
-    return view('map');
-});
+
+Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
 
 Route::resource('teachers', TeacherController::class);
 Route::resource('categories', CategoryController::class);
