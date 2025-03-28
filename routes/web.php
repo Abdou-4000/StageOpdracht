@@ -20,7 +20,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
 
-
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
@@ -40,6 +39,14 @@ Route::get('dashboard', function () {
 
 Route::get('/map-test', function () {
     return view('map');
+});
+
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    Route::prefix('super-admin')->name('super-admin.')->group(function () {
+        Route::get('/', [SuperAdminController::class, 'index'])->name('dashboard');
+        Route::put('/teachers/{user}/roles', [SuperAdminController::class, 'syncRoles'])
+            ->name('teachers.roles.sync');
+    });
 });
 
 Route::resource('teachers', TeacherController::class);
