@@ -205,7 +205,7 @@ class TeacherController extends Controller
 
     public function showMap()
 {
-    $teachers = Teacher::with(['city', 'category']) // Note the plural 'categories'
+    $teachers = Teacher::with(['city', 'category']) 
         ->whereNotNull('lat')
         ->whereNotNull('lng')
         ->get()
@@ -215,13 +215,12 @@ class TeacherController extends Controller
                 'lat' => (float)$teacher->lat,
                 'lng' => (float)$teacher->lng,
                 'compname' => $teacher->companyname ?? 'Uncategorized',
-                'category' => $teacher->category->pluck('name')->toArray(), // Get all category names
+                'category' => $teacher->category->pluck('name')->toArray(), 
                 'details' => [
                     'location' => $teacher->street . ' ' . $teacher->streetnumber,
                     'email' => $teacher->email,
                     'phone' => $teacher->phone,
                     'hours' => 'Contact for availability',
-                    // 'category' => $teacher->category->pluck('name')->toArray() // Duplicate for consistency
                 ]
             ];
         });

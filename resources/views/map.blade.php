@@ -243,10 +243,16 @@
     // Create a layer group for all markers
     const markersLayer = L.layerGroup().addTo(map);
 
-    // Extract unique categories
-    const categories = [...new Set(companies.map(company => company.category))];
+    // Extract unique categories - UPDATED
+    const allCategories = new Set();
+    companies.forEach(company => {
+      if (Array.isArray(company.category)) {
+        company.category.forEach(cat => allCategories.add(cat));
+      }
+    });
+    const categories = [...allCategories];
 
-    // Populate the category dropdown
+    // Populate the category dropdown - UPDATED
     const categorySelect = document.getElementById('category-filter');
     categories.forEach(category => {
       const option = document.createElement('option');
@@ -270,10 +276,10 @@
       // Filter companies
       let filteredCompanies = companies;
       
-      // Filter by category if not 'all'
+      // Filter by category if not 'all' - UPDATED
       if (selectedCategory !== 'all') {
         filteredCompanies = filteredCompanies.filter(company => 
-          company.category === selectedCategory
+          Array.isArray(company.category) && company.category.includes(selectedCategory)
         );
       }
       
@@ -301,6 +307,11 @@
           ? calculateDistance(userLocation.lat, userLocation.lng, company.lat, company.lng).toFixed(2)
           : 'N/A';
         
+        // Get categories as string for display
+        const categoryDisplay = Array.isArray(company.category) 
+          ? company.category.join(', ') 
+          : 'Uncategorized';
+        
         // Hover popup content (simplified)
         const hoverPopupContent = `
           <div class="hover-popup">
@@ -308,11 +319,12 @@
           </div>
         `;
         
-        // Click popup content
+        // Click popup content - UPDATED to show categories
         const clickPopupContent = `
           <div class="click-popup">
             <strong>${company.compname}</strong><br>
             Teacher: ${company.name}<br>
+            Category: ${categoryDisplay}<br>
             Location: ${company.details.location}<br>
             Email: ${company.details.email}<br>
             Phone: ${company.details.phone}<br>
@@ -341,21 +353,21 @@
         }).setContent(clickPopupContent);
         
         marker.on('mouseover', function(e) {
-  // Only show hover popup if no click popup is open
-  if (!marker.isPopupOpen()) {
-    // Adjust the popup position to account for marker icon size
-    const popupOptions = {
-      offset: L.point(0, -15), // Adjust this value based on your icon
-      className: 'hover-popup',
-      closeButton: false
-    };
-    
-    L.popup(popupOptions)
-      .setLatLng(marker.getLatLng()) // Use marker's center instead of event latlng
-      .setContent(hoverPopupContent)
-      .openOn(map);
-  }
-});
+          // Only show hover popup if no click popup is open
+          if (!marker.isPopupOpen()) {
+            // Adjust the popup position to account for marker icon size
+            const popupOptions = {
+              offset: L.point(0, -15), // Adjust this value based on your icon
+              className: 'hover-popup',
+              closeButton: false
+            };
+            
+            L.popup(popupOptions)
+              .setLatLng(marker.getLatLng()) // Use marker's center instead of event latlng
+              .setContent(hoverPopupContent)
+              .openOn(map);
+          }
+        });
         
         marker.on('mouseout', function() {
           // Close hover popup if it's open and no click popup is open
@@ -452,10 +464,10 @@
       
       let visibleCompanies = companies;
       
-      // Apply category filter
+      // Apply category filter - UPDATED
       if (selectedCategory !== 'all') {
         visibleCompanies = visibleCompanies.filter(company => 
-          company.category === selectedCategory
+          Array.isArray(company.category) && company.category.includes(selectedCategory)
         );
       }
       
@@ -492,7 +504,12 @@
           ? calculateDistance(userLocation.lat, userLocation.lng, company.lat, company.lng).toFixed(2)
           : 'N/A';
         
-        resultItem.innerHTML = `${company.name} - ${company.category} (${distance} km)`;
+        // UPDATED to display categories as a comma-separated list
+        const categoryDisplay = Array.isArray(company.category) 
+          ? company.category.join(', ') 
+          : 'Uncategorized';
+        
+        resultItem.innerHTML = `${company.name} - ${categoryDisplay} (${distance} km)`;
         
         resultItem.addEventListener('click', () => {
           // Center map on company
