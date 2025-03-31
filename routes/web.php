@@ -49,7 +49,9 @@ Route::resource('categories', CategoryController::class);
 // CSV import route
 Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
 
+// Export routes (Excel/PDF) 
 Route::get('/export-full-excel', [ExportController::class, 'exportExcel']);
+Route::get('/export-pdf', [ExportController::class, 'exportPDF']);
 
 Route::get('/debug-role', function () {
     $user = auth()->user()->load('roles', 'permissions');
