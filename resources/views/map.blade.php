@@ -148,10 +148,9 @@
   font-size: 18px;
 }
 
-.radius-label {
-  flex: 1;
-  margin-right: 0;
-}
+    .radius-label {
+      margin-right: 400px;
+    }
 
 #radius-filter {
   width: 60px;
