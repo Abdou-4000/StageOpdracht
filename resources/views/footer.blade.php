@@ -49,7 +49,7 @@
             <!-- -->
             <div class="flex text-xs text-gray-500">
                 <div class="p-2">
-                    <a href="">Gemaakt door</a>
+                    <a href="{{'/madeby'}}">Gemaakt door</a>
                 </div>
             </div>
         </div>
