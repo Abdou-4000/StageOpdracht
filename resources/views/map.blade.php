@@ -85,7 +85,7 @@
       border-radius: 50px;
       border: 2px solid red;
       background-color: white;
-      font-size: 16px;
+      font-size: 18px;
       outline: none;
       box-sizing: border-box;
     }
@@ -140,6 +140,7 @@
       width: 590px;
       height: 60px;
       box-sizing: border-box;
+      font-size: 18px;
     }
 
     .radius-label {
@@ -152,7 +153,7 @@
       border: none;
       background-color: transparent;
       color: white;
-      font-size: 16px;
+      font-size: 18px;
       text-align: right;
       -moz-appearance: textfield;
     }
