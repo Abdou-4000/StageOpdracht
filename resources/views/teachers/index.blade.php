@@ -5,6 +5,7 @@
     <input class="w-2/3 m-2 p-1.5 pl-4 text-gray-light border border-gray-200 rounded-3xl" id="searchbar" type="text" placeholder="Zoek">
 </div>
 <a href="{{ url('/export-full-excel') }}" class="btn btn-primary text-black">Export Full User Data</a>
+<a href="{{ url('/export-pdf') }}" class="btn btn-danger text-black">Export PDF</a>
 <div class="w-screen p-6">
     <!-- Table container with horizontal and vertical scroll -->
     <div class="overflow-x-auto relative">
