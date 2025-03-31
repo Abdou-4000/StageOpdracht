@@ -144,7 +144,7 @@
     }
 
     .radius-label {
-      margin-right: 5px;
+      margin-right: 400px;
     }
 
     #radius-filter {
