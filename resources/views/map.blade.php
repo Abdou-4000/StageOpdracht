@@ -7,142 +7,185 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* Set the body to use flexbox to center the map */
-    body {
+       body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: white;
+      overflow: hidden;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-      font-family: Arial, sans-serif;
+    }
+    
+    /* Header styles */
+    .header {
+      width: 15px;   
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 60;
     }
 
-    /* Container for map and search box */
+    .header img {
+      width: 200px;
+      height: 200px;
+      margin-top: -30px;
+      margin-left: 25px;
+      object-fit: contain;
+    }
+
+   .leaflet-control-attribution {
+     left: 250px;
+   }
+
+   .leaflet-control-zoom {
+     border-radius: 15px;
+     margin: 2px;
+   }
+
+    /* Controls container for search and filters - positioned vertically on the right */
+    .controls {
+      position: absolute;
+      top: 10px;
+      right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+    }
+
+    /* Map container styles */
     .map-container {
       position: relative;
-      height: 79vh;
-      width: 75vw;
+      margin-top: 70px;
+      height: 80vh;
+      width: 95vw;
+      border-radius: 15px;
       overflow: hidden;
-      border-radius: 40px;
     }
 
     #map {
-      height: 79vh;
-      width: 75vw;
-      border-radius: 40px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      clip-path: polygon( 0% 7.314%,0% 7.314%,0.041% 6.127%,0.16% 5.002%,0.351% 3.953%,0.606% 2.994%,0.92% 2.142%,1.286% 1.411%,1.698% 0.816%,2.148% 0.373%,2.632% 0.096%,3.141% 0%,63.05% 0%,63.05% 0%,63.559% 0.096%,64.043% 0.373%,64.493% 0.816%,64.905% 1.411%,65.271% 2.142%,65.585% 2.994%,65.84% 3.953%,66.031% 5.002%,66.15% 6.127%,66.191% 7.314%,66.191% 24.003%,66.191% 24.003%,66.232% 25.189%,66.351% 26.314%,66.541% 27.364%,66.797% 28.322%,67.111% 29.174%,67.477% 29.905%,67.888% 30.5%,68.339% 30.944%,68.822% 31.221%,69.332% 31.316%,96.859% 31.316%,96.859% 31.316%,97.368% 31.412%,97.852% 31.689%,98.303% 32.133%,98.714% 32.728%,99.08% 33.459%,99.394% 34.311%,99.649% 35.269%,99.84% 36.319%,99.959% 37.444%,100% 38.63%,100% 50%,100% 92.686%,100% 92.686%,99.959% 93.873%,99.84% 94.998%,99.649% 96.047%,99.394% 97.006%,99.08% 97.858%,98.714% 98.589%,98.303% 99.184%,97.852% 99.627%,97.368% 99.904%,96.859% 100%,3.141% 100%,3.141% 100%,2.632% 99.904%,2.148% 99.627%,1.698% 99.184%,1.286% 98.589%,0.92% 97.858%,0.606% 97.006%,0.351% 96.047%,0.16% 94.998%,0.041% 93.873%,0% 92.686%,0% 7.314% );
+      height: 80vh;
+      width: 95vw;
     }
 
-    /* Ensure zoom controls respect rounded corners */
-    .leaflet-control-zoom {
-      border-radius: 10px;
-      margin: 10px;
-      border: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /* Search input styling */
+    .search-container {
+      position: relative;
+      width: 590px;
     }
-
-    .leaflet-control-zoom a {
-      border-radius: 5px;
-      margin: 2px;
-    }
-
-    /* Adjust attribution control */
-    .leaflet-control-attribution {
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 5px;
-      padding: 5px;
-      margin: 10px;
-      right: 10px;
-      left: auto;
-    }
-
-    /* Search and filter container */
-    .control-container {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      z-index: 1000;
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      width: 300px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .search-box {
-      display: flex;
-      margin-bottom: 10px;
-    }
-
+    
     #search-input {
-      flex-grow: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px 0 0 5px;
-      font-size: 14px;
+      padding: 12px 20px;
+      width: 100%;
+      height: 60px;
+      border-radius: 50px;
+      border: 2px solid red;
+      background-color: white;
+      font-size: 16px;
+      outline: none;
+      box-sizing: border-box;
     }
-
+    
     #search-button {
-      background-color: #4CAF50;
-      color: white;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
       border: none;
-      padding: 10px 15px;
+      color: #f02d21;
       cursor: pointer;
-      border-radius: 0 5px 5px 0;
+      font-size: 18px;
     }
 
-    #search-button:hover {
-      background-color: #45a049;
+    /* Dropdown styling */
+    .filter-select {
+      padding: 12px 20px;
+      padding-bottom: 10px;
+      border-radius: 50px;
+      border: none;
+      background-color: #8b0000;
+      color: white;
+      font-size: 18px;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      width: 590px;
+      height: 60px;
+      position: relative;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 20px center;
     }
 
+    /* Custom styling for dropdown options */
+    .filter-select option {
+      background-color: white;
+      color: #333;
+      padding: 10px;
+    }
+
+    /* Radius input styling */
+    .radius-container {
+      display: flex;
+      align-items: center;
+      background-color: #333;
+      color: white;
+      border-radius: 50px;
+      padding: 0 15px;
+      width: 590px;
+      height: 60px;
+      box-sizing: border-box;
+    }
+
+    .radius-label {
+      margin-right: 5px;
+    }
+
+    #radius-filter {
+      width: 60px;
+      padding: 12px 10px;
+      border: none;
+      background-color: transparent;
+      color: white;
+      font-size: 16px;
+      text-align: right;
+      -moz-appearance: textfield;
+    }
+
+    #radius-filter::-webkit-inner-spin-button, 
+    #radius-filter::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Search results styling */
     #search-results {
-      max-height: 100px;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      max-height: 200px;
       overflow-y: auto;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 1000;
       display: none;
-      margin-bottom: 10px;
     }
 
     .search-result-item {
-      padding: 10px;
+      padding: 10px 20px;
       cursor: pointer;
       border-bottom: 1px solid #eee;
     }
 
     .search-result-item:hover {
       background-color: #f5f5f5;
-    }
-
-    /* Filter dropdown styles */
-    .filter-dropdown {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .filter-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .filter-label {
-      font-size: 14px;
-      margin-right: 10px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .filter-select, .radius-input {
-      flex-grow: 1;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 14px;
     }
 
     /* Custom popup styles */
@@ -168,28 +211,27 @@
   </style>
 </head>
 <body>
+  <div class="header">
+    <img src="{{ asset('assets/Logo.png') }}" alt="Logo">
+  </div>
+
   <div class="map-container">
-    <div class="control-container">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search for a teacher...">
+    <div class="controls">
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Teacher">
         <button id="search-button"><i class="fas fa-search"></i></button>
+        <div id="search-results"></div>
       </div>
-      <div id="search-results"></div>
       
-      <div class="filter-dropdown">
-        <div class="filter-row">
-          <span class="filter-label">Category:</span>
-          <select id="category-filter" class="filter-select">
-            <option value="all">All Categories</option>
-            <!-- Categories will be added here dynamically -->
-          </select>
-        </div>
-        <div class="filter-row">
-          <span class="filter-label">Radius (km):</span>
-          <input type="number" id="radius-filter" class="radius-input" 
-                 min="1" max="50" value="15" 
-                 placeholder="Max distance">
-        </div>
+      <select id="category-filter" class="filter-select">
+        <option value="all">Categorie</option>
+        <!-- Categories will be added here dynamically -->
+      </select>
+      
+      <div class="radius-container">
+        <span class="radius-label">Straal</span>
+        <input type="number" id="radius-filter" min="1" max="50" value="15">
+        <span>Km</span>
       </div>
     </div>
     <div id="map"></div>
@@ -210,7 +252,7 @@
     // Custom marker icon
     var Marker = L.icon({
         iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-        iconSize: [55, 55],
+        iconSize: [45, 45],
         popupAnchor: [0, -25],
         closeButton: true,
     });
