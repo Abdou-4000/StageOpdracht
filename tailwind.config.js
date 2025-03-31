@@ -21,6 +21,7 @@ export default {
             },
             colors: {
                 red: '#ff3521',
+                darkred: '#920000',
                 accentPurple: '#9C91c5',
                 accentPink: '#e76',
                 accentBlue: '#71bdba',
