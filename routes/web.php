@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExportController;
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
@@ -44,6 +45,8 @@ Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
 Route::resource('teachers', TeacherController::class);
 Route::resource('categories', CategoryController::class);
 Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
+
+Route::get('/export-full-excel', [ExportController::class, 'exportExcel']);
 
 Route::get('/debug-role', function () {
     $user = auth()->user()->load('roles', 'permissions');
