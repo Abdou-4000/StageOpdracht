@@ -1,11 +1,32 @@
 @extends('layout')
 
 @section('content')
+<div class="text-5xl text-gray-dark text-center font-semibold underline m-8">
+    Leerkrachtenoverzicht
+</div>
+<div class="flex flex-row justify-evenly">
+    <div class="flex flex-wrap">
+        <form action="{{ route('teachers.import') }}" method="POST" enctype="multipart/form-data" class="mt-6 p-6 w-full max-w-lg mx-auto">
+            @csrf
+            <label for="file" class="block text-gray-dark font-semibold mb-2">Upload CSV File:</label>
+            <input type="file" name="file" id="file" required class="block w-full text-gray-dark border border-gray-300 rounded-2xl p-2">
+            <button type="submit" class="mt-4 w-full bg-red text-white font-semibold py-2 rounded-3xl">
+                Leerkrachten toevoegen
+            </button>
+        </form>
+    </div>
+    <div class="flex flex-col self-center items-center">
+        <div>
+            <a class="text-red font-semibold" href="{{ url('/export-full-excel') }}" class="btn btn-primary text-black">Export Excel</a>
+        </div>
+        <div>
+            <a class="text-red font-semibold" href="{{ url('/export-pdf') }}" class="btn btn-danger text-black">Export PDF</a>
+        </div>
+    </div>
+</div>
 <div class="flex flex-wrap justify-center">
     <input class="w-2/3 m-2 p-1.5 pl-4 text-gray-light border border-gray-200 rounded-3xl" id="searchbar" type="text" placeholder="Zoek">
 </div>
-<a href="{{ url('/export-full-excel') }}" class="btn btn-primary text-black">Export Full User Data</a>
-<a href="{{ url('/export-pdf') }}" class="btn btn-danger text-black">Export PDF</a>
 <div class="w-screen p-6">
     <!-- Table container with horizontal and vertical scroll -->
     <div class="overflow-x-auto relative">
@@ -67,16 +88,6 @@
             </table>
         </div>
     </div>
-</div>
-<div class="flex flex-wrap">
-    <form action="{{ route('teachers.import') }}" method="POST" enctype="multipart/form-data" class="mt-6 p-6 w-full max-w-lg mx-auto">
-        @csrf
-        <label for="file" class="block text-gray-dark font-semibold mb-2">Upload CSV File:</label>
-        <input type="file" name="file" id="file" required class="block w-full text-gray-dark border border-gray-300 rounded-2xl p-2">
-        <button type="submit" class="mt-4 w-full bg-red text-white font-semibold py-2 rounded-3xl">
-            Leerkrachten toevoegen
-        </button>
-    </form>
 </div>
 <script>
     // Searchbar
