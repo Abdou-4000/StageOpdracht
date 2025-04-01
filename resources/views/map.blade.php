@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,208 +6,277 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-       body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-      background-color: white;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    /* Header styles */
-    .header {
-      width: 15px;   
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 60;
-    }
+  body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    .header img {
-      width: 200px;
-      height: 200px;
-      margin-top: -30px;
-      margin-left: 25px;
-      object-fit: contain;
-    }
+/* Header styles */
+.header {
+  width: 15px;   
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 60;
+}
 
-   .leaflet-control-attribution {
-     left: 250px;
-   }
+.header img {
+  width: 200px;
+  height: 200px;
+  margin-top: -30px;
+  margin-left: 25px;
+  object-fit: contain;
+}
 
-   .leaflet-control-zoom {
-     border-radius: 15px;
-     margin: 2px;
-   }
+.leaflet-control-attribution {
+ setPrefix: fal
+}
 
-    /* Controls container for search and filters - positioned vertically on the right */
-    .controls {
-      position: absolute;
-      top: 10px;
-      right: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      z-index: 1000;
-    }
+.leaflet-control-zoom {
+ border-radius: 15px;
+ margin: 2px;
+}
 
-    /* Map container styles */
-    .map-container {
-      position: relative;
-      margin-top: 70px;
-      height: 80vh;
-      width: 95vw;
-      border-radius: 15px;
-      overflow: hidden;
-    }
+/* Controls container for search and filters - positioned vertically on the right */
+.controls {
+  position: absolute;
+  top: 145px;
+  right: 3.5%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+  width: 30%; /* Use percentage for responsive width */
+  min-width: 220px; /* Set minimum width */
+  max-width: 590px; /* Set maximum width */
+  transition: all 0.3s ease; /* Smooth transition when resizing */
+}
 
-    #map {
-      clip-path: polygon( 0% 7.314%,0% 7.314%,0.041% 6.127%,0.16% 5.002%,0.351% 3.953%,0.606% 2.994%,0.92% 2.142%,1.286% 1.411%,1.698% 0.816%,2.148% 0.373%,2.632% 0.096%,3.141% 0%,63.05% 0%,63.05% 0%,63.559% 0.096%,64.043% 0.373%,64.493% 0.816%,64.905% 1.411%,65.271% 2.142%,65.585% 2.994%,65.84% 3.953%,66.031% 5.002%,66.15% 6.127%,66.191% 7.314%,66.191% 24.003%,66.191% 24.003%,66.232% 25.189%,66.351% 26.314%,66.541% 27.364%,66.797% 28.322%,67.111% 29.174%,67.477% 29.905%,67.888% 30.5%,68.339% 30.944%,68.822% 31.221%,69.332% 31.316%,96.859% 31.316%,96.859% 31.316%,97.368% 31.412%,97.852% 31.689%,98.303% 32.133%,98.714% 32.728%,99.08% 33.459%,99.394% 34.311%,99.649% 35.269%,99.84% 36.319%,99.959% 37.444%,100% 38.63%,100% 50%,100% 92.686%,100% 92.686%,99.959% 93.873%,99.84% 94.998%,99.649% 96.047%,99.394% 97.006%,99.08% 97.858%,98.714% 98.589%,98.303% 99.184%,97.852% 99.627%,97.368% 99.904%,96.859% 100%,3.141% 100%,3.141% 100%,2.632% 99.904%,2.148% 99.627%,1.698% 99.184%,1.286% 98.589%,0.92% 97.858%,0.606% 97.006%,0.351% 96.047%,0.16% 94.998%,0.041% 93.873%,0% 92.686%,0% 7.314% );
-      height: 80vh;
-      width: 95vw;
-    }
+/* Map container styles */
+.map-container {
+  position: relative;
+  margin-top: 70px;
+  height: 80vh;
+  width: 95vw;
+  border-radius: 15px;
+  overflow: hidden;
+  clip-path: polygon( 0% 7.314%,0% 7.314%,0.041% 6.127%,0.16% 5.002%,0.351% 3.953%,0.606% 2.994%,0.92% 2.142%,1.286% 1.411%,1.698% 0.816%,2.148% 0.373%,2.632% 0.096%,3.141% 0%,63.05% 0%,63.05% 0%,63.559% 0.096%,64.043% 0.373%,64.493% 0.816%,64.905% 1.411%,65.271% 2.142%,65.585% 2.994%,65.84% 3.953%,66.031% 5.002%,66.15% 6.127%,66.191% 7.314%,66.191% 24.003%,66.191% 24.003%,66.232% 25.189%,66.351% 26.314%,66.541% 27.364%,66.797% 28.322%,67.111% 29.174%,67.477% 29.905%,67.888% 30.5%,68.339% 30.944%,68.822% 31.221%,69.332% 31.316%,96.859% 31.316%,96.859% 31.316%,97.368% 31.412%,97.852% 31.689%,98.303% 32.133%,98.714% 32.728%,99.08% 33.459%,99.394% 34.311%,99.649% 35.269%,99.84% 36.319%,99.959% 37.444%,100% 38.63%,100% 50%,100% 92.686%,100% 92.686%,99.959% 93.873%,99.84% 94.998%,99.649% 96.047%,99.394% 97.006%,99.08% 97.858%,98.714% 98.589%,98.303% 99.184%,97.852% 99.627%,97.368% 99.904%,96.859% 100%,3.141% 100%,3.141% 100%,2.632% 99.904%,2.148% 99.627%,1.698% 99.184%,1.286% 98.589%,0.92% 97.858%,0.606% 97.006%,0.351% 96.047%,0.16% 94.998%,0.041% 93.873%,0% 92.686%,0% 7.314% );
+  z-index: 1;
+}
 
-    /* Search input styling */
-    .search-container {
-      position: relative;
-      width: 590px;
-    }
-    
-    #search-input {
-      padding: 12px 20px;
-      width: 100%;
-      height: 60px;
-      border-radius: 50px;
-      border: 2px solid red;
-      background-color: white;
-      font-size: 18px;
-      outline: none;
-      box-sizing: border-box;
-    }
-    
-    #search-button {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #f02d21;
-      cursor: pointer;
-      font-size: 18px;
-    }
+#map {
+  height: 80vh;
+  width: 95vw;
+  z-index: 1;
+}
 
-    /* Dropdown styling */
-    .filter-select {
-      padding: 12px 20px;
-      padding-bottom: 10px;
-      border-radius: 50px;
-      border: none;
-      background-color: #8b0000;
-      color: white;
-      font-size: 18px;
-      appearance: none;
-      -webkit-appearance: none;
-      cursor: pointer;
-      width: 590px;
-      height: 60px;
-      position: relative;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
-      background-repeat: no-repeat;
-      background-position: right 20px center;
-    }
+/* Search input styling */
+.search-container {
+  position: relative;
+  width: 100%;
+}
 
-    /* Custom styling for dropdown options */
-    .filter-select option {
-      background-color: white;
-      color: #333;
-      padding: 10px;
-    }
+#search-input {
+  padding: 12px 20px;
+  width: 100%;
+  height: 60px;
+  border-radius: 50px;
+  border: 2px solid red;
+  background-color: white;
+  font-size: 18px;
+  outline: none;
+  box-sizing: border-box;
+}
 
-    /* Radius input styling */
-    .radius-container {
-      display: flex;
-      align-items: center;
-      background-color: #333;
-      color: white;
-      border-radius: 50px;
-      padding: 0 15px;
-      width: 590px;
-      height: 60px;
-      box-sizing: border-box;
-      font-size: 18px;
-    }
+#search-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #f02d21;
+  cursor: pointer;
+  font-size: 18px;
+}
 
-    .radius-label {
-      margin-right: 400px;
-    }
+/* Dropdown styling */
+.filter-select {
+  padding: 12px 20px;
+  padding-bottom: 10px;
+  border-radius: 50px;
+  border: none;
+  background-color: #8b0000;
+  color: white;
+  font-size: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  width: 100%;
+  height: 60px;
+  position: relative;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+}
 
-    #radius-filter {
-      width: 60px;
-      padding: 12px 10px;
-      border: none;
-      background-color: transparent;
-      color: white;
-      font-size: 18px;
-      text-align: right;
-      -moz-appearance: textfield;
-    }
+/* Custom styling for dropdown options */
+.filter-select option {
+  background-color: white;
+  color: #333;
+  padding: 10px;
+}
 
-    #radius-filter::-webkit-inner-spin-button, 
-    #radius-filter::-webkit-outer-spin-button { 
-      -webkit-appearance: none;
-      margin: 0;
-    }
+/* Radius input styling */
+.radius-container {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  color: white;
+  border-radius: 50px;
+  padding: 0 15px;
+  width: 100%;
+  height: 60px;
+  box-sizing: border-box;
+  font-size: 18px;
+}
 
-    /* Search results styling */
-    #search-results {
-      position: absolute;
-      top: 50px;
-      left: 0;
-      width: 100%;
-      max-height: 200px;
-      overflow-y: auto;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      z-index: 1000;
-      display: none;
-    }
+.radius-label {
+  flex: 1;
+  margin-right: 0;
+}
 
-    .search-result-item {
-      padding: 10px 20px;
-      cursor: pointer;
-      border-bottom: 1px solid #eee;
-    }
+#radius-filter {
+  width: 60px;
+  padding: 12px 10px;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-size: 18px;
+  text-align: right;
+  -moz-appearance: textfield;
+}
 
-    .search-result-item:hover {
-      background-color: #f5f5f5;
-    }
+#radius-filter::-webkit-inner-spin-button, 
+#radius-filter::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-    /* Custom popup styles */
-    .hover-popup .leaflet-popup-content-wrapper {
-      background-color: #2c3e50;
-      color: white;
-      padding: 5px 10px;
-      font-size: 14px;
-    }
+/* Search results styling */
+#search-results {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  display: none;
+}
 
-    .hover-popup .leaflet-popup-tip {
-      background-color: #2c3e50;
-    }
+.search-result-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
 
-    .click-popup .leaflet-popup-content-wrapper {
-      background-color: #f0f0f0;
-      color: black;
-    }
+.search-result-item:hover {
+  background-color: #f5f5f5;
+}
 
-    .click-popup .leaflet-popup-tip {
-      background-color: #f0f0f0;
-    }
+/* Custom popup styles */
+.hover-popup .leaflet-popup-content-wrapper {
+  background-color: #2c3e50;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.hover-popup .leaflet-popup-tip {
+  background-color: #2c3e50;
+}
+
+.click-popup .leaflet-popup-content-wrapper {
+  background-color: #f0f0f0;
+  color: black;
+}
+
+.click-popup .leaflet-popup-tip {
+  background-color: #f0f0f0;
+}
+
+/* Responsive media queries */
+@media (max-width: 1280px) {
+  .controls {
+    right: 25%;
+    flex-direction: row;
+    position: top;
+    width: 90%;
+    margin: 5% auto 5% auto;
+    top: 0;
+
+  }
+  
+  .map-container {
+    clip-path: none;
+    width: 80%;
+    height: 80vh;
+  }
+  
+}
+
+@media (max-width: 1024px) {
+  .controls {
+    right: 3%;
+    width: 35%;
+  }
+  
+  .map-container {
+    clip-path: none;
+    width: 100%;
+    height: 80vh;
+  }
+  
+  #search-input, .filter-select, .radius-container {
+    height: 55px;
+  }
+}
+
+@media (max-width: 768px) {
+  .controls {
+    right: 2%;
+    width: 40%;
+  }
+  
+  #search-input, .filter-select, .radius-container {
+    height: 50px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls {
+    right: 2%;
+    width: 45%;
+  }
+  
+  #search-input, .filter-select, .radius-container {
+    height: 45px;
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+}
   </style>
 </head>
 <body>
@@ -216,8 +284,7 @@
     <img src="{{ asset('assets/Logo.png') }}" alt="Logo">
   </div>
 
-  <div class="map-container">
-    <div class="controls">
+  <div class="controls">
       <div class="search-container">
         <input type="text" id="search-input" placeholder="Teacher">
         <button id="search-button"><i class="fas fa-search"></i></button>
@@ -235,6 +302,8 @@
         <span>Km</span>
       </div>
     </div>
+
+  <div class="map-container">
     <div id="map"></div>
   </div>
 
@@ -592,4 +661,3 @@
     createMarkers();
   </script>
 </body>
-</html>
