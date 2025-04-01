@@ -31,7 +31,14 @@ class CreateFirstSuperAdminSeeder extends Seeder
             'manage_permissions',
             'edit_categories',
             'edit_profile',
-            'view_profile'
+            'view_profile',
+            'view_teacher_profile',
+            'edit_teacher_profile',
+            'view_users',
+            'create_users',
+            'edit_users',
+            'delete_users',
+
         ];
 
         // Create permissions if they don't exist(findOrCreate)
@@ -43,6 +50,7 @@ class CreateFirstSuperAdminSeeder extends Seeder
         $adminRole = Role::findOrCreate('admin', 'web');
         $superAdminRole = Role::findOrCreate('super_admin', 'web');
         $userRole = Role::findOrCreate('user', 'web');
+        $teacherRole = Role::findOrCreate('teacher', 'web');
 
         // Assign specific permissions to admin and user roles
         $adminRole->syncPermissions([
@@ -50,6 +58,13 @@ class CreateFirstSuperAdminSeeder extends Seeder
             'create_teachers',
             'edit_teachers',
             'delete_teachers'
+        ]);
+        
+        $teacherRole->syncPermissions([
+            'view_teachers',
+            'edit_teachers',
+            'view_teacher_profile',
+            'edit_teacher_profile'
         ]);
 
         $userRole->syncPermissions([
@@ -74,6 +89,14 @@ class CreateFirstSuperAdminSeeder extends Seeder
                 'password' => Hash::make('password123')
             ]
         );    
+
+        $teacher = User::firstOrCreate(
+            ['email' => 'teacher@example.com'],
+            [
+                'name' => 'Teacher',
+                'password' => Hash::make('password123')
+            ]   
+);
         
         $user = User::firstOrcreate(
             ['email' =>  'user@example.com'],
@@ -86,6 +109,7 @@ class CreateFirstSuperAdminSeeder extends Seeder
         //role assignment
         $superAdmin->syncRoles([$superAdminRole]);
         $admin->syncRoles([$adminRole]);
+        $teacher->syncRoles([$teacherRole]);
         $user->syncRoles([$userRole]);
     }
 }
