@@ -9,7 +9,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\RoleUserController;
 use Spatie\Permission\Models\Role;
@@ -20,7 +20,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
-
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -40,9 +39,24 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    Route::prefix('super-admin')->name('super-admin.')->group(function () {
+        Route::get('/', [SuperAdminController::class, 'index'])->name('dashboard');    
+        Route::put('/users/{user}/roles', [SuperAdminController::class, 'syncRoles'])->name('users.roles.sync');
+        Route::put('/users/{user}/permissions', [SuperAdminController::class, 'syncPermissions'])->name('users.permissions.sync');
+        Route::post('/users', [SuperAdminController::class, 'createUser'])->name('users.create');
+        Route::delete('/users/{user}', [SuperAdminController::class, 'deleteUser'])->name('users.delete');
+        Route::put('/users/{user}/update-field', [SuperAdminController::class, 'updateField'])->name('users.update.field');
+        Route::put('/users/{user}/reset-password', [SuperAdminController::class, 'resetPassword'])->name('users.reset.password');
+        Route::put('/users/{user}/access', [SuperAdminController::class, 'updateAccess'])->name('users.access.update');
+    });
+});
+
+
 Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
 
 // CRUD routes (Teacher/Categories)
+
 Route::resource('teachers', TeacherController::class);
 Route::resource('categories', CategoryController::class);
 

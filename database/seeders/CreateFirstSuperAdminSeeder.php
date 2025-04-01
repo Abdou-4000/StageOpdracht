@@ -28,7 +28,17 @@ class CreateFirstSuperAdminSeeder extends Seeder
             'edit_admins',
             'delete_admins',
             'manage_roles',
-            'manage_permissions'
+            'manage_permissions',
+            'edit_categories',
+            'edit_profile',
+            'view_profile',
+            'view_teacher_profile',
+            'edit_teacher_profile',
+            'view_users',
+            'create_users',
+            'edit_users',
+            'delete_users',
+
         ];
 
         // Create permissions if they don't exist(findOrCreate)
@@ -39,16 +49,31 @@ class CreateFirstSuperAdminSeeder extends Seeder
         // role creation
         $adminRole = Role::findOrCreate('admin', 'web');
         $superAdminRole = Role::findOrCreate('super_admin', 'web');
+        $userRole = Role::findOrCreate('user', 'web');
+        $teacherRole = Role::findOrCreate('teacher', 'web');
 
-        // Assign specific permissions to admin
+        // Assign specific permissions to admin and user roles
         $adminRole->syncPermissions([
             'view_teachers',
             'create_teachers',
             'edit_teachers',
             'delete_teachers'
         ]);
+        
+        $teacherRole->syncPermissions([
+            'view_teachers',
+            'edit_teachers',
+            'view_teacher_profile',
+            'edit_teacher_profile'
+        ]);
 
-        // User creation + atleast a single admin
+        $userRole->syncPermissions([
+            'view_teachers',
+            'view_profile',
+            'edit_profile'
+        ]);
+
+        // User creation + atleast a single admin, super admin and user
         $superAdmin = User::firstOrCreate(
             ['email' => 'superadmin@example.com'],
             [
@@ -64,9 +89,27 @@ class CreateFirstSuperAdminSeeder extends Seeder
                 'password' => Hash::make('password123')
             ]
         );    
+
+        $teacher = User::firstOrCreate(
+            ['email' => 'teacher@example.com'],
+            [
+                'name' => 'Teacher',
+                'password' => Hash::make('password123')
+            ]   
+);
         
+        $user = User::firstOrcreate(
+            ['email' =>  'user@example.com'],
+            [
+                'name' => 'User',
+                'password' => Hash::make('password123')
+            ]
+
+            );
         //role assignment
         $superAdmin->syncRoles([$superAdminRole]);
         $admin->syncRoles([$adminRole]);
+        $teacher->syncRoles([$teacherRole]);
+        $user->syncRoles([$userRole]);
     }
 }
