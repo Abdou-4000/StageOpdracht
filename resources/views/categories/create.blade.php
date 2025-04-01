@@ -1,12 +1,12 @@
- <form method="POST" action="{{ route('categories.store') }}"> 
-        @csrf
+@extends('layout')
 
-        <div> 
-            <input type="text" name="name" id="name" placeholder="name">
-        </div>
-        <div>
-            <button type="submit">
-                Save
-            </button>
-        </div> 
-    </form>
+@section('content')
+    <div class="text-gray-dark">
+        <h1 class="text-3xl m-3">Categorie toevoegen</h1>
+        @include('categories._form', [
+            'action' => route('categories.store'),
+            'isEdit' => false,
+            'categories' => null
+        ])
+    </div>
+@endsection

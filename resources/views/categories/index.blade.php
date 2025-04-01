@@ -1,5 +1,9 @@
+@extends('layout')
+
+@section('content')
+<div class="text-gray-dark">
 <a href="{{ route('categories.create') }}">Add new category</a> 
-<table> 
+<table class="text-gray-dark"> 
         <thead>
             <tr>
                 <th>Name</th>
@@ -22,4 +26,6 @@
                 </tr>
             @endforeach
         </tbody>
-    </table> 
+    </table>
+</div>
+@endsection
