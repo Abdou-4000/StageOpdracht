@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<div class="flex flex-row justify-between bg-gray-middle text-white w-[600px] m-4 ml-[700px] p-2 rounded-3xl">
+<div class="flex flex-row justify-between bg-gray-middle text-white w-[600px] m-4 ml-12 xl:ml-[550px] p-2 rounded-3xl">
     <div class="flex text-xl p-2">
         Zoë Dreessen
     </div>
@@ -18,7 +18,7 @@
         </a>
     </div>
 </div>
-<div class="flex flex-row justify-between bg-red text-white w-[600px] m-4 ml-[400px] p-2 rounded-3xl">
+<div class="flex flex-row justify-between bg-red text-white w-[600px] m-4 ml-12 xl:ml-[250px] p-2 rounded-3xl">
     <div class="flex text-xl p-2">
         Merlijn Ruysen
     </div>
@@ -35,7 +35,7 @@
         </a>
     </div>
 </div>
-<div class="flex flex-row justify-between bg-gray-light text-white w-[600px] m-4 ml-[800px] p-2 rounded-3xl">
+<div class="flex flex-row justify-between bg-gray-light text-white w-[600px] m-4 ml-12 xl:ml-[650px] p-2 rounded-3xl">
     <div class="flex text-xl p-2">
         Abderrahman Arreffag
     </div>
@@ -47,7 +47,7 @@
         </a>
     </div>
 </div>
-<div class="flex flex-row justify-between bg-darkred text-white w-[600px] m-4 ml-[500px] p-2 rounded-3xl">
+<div class="flex flex-row justify-between bg-darkred text-white w-[600px] m-4 ml-12 xl:ml-[350px] p-2 rounded-3xl">
     <div class="flex text-xl p-2">
         Massimo De Nitti
     </div>
