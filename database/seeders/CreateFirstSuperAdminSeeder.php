@@ -28,7 +28,10 @@ class CreateFirstSuperAdminSeeder extends Seeder
             'edit_admins',
             'delete_admins',
             'manage_roles',
-            'manage_permissions'
+            'manage_permissions',
+            'edit_categories',
+            'edit_profile',
+            'view_profile'
         ];
 
         // Create permissions if they don't exist(findOrCreate)
@@ -39,8 +42,9 @@ class CreateFirstSuperAdminSeeder extends Seeder
         // role creation
         $adminRole = Role::findOrCreate('admin', 'web');
         $superAdminRole = Role::findOrCreate('super_admin', 'web');
+        $userRole = Role::findOrCreate('user', 'web');
 
-        // Assign specific permissions to admin
+        // Assign specific permissions to admin and user roles
         $adminRole->syncPermissions([
             'view_teachers',
             'create_teachers',
@@ -48,7 +52,13 @@ class CreateFirstSuperAdminSeeder extends Seeder
             'delete_teachers'
         ]);
 
-        // User creation + atleast a single admin
+        $userRole->syncPermissions([
+            'view_teachers',
+            'view_profile',
+            'edit_profile'
+        ]);
+
+        // User creation + atleast a single admin, super admin and user
         $superAdmin = User::firstOrCreate(
             ['email' => 'superadmin@example.com'],
             [
@@ -65,8 +75,17 @@ class CreateFirstSuperAdminSeeder extends Seeder
             ]
         );    
         
+        $user = User::firstOrcreate(
+            ['email' =>  'user@example.com'],
+            [
+                'name' => 'User',
+                'password' => Hash::make('password123')
+            ]
+
+            );
         //role assignment
         $superAdmin->syncRoles([$superAdminRole]);
         $admin->syncRoles([$adminRole]);
+        $user->syncRoles([$userRole]);
     }
 }

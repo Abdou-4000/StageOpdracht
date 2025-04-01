@@ -4,111 +4,118 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Super Admin Dashboard</h1>
+        <button 
+            type="button"
+            class="px-4 py-2 bg-[#ff3521] text-white rounded-md hover:bg-[#920000] transition duration-150"
+            onclick="openCreateModal()"
+        >
+            Create User
+        </button>
     </div>
 
     <div class="bg-white rounded-lg shadow">
         <div class="p-6">
-            <h2 class="text-lg font-semibold mb-4">Teacher Management</h2>
-            
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Name
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Email
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Roles
-                        </th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($teachers as $teacher)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $teacher->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $teacher->email }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @foreach($teacher->roles as $role)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2">
-                                    {{ $role->name }}
-                                </span>
-                            @endforeach
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right">
+            <h2 class="text-lg font-semibold mb-4">User Management</h2>
+            <div class="overflow-x-auto rounded-lg shadow">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-[#22262d]">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-centre text-xs font-medium text-white uppercase tracking-wider w-1/5">
+                                ID
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-centre text-xs font-medium text-white uppercase tracking-wider w-1/5">
+                                Name
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-centre text-xs font-medium text-white uppercase tracking-wider w-1/5">
+                                Email
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-centre text-xs font-medium text-white uppercase tracking-wider w-1/5">
+                                Roles
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-centre text-xs font-medium text-white uppercase tracking-wider w-1/5">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($users as $user)
+                        <tr class="hover:bg-gray-50" data-user-id="{{ $user->id }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">{{ $user->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap" data-field="name">
+                                <div class="flex items-center group">
+                                    <span class="editable-content">{{ $user->name }}</span>
+                                    <button type="button" class="ml-2 invisible group-hover:visible" onclick="makeEditable(this)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap" data-field="email">
+                                <div class="flex items-center group">
+                                    <span class="editable-content">{{ $user->email }}</span>
+                                    <button type="button" class="ml-2 invisible group-hover:visible" onclick="makeEditable(this)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                @foreach($user->roles as $role)
+                                    <span class="px-2 py-1 text-xs rounded-full bg-[#9C91C5] text-white">
+                                        {{ $role->name }}
+                                    </span>
+                                @endforeach
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
                             <button 
                                 type="button"
-                                class="text-sm text-blue-600 hover:text-blue-900"
-                                onclick="editRoles({{ $teacher->id }})"
+                                class="text-sm text-[#71BDBA] hover:text-[#ff3521] mr-2"
+                                onclick="editUserAccess({{ $user->id }}, '{{ $user->roles->first() ? $user->roles->first()->name : '' }}', {{ json_encode($user->permissions->pluck('name')) }})"
                             >
-                                Edit Roles
+                                Edit Access
                             </button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                
+                                <button 
+                                    type="button"
+                                    class="text-sm text-[#FBBA00] hover:text-[#ff3521] mr-2"
+                                    onclick="resetPassword({{ $user->id }})"
+                                >
+                                    Reset Password
+                                </button>
+
+
+                                @if(auth()->id() !== $user->id)
+                                    <button 
+                                        type="button" 
+                                        class="text-sm text-[#ff3521] hover:text-[#920000]"
+                                        onclick="confirmDelete({{ $user->id }})"
+                                    >
+                                        Delete
+                                    </button>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div> 
         </div>
     </div>
 </div>
 
-<!-- Role Edit Modal -->
-<div id="roleModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <form id="roleForm" method="POST">
-            @csrf
-            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Roles</h3>
-            
-            <div class="space-y-3">
-                @foreach($roles as $role)
-                <div class="flex items-center">
-                    <input 
-                        type="checkbox" 
-                        name="roles[]" 
-                        value="{{ $role->name }}"
-                        class="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    >
-                    <label class="ml-2 text-sm text-gray-700">{{ $role->name }}</label>
-                </div>
-                @endforeach
-            </div>
 
-            <div class="mt-4 flex justify-end space-x-3">
-                <button 
-                    type="button" 
-                    onclick="closeModal()"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                    Cancel
-                </button>
-                <button 
-                    type="submit"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
-                >
-                    Save
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+@include('super-admin.components.modals.access-modal')
+@include('super-admin.components.modals.delete-modal')
+@include('super-admin.components.modals.password-modal')
+@include('super-admin.components.modals.create-modal')
+
 
 @push('scripts')
 <script>
-function editRoles(userId) {
-    const modal = document.getElementById('roleModal');
-    const form = document.getElementById('roleForm');
-    form.action = `/super-admin/teachers/${userId}/roles`;
-    modal.classList.remove('hidden');
-}
-
-function closeModal() {
-    const modal = document.getElementById('roleModal');
-    modal.classList.add('hidden');
-}
+    @include('super-admin.partials.dashboard-scripts')
 </script>
 @endpush
+
 @endsection
