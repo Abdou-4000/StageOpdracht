@@ -1,195 +1,318 @@
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SyntraPXL TeacherMap</title>
+  <title>Teacher Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* Set the body to use flexbox to center the map */
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center; /* Center horizontally */
-      align-items: center;     /* Center vertically */
-      height: 100vh;           /* Full screen height */
-      margin: 0;               /* Remove default margin */
-      background-color: #f0f0f0; /* Light background color */
-      font-family: Arial, sans-serif;
-    }
-
-    /* Container for map and search box */
-    .map-container {
-  position: relative;
-  height: 79vh;
-  width: 75vw;
-  /* Add overflow hidden to contain rounded corners */
+  body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: white;
   overflow: hidden;
-  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Header styles */
+.header {
+  width: 15px;   
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 60;
+}
+
+.header img {
+  width: 200px;
+  height: 200px;
+  margin-top: -30px;
+  margin-left: 25px;
+  object-fit: contain;
+}
+
+.leaflet-control-attribution {
+ setPrefix: fal
+}
+
+.leaflet-control-zoom {
+ border-radius: 15px;
+ margin: 2px;
+}
+
+/* Controls container for search and filters - positioned vertically on the right */
+.controls {
+  position: absolute;
+  top: 145px;
+  right: 3.5%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+  width: 30%; /* Use percentage for responsive width */
+  min-width: 220px; /* Set minimum width */
+  max-width: 590px; /* Set maximum width */
+  transition: all 0.3s ease; /* Smooth transition when resizing */
+}
+
+/* Map container styles */
+.map-container {
+  position: relative;
+  margin-top: 70px;
+  height: 80vh;
+  width: 95vw;
+  border-radius: 15px;
+  overflow: hidden;
+  clip-path: polygon( 0% 7.314%,0% 7.314%,0.041% 6.127%,0.16% 5.002%,0.351% 3.953%,0.606% 2.994%,0.92% 2.142%,1.286% 1.411%,1.698% 0.816%,2.148% 0.373%,2.632% 0.096%,3.141% 0%,63.05% 0%,63.05% 0%,63.559% 0.096%,64.043% 0.373%,64.493% 0.816%,64.905% 1.411%,65.271% 2.142%,65.585% 2.994%,65.84% 3.953%,66.031% 5.002%,66.15% 6.127%,66.191% 7.314%,66.191% 24.003%,66.191% 24.003%,66.232% 25.189%,66.351% 26.314%,66.541% 27.364%,66.797% 28.322%,67.111% 29.174%,67.477% 29.905%,67.888% 30.5%,68.339% 30.944%,68.822% 31.221%,69.332% 31.316%,96.859% 31.316%,96.859% 31.316%,97.368% 31.412%,97.852% 31.689%,98.303% 32.133%,98.714% 32.728%,99.08% 33.459%,99.394% 34.311%,99.649% 35.269%,99.84% 36.319%,99.959% 37.444%,100% 38.63%,100% 50%,100% 92.686%,100% 92.686%,99.959% 93.873%,99.84% 94.998%,99.649% 96.047%,99.394% 97.006%,99.08% 97.858%,98.714% 98.589%,98.303% 99.184%,97.852% 99.627%,97.368% 99.904%,96.859% 100%,3.141% 100%,3.141% 100%,2.632% 99.904%,2.148% 99.627%,1.698% 99.184%,1.286% 98.589%,0.92% 97.858%,0.606% 97.006%,0.351% 96.047%,0.16% 94.998%,0.041% 93.873%,0% 92.686%,0% 7.314% );
+  z-index: 1;
 }
 
 #map {
-  height: 79vh;
-  width: 75vw;
-  border-radius: 40px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  height: 80vh;
+  width: 95vw;
+  z-index: 1;
 }
 
-/* Ensure zoom controls respect rounded corners */
-.leaflet-control-zoom {
-  border-radius: 10px;
-  margin: 10px;
-  border: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+/* Search input styling */
+.search-container {
+  position: relative;
+  width: 100%;
 }
 
-.leaflet-control-zoom a {
-  border-radius: 5px;
-  margin: 2px;
+#search-input {
+  padding: 12px 20px;
+  width: 100%;
+  height: 60px;
+  border-radius: 50px;
+  border: 2px solid red;
+  background-color: white;
+  font-size: 18px;
+  outline: none;
+  box-sizing: border-box;
 }
 
-/* Adjust attribution control */
-.leaflet-control-attribution {
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 5px;
-  padding: 5px;
-  margin: 10px;
+#search-button {
+  position: absolute;
   right: 10px;
-  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #f02d21;
+  cursor: pointer;
+  font-size: 18px;
 }
 
-    /* Search and filter container */
-    .control-container {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      z-index: 1000;
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      width: 300px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+/* Dropdown styling */
+.filter-select {
+  padding: 12px 20px;
+  padding-bottom: 10px;
+  border-radius: 50px;
+  border: none;
+  background-color: #8b0000;
+  color: white;
+  font-size: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  width: 100%;
+  height: 60px;
+  position: relative;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+}
 
-    .search-box {
-      display: flex;
-      margin-bottom: 10px;
-    }
+/* Custom styling for dropdown options */
+.filter-select option {
+  background-color: white;
+  color: #333;
+  padding: 10px;
+}
 
-    #search-input {
-      flex-grow: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px 0 0 5px;
-      font-size: 14px;
-    }
+/* Radius input styling */
+.radius-container {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  color: white;
+  border-radius: 50px;
+  padding: 0 15px;
+  width: 100%;
+  height: 60px;
+  box-sizing: border-box;
+  font-size: 18px;
+}
 
-    #search-button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      border-radius: 0 5px 5px 0;
-    }
+.radius-label {
+  flex: 1;
+  margin-right: 0;
+}
 
-    #search-button:hover {
-      background-color: #45a049;
-    }
+#radius-filter {
+  width: 60px;
+  padding: 12px 10px;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-size: 18px;
+  text-align: right;
+  -moz-appearance: textfield;
+}
 
-    #search-results {
-      max-height: 100px;
-      overflow-y: auto;
-      display: none;
-      margin-bottom: 10px;
-    }
+#radius-filter::-webkit-inner-spin-button, 
+#radius-filter::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-    .search-result-item {
-      padding: 10px;
-      cursor: pointer;
-      border-bottom: 1px solid #eee;
-    }
+/* Search results styling */
+#search-results {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  display: none;
+}
 
-    .search-result-item:hover {
-      background-color: #f5f5f5;
-    }
+.search-result-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
 
-    /* Filter dropdown styles */
-    .filter-dropdown {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+.search-result-item:hover {
+  background-color: #f5f5f5;
+}
 
-    .filter-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+/* Custom popup styles */
+.hover-popup .leaflet-popup-content-wrapper {
+  background-color: #2c3e50;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+}
 
-    .filter-label {
-      font-size: 14px;
-      margin-right: 10px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
+.hover-popup .leaflet-popup-tip {
+  background-color: #2c3e50;
+}
 
-    .filter-select, .radius-input {
-      flex-grow: 1;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 14px;
-    }
+.click-popup .leaflet-popup-content-wrapper {
+  background-color: #f0f0f0;
+  color: black;
+}
 
-    /* Custom popup styles */
-    .hover-popup .leaflet-popup-content-wrapper {
-      background-color: #2c3e50;
-      color: white;
-    }
+.click-popup .leaflet-popup-tip {
+  background-color: #f0f0f0;
+}
 
-    .hover-popup .leaflet-popup-tip {
-      background-color: #2c3e50;
-    }
+/* Responsive media queries */
+@media (max-width: 1280px) {
+  .controls {
+    right: 25%;
+    flex-direction: row;
+    position: top;
+    width: 90%;
+    margin: 5% auto 5% auto;
+    top: 0;
+
+  }
+  
+  .map-container {
+    clip-path: none;
+    width: 80%;
+    height: 80vh;
+  }
+  
+}
+
+@media (max-width: 1024px) {
+  .controls {
+    right: 3%;
+    width: 35%;
+  }
+  
+  .map-container {
+    clip-path: none;
+    width: 100%;
+    height: 80vh;
+  }
+  
+  #search-input, .filter-select, .radius-container {
+    height: 55px;
+  }
+}
+
+@media (max-width: 768px) {
+  .controls {
+    right: 2%;
+    width: 40%;
+  }
+  
+  #search-input, .filter-select, .radius-container {
+    height: 50px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls {
+    right: 2%;
+    width: 45%;
+  }
+  
+  #search-input, .filter-select, .radius-container {
+    height: 45px;
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+}
   </style>
 </head>
 <body>
-  <div class="map-container">
-    <!-- Combined search and filter panel -->
-    <div class="control-container">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search for a company...">
+  <div class="header">
+    <img src="{{ asset('assets/Logo.png') }}" alt="Logo">
+  </div>
+
+  <div class="controls">
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Teacher">
         <button id="search-button"><i class="fas fa-search"></i></button>
+        <div id="search-results"></div>
       </div>
-      <div id="search-results"></div>
       
-      <!-- Category filter dropdown -->
-      <div class="filter-dropdown">
-        <div class="filter-row">
-          <span class="filter-label">Category:</span>
-          <select id="category-filter" class="filter-select">
-            <option value="all">All Categories</option>
-          <!-- Categories will be added here dynamically -->
-          </select>
-        </div>
-        <div class="filter-row">
-          <span class="filter-label">Radius (km):</span>
-          <input type="number" id="radius-filter" class="radius-input" 
-                 min="1" max="50" value="15" 
-                 placeholder="Max distance">
-        </div>
+      <select id="category-filter" class="filter-select">
+        <option value="all">Categorie</option>
+        <!-- Categories will be added here dynamically -->
+      </select>
+      
+      <div class="radius-container">
+        <span class="radius-label">Straal</span>
+        <input type="number" id="radius-filter" min="1" max="50" value="15">
+        <span>Km</span>
       </div>
     </div>
+
+  <div class="map-container">
     <div id="map"></div>
   </div>
 
   <!-- Load Leaflet's JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+    // Expose teachers data to JavaScript
+    const teachersData = @json($teachers);
+
     // Initialize the map
     const map = L.map('map', {
       zoomControl: true,
@@ -199,8 +322,8 @@
     // Custom marker icon
     var Marker = L.icon({
         iconUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-        iconSize: [55, 55], // size of the icon
-        popupAnchor: [0, -25], // point from which the popup should open
+        iconSize: [45, 45],
+        popupAnchor: [0, -25],
         closeButton: true,
     });
 
@@ -210,59 +333,8 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Company database with locations and categories
-    const companies = [
-      {
-        name: "SyntraPXL",
-        lat: 50.9973,
-        lng: 5.5367,
-        category: "Education",
-        details: {
-          location: "T2-Campus",
-          hours: "Mon-Fri, 9:00 AM - 5:00 PM"
-        }
-      },
-      {
-        name: "Corda Campus",
-        lat: 50.9519,
-        lng: 5.3535,
-        category: "Business",
-        details: {
-          location: "Hasselt",
-          hours: "Mon-Fri, 8:00 AM - 6:00 PM"
-        }
-      },
-      {
-        name: "Thor Park",
-        lat: 50.9938,
-        lng: 5.5370,
-        category: "Technology",
-        details: {
-          location: "Genk",
-          hours: "Mon-Fri, 8:30 AM - 5:30 PM"
-        }
-      },
-      {
-        name: "PXL University",
-        lat: 50.9289,
-        lng: 5.3897,
-        category: "Education",
-        details: {
-          location: "Hasselt",
-          hours: "Mon-Fri, 8:00 AM - 10:00 PM"
-        }
-      },
-      {
-        name: "ucll University",
-        lat: 50.9279,
-        lng: 5.3850,
-        category: "Education",
-        details: {
-          location: "Diepenbeek",
-          hours: "Mon-Fri, 8:00 AM - 8:00 PM"
-        }
-      }
-    ];
+    // Companies now come from server-side data
+    const companies = teachersData;
 
     // Global variables to store user location
     let userLocation = null;
@@ -283,10 +355,16 @@
     // Create a layer group for all markers
     const markersLayer = L.layerGroup().addTo(map);
 
-    // Extract unique categories
-    const categories = [...new Set(companies.map(company => company.category))];
+    // Extract unique categories - UPDATED
+    const allCategories = new Set();
+    companies.forEach(company => {
+      if (Array.isArray(company.category)) {
+        company.category.forEach(cat => allCategories.add(cat));
+      }
+    });
+    const categories = [...allCategories];
 
-    // Populate the category dropdown
+    // Populate the category dropdown - UPDATED
     const categorySelect = document.getElementById('category-filter');
     categories.forEach(category => {
       const option = document.createElement('option');
@@ -295,7 +373,7 @@
       categorySelect.appendChild(option);
     });
 
-    // Create markers for all companies
+    // Global markers object to support search
     const markers = {};
     
     function createMarkers() {
@@ -310,10 +388,10 @@
       // Filter companies
       let filteredCompanies = companies;
       
-      // Filter by category if not 'all'
+      // Filter by category if not 'all' - UPDATED
       if (selectedCategory !== 'all') {
         filteredCompanies = filteredCompanies.filter(company => 
-          company.category === selectedCategory
+          Array.isArray(company.category) && company.category.includes(selectedCategory)
         );
       }
       
@@ -341,13 +419,29 @@
           ? calculateDistance(userLocation.lat, userLocation.lng, company.lat, company.lng).toFixed(2)
           : 'N/A';
         
-        const hoverPopupContent = `<strong>${company.name}</strong>`;
+        // Get categories as string for display
+        const categoryDisplay = Array.isArray(company.category) 
+          ? company.category.join(', ') 
+          : 'Uncategorized';
+        
+        // Hover popup content (simplified)
+        const hoverPopupContent = `
+          <div class="hover-popup">
+            <strong>${company.compname}</strong>
+          </div>
+        `;
+        
+        // Click popup content - UPDATED to show categories
         const clickPopupContent = `
-          <strong>${company.name}</strong><br>
-          Category: ${company.category}<br>
-          Location: ${company.details.location}<br>
-          Working Hours: ${company.details.hours}<br>
-          Distance: ${distance} km
+          <div class="click-popup">
+            <strong>${company.compname}</strong><br>
+            Teacher: ${company.name}<br>
+            Category: ${categoryDisplay}<br>
+            Location: ${company.details.location}<br>
+            Email: ${company.details.email}<br>
+            Phone: ${company.details.phone}<br>
+            Distance: ${distance} km
+          </div>
         `;
         
         // Create marker
@@ -355,54 +449,70 @@
           icon: Marker
         });
         
+        // Create hover popup
+        const hoverPopup = L.popup({
+          closeButton: false,
+          autoClose: false,
+          closeOnClick: false,
+          className: 'hover-popup'
+        }).setContent(hoverPopupContent);
+        
+        // Create click popup
+        const clickPopup = L.popup({
+          autoClose: false,
+          closeOnClick: false,
+          className: 'click-popup'
+        }).setContent(clickPopupContent);
+        
+        marker.on('mouseover', function(e) {
+          // Only show hover popup if no click popup is open
+          if (!marker.isPopupOpen()) {
+            // Adjust the popup position to account for marker icon size
+            const popupOptions = {
+              offset: L.point(0, -15), // Adjust this value based on your icon
+              className: 'hover-popup',
+              closeButton: false
+            };
+            
+            L.popup(popupOptions)
+              .setLatLng(marker.getLatLng()) // Use marker's center instead of event latlng
+              .setContent(hoverPopupContent)
+              .openOn(map);
+          }
+        });
+        
+        marker.on('mouseout', function() {
+          // Close hover popup if it's open and no click popup is open
+          if (!marker.isPopupOpen()) {
+            map.closePopup(hoverPopup);
+          }
+        });
+        
+        // Modify click event to close hover popup
+        marker.on('click', function() {
+          // Close any existing hover popup
+          map.closePopup(hoverPopup);
+        });
+        
+        // Bind click popup
+        marker.bindPopup(clickPopup);
+        
         // Add to layer group
         markersLayer.addLayer(marker);
         
         // Store marker reference
         markers[company.name.toLowerCase()] = marker;
-        
-        // Create popups
-        const hoverPopup = L.popup({
-          closeButton: false,
-          autoClose: true,
-          className: 'hover-popup'
-        }).setContent(hoverPopupContent);
-        
-        const clickPopup = L.popup({
-          autoClose: false,
-          closeOnClick: false
-        }).setContent(clickPopupContent);
-        
-        // Define marker interaction
-        let isClickPopupOpen = false;
-        
-        marker.on('mouseover', function() {
-          if (!isClickPopupOpen) {
-            marker.bindPopup(hoverPopup).openPopup();
-          }
-        });
-        
-        marker.on('mouseout', function() {
-          if (!isClickPopupOpen) {
-            marker.closePopup();
-          }
-        });
-        
-        marker.on('click', function() {
-          marker.unbindPopup();
-          marker.bindPopup(clickPopup).openPopup();
-          isClickPopupOpen = true;
-        });
-        
-        // Close popups when clicking elsewhere
-        map.on('click', function(e) {
-          if (!marker.getLatLng().equals(map.mouseEventToLatLng(e.originalEvent)) && isClickPopupOpen) {
-            marker.closePopup();
-            isClickPopupOpen = false;
-          }
-        });
       });
     }
+
+    // Add global click event to close popups when clicking outside
+    map.on('click', function(e) {
+      // Check if the click is not on a marker
+      if (!e.originalEvent.target.closest('.leaflet-marker-icon')) {
+        // Close all popups
+        map.closePopup();
+      }
+    });
 
     // Function to handle geolocation
     function onLocationFound(e) {
@@ -466,10 +576,10 @@
       
       let visibleCompanies = companies;
       
-      // Apply category filter
+      // Apply category filter - UPDATED
       if (selectedCategory !== 'all') {
         visibleCompanies = visibleCompanies.filter(company => 
-          company.category === selectedCategory
+          Array.isArray(company.category) && company.category.includes(selectedCategory)
         );
       }
       
@@ -493,7 +603,7 @@
       searchResults.style.display = filteredCompanies.length > 0 ? 'block' : 'none';
       
       if (filteredCompanies.length === 0) {
-        searchResults.innerHTML = '<div class="search-result-item">No companies found</div>';
+        searchResults.innerHTML = '<div class="search-result-item">No teachers found</div>';
         return;
       }
       
@@ -506,7 +616,12 @@
           ? calculateDistance(userLocation.lat, userLocation.lng, company.lat, company.lng).toFixed(2)
           : 'N/A';
         
-        resultItem.innerHTML = `${company.name} - ${company.category} (${distance} km)`;
+        // UPDATED to display categories as a comma-separated list
+        const categoryDisplay = Array.isArray(company.category) 
+          ? company.category.join(', ') 
+          : 'Uncategorized';
+        
+        resultItem.innerHTML = `${company.name} - ${categoryDisplay} (${distance} km)`;
         
         resultItem.addEventListener('click', () => {
           // Center map on company
@@ -515,15 +630,7 @@
           // Open popup for the company
           const marker = markers[company.name.toLowerCase()];
           if (marker) {
-            // trigger hover popup instead on search
-            marker.unbindPopup();
-            const hoverPopupContent = `<strong>${company.name}</strong>`;
-            const hoverPopup = L.popup({
-              closeButton: false,
-              autoClose: true,
-              className: 'hover-popup'
-            }).setContent(hoverPopupContent);
-            marker.bindPopup(hoverPopup).openPopup();
+            marker.openPopup();
           }
           
           // Hide search results
@@ -549,6 +656,8 @@
         searchResults.style.display = 'none';
       }
     });
+
+    // Initial markers creation
+    createMarkers();
   </script>
 </body>
-</html>
