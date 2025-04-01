@@ -69,7 +69,7 @@
                             </td>
                             <td class="py-4 px-6">
                                 @foreach ($teacher->category as $category)
-                                    <span class="flex justify-center bg-accentBlue text-gray-light text-xs font-semibold px-2.5 py-0.5 rounded-lg block mt-1">
+                                    <span class="flex justify-center text-gray-light text-xs font-semibold px-2.5 py-0.5 rounded-lg block mt-1" style="background-color: {{ $category->color }};">
                                         {{$category->name}}
                                     </span>
                                 @endforeach
