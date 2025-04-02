@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="calendarOptions" style="border: 2px solid red; height: 500px;">
+    <div v-if="calendarOptions">
       <FullCalendar :options="calendarOptions" />
     </div>
   </div>
