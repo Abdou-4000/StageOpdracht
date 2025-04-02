@@ -1,19 +1,41 @@
-<!-- rrule lib -->
-<script src='https://cdn.jsdelivr.net/npm/rrule@2.6.4/dist/es5/rrule.min.js'></script>
+<template>
+  <div>
+    <div v-if="calendarOptions" style="border: 2px solid red; height: 500px;">
+      <FullCalendar :options="calendarOptions" />
+    </div>
+  </div>
+</template>
 
-<!-- fullcalendar bundle -->
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script setup>
+import { ref, onMounted } from 'vue';
+import FullCalendar from '@fullcalendar/vue3';  // FullCalendar for Vue 3
+import dayGridPlugin from '@fullcalendar/daygrid';  // DayGrid plugin
+import interactionPlugin from '@fullcalendar/interaction';  // Interaction plugin (needed for event handling)
+import timeGridPlugin from '@fullcalendar/timegrid';  // TimeGrid plugin (optional, but good for week/day views)
+import listPlugin from '@fullcalendar/list';  // List plugin (optional, for list view)
 
-<!-- the rrule-to-fullcalendar connector. must go AFTER the rrule lib -->
-<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.15/index.global.min.js'></script>
+// Define your events (empty for now)
+const events = ref([]);
+const isReady = ref(false);
 
-<script>
-  var calendarEl = document.getElementById('calendar')
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    events: [
-      // event data. see below
-    ]
-  })
+// Calendar options including initial view setup
+const calendarOptions = ref({
+  plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],  // Add required plugins
+  initialView: 'dayGridMonth',  // Default view for the calendar
+  locale: 'en',  // Locale for the calendar
+  headerToolbar: {
+    left: 'prev,next today',
+    center: 'title',
+    right: 'dayGridMonth,dayGridWeek,timeGridWeek,timeGridDay,listWeek',  // Added more view options
+  },
+});
 
-  calendar.render()
+// Log the options to ensure they're being set correctly
+onMounted(() => {
+  console.log("Calendar Options:", calendarOptions.value);
+});
 </script>
+
+<style scoped>
+/* Optional: Add custom styles for FullCalendar */
+</style>
