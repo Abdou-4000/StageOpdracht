@@ -2,7 +2,6 @@
   <div>
     <div v-if="calendarOptions">
       <FullCalendar 
-        ref="calendarRef"
         :options="calendarOptions" 
       />
       <!-- Form to collect event details -->
@@ -43,24 +42,21 @@ import interactionPlugin from '@fullcalendar/interaction';  // Interaction plugi
 import timeGridPlugin from '@fullcalendar/timegrid';  // TimeGrid plugin
 import listPlugin from '@fullcalendar/list';  // List plugin
 import rrulePlugin from '@fullcalendar/rrule';
-import { RRule } from 'rrule';
 
 // Define your events (empty for now)
 const events = ref([]);
 const startTime = ref(''); // For user-entered start time
 const endTime = ref(''); // For user-entered end time
 
-const calendarRef = ref(null);
-
 // Array of weekdays with short codes
 const weekdays = ref([
-  { name: 'Monday', shortCode: 'MO' },
-  { name: 'Tuesday', shortCode: 'TU' },
-  { name: 'Wednesday', shortCode: 'WE' },
-  { name: 'Thursday', shortCode: 'TH' },
-  { name: 'Friday', shortCode: 'FR' },
-  { name: 'Saturday', shortCode: 'SA' },
-  { name: 'Sunday', shortCode: 'SU' }
+  { name: 'Maandag', shortCode: 'MO' },
+  { name: 'Disndag', shortCode: 'TU' },
+  { name: 'Woensdag', shortCode: 'WE' },
+  { name: 'Donderdag', shortCode: 'TH' },
+  { name: 'Vrijdag', shortCode: 'FR' },
+  { name: 'Zaterdag', shortCode: 'SA' },
+  { name: 'Zondag', shortCode: 'SU' }
 ]);
 
 // Selected days array
@@ -76,12 +72,8 @@ const calendarOptions = ref({
   allDaySlot: false,
   headerToolbar: false,
   events: events.value,
-  eventSources: [
-    '/availabilities',
-  ],
 });
 
-// Submit the form and add the event with rrule
 function handleSubmit() {
   // Get start and end times
   const [startHour, startMinute] = startTime.value.split(':');
@@ -93,35 +85,92 @@ function handleSubmit() {
     return;
   }
 
-  // Create rrule for weekly recurrence based on selected days
-  const rrule = `FREQ=WEEKLY;BYDAY=${selectedDays.value.join(',')}`;
+  // Loop through each selected day and calculate the corresponding event date
+  selectedDays.value.forEach(dayCode => {
+    const eventDate = calculateDayOfWeek(dayCode); // Calculate the date for this day
+    
+    if (eventDate) {
+      // Set the start and end times using the selected hour and minute
+      const eventStart = new Date(eventDate);
+      eventStart.setHours(startHour, startMinute); // Set the start time
 
-  const rule = new RRule({
-    freq: RRule.WEEKLY,
-    byweekday: selectedDays.value.map(day => RRule[day]),
-    dtstart: new Date(),  // starting date for recurrence (you can adjust as needed)
-    until: new Date(new Date().setFullYear(new Date().getFullYear() + 1)), // Example: until 1 year from now
+      const eventEnd = new Date(eventDate);
+      eventEnd.setHours(endHour, endMinute); // Set the end time
+
+      // Add the event with the calculated date and time
+      events.value.push({
+        title: 'Event',  // Customize event title
+        start: eventStart.toISOString(),  // FullCalendar expects ISO format for date-time
+        end: eventEnd.toISOString(),     // FullCalendar expects ISO format for date-time
+      });
+    }
   });
 
-  // Add event with rrule
-  events.value.push({
-    title: 'Event',  // Customize event title
-    start: `${startHour}:${startMinute}:00`,  // FullCalendar expects HH:mm:ss
-    end: `${endHour}:${endMinute}:00`,
-    rrule: rule.toString(),  // Add the rrule to the event
-  });
-
-  if (calendarRef.value) {
-    const calendarApi = calendarRef.value.getApi();
-    calendarApi.refetchEvents();  // Fetch events again
-  }
-
-  // Empty the form
+  // Empty the form and reset selected days
   startTime.value = '';
   endTime.value = '';
-  selectedDays.value = []; // Reset selected days
+  selectedDays.value = []; // Reset selected day
 
   console.log(events);
+}
+
+// Function to calculate the exact date for a given day of the week
+function calculateDayOfWeek(dayCode) {
+  const daysOfWeek = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+  const dayIndex = daysOfWeek.indexOf(dayCode); // Get the index of the day (e.g., 'MO' -> 0, 'SU' -> 6)
+
+  // Define the start of the current week (Monday)
+  const currentDate = new Date();
+  const startOfWeek = new Date(currentDate);
+  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 1); // Set to Monday of the current week
+  startOfWeek.setHours(0, 0, 0, 0); // Set time to 00:00:00
+  
+  if (dayIndex === -1) return null; // If invalid day code, return null
+
+  // Calculate the date for this day based on the start of the week (Monday)
+  const eventDate = new Date(startOfWeek);
+  eventDate.setDate(startOfWeek.getDate() + dayIndex); // Add the day offset
+  
+  return eventDate; // Return the calculated Date
+}
+
+
+async function getEvents() {
+  try {
+    const response = await fetch('/availabilities');
+    const data = await response.json();
+
+    // Transform events based on rrule
+    data.forEach(event => {
+      const rrule = event.rrule; // The rrule string, e.g., "FREQ=WEEKLY;BYDAY=MO,SA"
+      const eventDays = rrule.split(';')[1].replace('BYDAY=', '').split(','); // Extract days like ['MO', 'SA']
+
+      eventDays.forEach(dayCode => {
+        const eventDate = calculateDayOfWeek(dayCode); // Calculate the date for this event
+        
+        if (eventDate) {
+          // Set the event's start and end time
+          const [startHour, startMinute] = event.start.split(':');
+          const [endHour, endMinute] = event.end.split(':');
+
+          const eventStart = new Date(eventDate);
+          eventStart.setHours(startHour, startMinute); // Set the start time
+
+          const eventEnd = new Date(eventDate);
+          eventEnd.setHours(endHour, endMinute); // Set the end time
+
+          // Push the modified event into the events array
+          events.value.push({
+            title: event.title,
+            start: eventStart.toISOString(),
+            end: eventEnd.toISOString(),
+          });
+        }
+      });
+    });
+  } catch (error) {
+    console.error('Error fetching events:', error);
+  }
 }
 
 // Log the options to ensure they're being set correctly
@@ -130,6 +179,8 @@ onMounted(() => {
   document.querySelectorAll('.fc-day-today').forEach(el => {
     el.style.backgroundColor = 'transparent';
   });
+  getEvents();
+  console.log(events);
 });
 </script>
 
