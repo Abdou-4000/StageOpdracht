@@ -13,17 +13,24 @@
             class="search-input" 
             id="search-input"
             placeholder="Teacher"
+            @keyup.enter="performSearch"
           >
           <button id="search-button" @click="performSearch">
             <i class="fas fa-search"></i>
           </button>
-          <div id="search-results" v-show="showSearchResults">
+          <div id="search-results" v-if="showSearchResults" class="search-dropdown">
             <div v-for="result in searchResults" 
                  :key="result.id" 
                  class="search-result-item"
                  @click="selectTeacher(result)">
-              {{ result.name }} - {{ getCategoryDisplay(result) }}
-              <span v-if="userLocation">({{ getDistance(result) }} km)</span>
+              <div class="result-name">{{ result.name }}</div>
+              <div class="result-details">
+                <span class="category">{{ getCategoryDisplay(result) }}</span>
+                <span v-if="userLocation" class="distance">({{ getDistance(result) }} km)</span>
+              </div>
+            </div>
+            <div v-if="searchResults.length === 0" class="no-results">
+              No results found
             </div>
           </div>
         </div>
@@ -273,11 +280,11 @@ export default {
       ).toFixed(2);
     },
     performSearch() {
-      this.createMarkers();
-      this.showSearchResults = true;
       this.searchResults = this.teachers.filter(teacher =>
         teacher.name.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
+      this.showSearchResults = true;
+      this.createMarkers();
     },
     selectTeacher(teacher) {
       this.map.setView([teacher.lat, teacher.lng], 15);
@@ -304,4 +311,54 @@ export default {
 
 <style>
 @import '../../css/teacher-map.css';
+
+.search-dropdown {
+  position: absolute;
+  top: 65px;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.search-result-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-result-item:hover {
+  background-color: #f8f9fa;
+}
+
+.result-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.result-details {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.category {
+  color: #8b0000;
+}
+
+.distance {
+  margin-left: 8px;
+  color: #666;
+}
+
+.no-results {
+  padding: 12px 16px;
+  color: #666;
+  text-align: center;
+}
 </style>
