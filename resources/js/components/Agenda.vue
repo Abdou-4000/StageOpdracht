@@ -2,6 +2,7 @@
   <div>
     <div v-if="calendarOptions">
       <FullCalendar 
+        ref="calendarRef"
         :options="calendarOptions" 
       />
       <!-- Form to collect event details -->
@@ -42,11 +43,14 @@ import interactionPlugin from '@fullcalendar/interaction';  // Interaction plugi
 import timeGridPlugin from '@fullcalendar/timegrid';  // TimeGrid plugin
 import listPlugin from '@fullcalendar/list';  // List plugin
 import rrulePlugin from '@fullcalendar/rrule';
+import { RRule } from 'rrule';
 
 // Define your events (empty for now)
 const events = ref([]);
 const startTime = ref(''); // For user-entered start time
 const endTime = ref(''); // For user-entered end time
+
+const calendarRef = ref(null);
 
 // Array of weekdays with short codes
 const weekdays = ref([
@@ -72,6 +76,9 @@ const calendarOptions = ref({
   allDaySlot: false,
   headerToolbar: false,
   events: events.value,
+  eventSources: [
+    '/availabilities',
+  ],
 });
 
 // Submit the form and add the event with rrule
@@ -89,20 +96,32 @@ function handleSubmit() {
   // Create rrule for weekly recurrence based on selected days
   const rrule = `FREQ=WEEKLY;BYDAY=${selectedDays.value.join(',')}`;
 
+  const rule = new RRule({
+    freq: RRule.WEEKLY,
+    byweekday: selectedDays.value.map(day => RRule[day]),
+    dtstart: new Date(),  // starting date for recurrence (you can adjust as needed)
+    until: new Date(new Date().setFullYear(new Date().getFullYear() + 1)), // Example: until 1 year from now
+  });
+
   // Add event with rrule
   events.value.push({
     title: 'Event',  // Customize event title
     start: `${startHour}:${startMinute}:00`,  // FullCalendar expects HH:mm:ss
     end: `${endHour}:${endMinute}:00`,
-    rrule: rrule,  // Add the rrule to the event
+    rrule: rule.toString(),  // Add the rrule to the event
   });
+
+  if (calendarRef.value) {
+    const calendarApi = calendarRef.value.getApi();
+    calendarApi.refetchEvents();  // Fetch events again
+  }
 
   // Empty the form
   startTime.value = '';
   endTime.value = '';
   selectedDays.value = []; // Reset selected days
 
-  console.log(events)
+  console.log(events);
 }
 
 // Log the options to ensure they're being set correctly

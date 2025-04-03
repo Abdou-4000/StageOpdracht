@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('exceptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
-            $table->string('title');
+            $table->foreignId('sort_id')->constrained()->onDelete('cascade');
             $table->datetime('start');
             $table->datetime('end');
-            $table->foreignId('sort_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('availabilities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
-            $table->string('title');
+            $table->foreignId('sort_id')->constrained()->onDelete('cascade');
             $table->datetime('start');
             $table->datetime('end');
             $table->text('rrule');
-            $table->foreignId('sort_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
