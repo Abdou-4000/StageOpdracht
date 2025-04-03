@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp } from 'vue/dist/vue.esm-bundler'
 import TeacherMap from './components/TeacherMap.vue'
 
 const app = createApp({})

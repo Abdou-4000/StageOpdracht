@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="map-wrapper">
     <div class="header">
-      <img :src="'/assets/Logo.png'" alt="Logo">
+      <img src="/assets/Logo.png" alt="Logo">
     </div>
-
     <div class="map-container">
+      <div id="map"></div>
       <div class="controls">
         <div class="search-container">
           <input 
@@ -47,8 +47,6 @@
           <span>Km</span>
         </div>
       </div>
-
-      <div id="map"></div>
     </div>
   </div>
 </template>
@@ -79,9 +77,14 @@ export default {
     }
   },
   mounted() {
-    this.initMap();
-    this.initCategories();
-    this.requestLocation();
+    // Ensure map is initialized after DOM is ready
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.initMap();
+        this.initCategories();
+        this.requestLocation();
+      }, 100);
+    });
   },
   watch: {
     selectedCategory() {
@@ -299,4 +302,6 @@ export default {
 }
 </script>
 
-<style src="@/assets/css/teacher-map.css"></style>
+<style>
+@import '../../css/teacher-map.css';
+</style>
