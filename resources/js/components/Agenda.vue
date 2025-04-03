@@ -8,10 +8,10 @@
       <div class="event-form">
         <form @submit.prevent="handleSubmit">
           <label for="start-time">Start Time</label>
-          <input v-model="startTime" type="time" id="start-time" required />
+          <input v-model="startTime" type="time" id="start-time" class="text-gray-dark" required />
 
           <label for="end-time">End Time</label>
-          <input v-model="endTime" type="time" id="end-time" required />
+          <input v-model="endTime" type="time" id="end-time" class="text-gray-dark" required />
 
           <label>Days of the Week</label>
           <div>
@@ -26,6 +26,11 @@
               <label :for="day.shortCode">{{ day.name }}</label>
             </div>
           </div>
+
+          <label v-if="showCheckbox">
+            <input type="checkbox" v-model="applyToAll" @change="toggleApplyToAll" />
+            Selecteer alle gelijkaardige events
+          </label>
 
           <button type="submit">Add</button>
         </form>
@@ -61,6 +66,9 @@ const weekdays = ref([
 
 // Selected days array
 const selectedDays = ref([]);  // Array to store selected days of the week
+const showCheckbox = ref(false);
+const applyToAll = ref(false);
+const currentEvent = ref(null);
 
 // Calendar options including initial view setup
 const calendarOptions = ref({
@@ -72,8 +80,55 @@ const calendarOptions = ref({
   allDaySlot: false,
   headerToolbar: false,
   events: events.value,
+  eventClick: handleEventClick,
 });
 
+// Het formulier moet worden ingevuld met het evenement maar mss ook een extra checkbox van enkel dit event of alle
+// als dit ene is die verschillende dezelfde heeft dus das extra veel check werk en ook een delete knop zou zichtbaar moeten zijn 
+// en die houdt maar gwn rekening met de checkbox of die die ene of allemaal verwijdert, wel een ben je zeker natuurlijk
+// dan als ik dat gedaan heb kan ik zorgen dat er een opslaan knop is die alle veranderingen opslaat
+// deze zal de events array nemen en alles omzetten naar de rrule standaard, dus moeten zoeken op gelijke start en eindtijden 
+// van verschillende dagen en de dagen moeten terug naar shortcode en samengezet worden en die objecten die overblijven 
+// worden allemaal opgeslagen, de entries die er eerst waren moeten verwijderd worden. 
+// dan is de vraag doen we business en school apart? Nee mss dat admins gwn enkel toegang hebben tot school gegevens 
+// ma das dan een andere fetch/verwijder/vervang situatie. Maakt het hard uit dat zij eraan kunnen?
+function handleEventClick(info) {
+  currentEvent.value = info.event; 
+
+  startTime.value = formatTime(currentEvent.value.start); 
+  endTime.value = formatTime(currentEvent.value.end); 
+
+  selectedDays.value = [convertDateToShortCode(currentEvent.value.start)];
+
+  showCheckbox.value = true;
+  applyToAll.value = false; 
+}
+
+function toggleApplyToAll() {
+  if (applyToAll.value) {
+    const matchingEvents = events.value.filter(e => 
+      formatTime(new Date(e.start)) === formatTime(currentEvent.value.start) &&
+      formatTime(new Date(e.end)) === formatTime(currentEvent.value.end) &&
+      e.title === currentEvent.value.title
+    );
+
+    selectedDays.value = matchingEvents.map(e => convertDateToShortCode(new Date(e.start)));
+  } else {
+    selectedDays.value = [convertDateToShortCode(currentEvent.value.start)];
+  }
+}
+
+function formatTime(date) {
+  return date.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+function convertDateToShortCode(date) {
+  const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+  return days[date.getDay()];
+}
+
+
+// Handles the creation of a new event
 function handleSubmit() {
   // Get start and end times
   const [startHour, startMinute] = startTime.value.split(':');
@@ -134,7 +189,7 @@ function calculateDayOfWeek(dayCode) {
   return eventDate; // Return the calculated Date
 }
 
-
+// Reforms all the data to seperate events
 async function getEvents() {
   try {
     const response = await fetch('/availabilities');
