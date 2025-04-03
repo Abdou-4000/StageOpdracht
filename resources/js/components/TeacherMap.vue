@@ -84,14 +84,21 @@ export default {
     }
   },
   mounted() {
-    // Ensure map is initialized after DOM is ready
-    this.$nextTick(() => {
-      setTimeout(() => {
+    // Add console log for debugging
+    console.log('Component mounted', this.teachers);
+    
+    // Wait for DOM and try multiple times if needed
+    const initializeMap = () => {
+      if (document.getElementById('map')) {
         this.initMap();
         this.initCategories();
         this.requestLocation();
-      }, 100);
-    });
+      } else {
+        setTimeout(initializeMap, 100);
+      }
+    };
+
+    this.$nextTick(initializeMap);
   },
   watch: {
     selectedCategory() {
@@ -308,6 +315,30 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.map-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Keep your existing additional styles */
+</style>
 
 <style>
 @import '../../css/teacher-map.css';
