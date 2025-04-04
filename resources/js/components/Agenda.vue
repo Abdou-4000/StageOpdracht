@@ -7,12 +7,15 @@
       <!-- Form to collect event details -->
       <div class="event-form">
         <form @submit.prevent="handleSubmit">
+          <!-- Input for choosing the start time of an event -->
           <label for="start-time">Start Time</label>
           <input v-model="startTime" type="time" id="start-time" class="text-gray-dark" required />
 
+          <!-- Input for choosing the end time if an event -->
           <label for="end-time">End Time</label>
           <input v-model="endTime" type="time" id="end-time" class="text-gray-dark" required />
 
+          <!-- Checkboxes to select which days the event will take place -->
           <label>Days of the Week</label>
           <div>
             <!-- Generate checkboxes dynamically from the weekdays array -->
@@ -27,12 +30,17 @@
             </div>
           </div>
 
+          <!-- Checkbox for adjusting one or all matching events -->
           <label v-if="showCheckbox">
             <input type="checkbox" v-model="applyToAll" @change="toggleApplyToAll" />
             Selecteer alle gelijkaardige events
           </label>
 
-          <button type="submit">Add</button>
+          <!-- Button for adjusting events -->
+          <button v-if="changeButton" @click="saveChanges">Save Changes</button>
+
+          <!-- Button to save new events -->
+          <button v-if="submitButton" type="submit">Add</button>
         </form>
       </div>
     </div>
@@ -40,15 +48,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import FullCalendar from '@fullcalendar/vue3';  // FullCalendar for Vue 3
-import dayGridPlugin from '@fullcalendar/daygrid';  // DayGrid plugin
-import interactionPlugin from '@fullcalendar/interaction';  // Interaction plugin (needed for event handling)
-import timeGridPlugin from '@fullcalendar/timegrid';  // TimeGrid plugin
-import listPlugin from '@fullcalendar/list';  // List plugin
+import { ref, onMounted, toRaw } from 'vue';
+import FullCalendar from '@fullcalendar/vue3'; 
+import dayGridPlugin from '@fullcalendar/daygrid';  
+import interactionPlugin from '@fullcalendar/interaction';  
+import timeGridPlugin from '@fullcalendar/timegrid'; 
+import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
 
-// Define your events (empty for now)
+
 const events = ref([]);
 const startTime = ref(''); // For user-entered start time
 const endTime = ref(''); // For user-entered end time
@@ -64,23 +72,27 @@ const weekdays = ref([
   { name: 'Zondag', shortCode: 'SU' }
 ]);
 
-// Selected days array
-const selectedDays = ref([]);  // Array to store selected days of the week
-const showCheckbox = ref(false);
-const applyToAll = ref(false);
-const currentEvent = ref(null);
+const selectedDays = ref([]); // Array to store selected days
+const showCheckbox = ref(false); // Keeps track of visibility selectAll checkbox
+const applyToAll = ref(false); // Keeps track of the state of selectAll checkbox
+const changeButton = ref(false); // Keeps track of visibility changeButton
+const submitButton = ref(true); // Keeps track of visibility sumbitButton
+const currentEvent = ref(null); // Stores the current event for toggleApplyToAll
+const selectedEvents = ref([]); // Array to store the selected events
+
 
 // Calendar options including initial view setup
 const calendarOptions = ref({
-  plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],  // Add required plugins
-  initialView: 'timeGridWeek',  // Default view for the calendar
-  locale: 'nl',  // Locale for the calendar
+  plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
+  initialView: 'timeGridWeek',
+  locale: 'nl',
   dayHeaderFormat: { weekday: 'long' },
   firstDay: 1,
   allDaySlot: false,
   headerToolbar: false,
   events: events.value,
   eventClick: handleEventClick,
+  eventRemove: handleEventRemove,
 });
 
 // Het formulier moet worden ingevuld met het evenement maar mss ook een extra checkbox van enkel dit event of alle
@@ -92,8 +104,16 @@ const calendarOptions = ref({
 // worden allemaal opgeslagen, de entries die er eerst waren moeten verwijderd worden. 
 // dan is de vraag doen we business en school apart? Nee mss dat admins gwn enkel toegang hebben tot school gegevens 
 // ma das dan een andere fetch/verwijder/vervang situatie. Maakt het hard uit dat zij eraan kunnen?
+
+// Handles the clicked event/form
 function handleEventClick(info) {
-  currentEvent.value = info.event; 
+  currentEvent.value = info.event;
+
+  selectedEvents.value = [{
+    title: currentEvent.value.title,
+    start: currentEvent.value.start.toISOString(),
+    end: currentEvent.value.end.toISOString()
+  }];
 
   startTime.value = formatTime(currentEvent.value.start); 
   endTime.value = formatTime(currentEvent.value.end); 
@@ -101,10 +121,14 @@ function handleEventClick(info) {
   selectedDays.value = [convertDateToShortCode(currentEvent.value.start)];
 
   showCheckbox.value = true;
+  changeButton.value = true;
+  submitButton.value = false;
   applyToAll.value = false; 
 }
 
+// Handles if only the clicked or all similar events get selected
 function toggleApplyToAll() {
+  selectedDays.value = [];
   if (applyToAll.value) {
     const matchingEvents = events.value.filter(e => 
       formatTime(new Date(e.start)) === formatTime(currentEvent.value.start) &&
@@ -112,21 +136,60 @@ function toggleApplyToAll() {
       e.title === currentEvent.value.title
     );
 
+    selectedEvents.value = matchingEvents.map(e => ({
+      title: e.title,
+      start: new Date(e.start).toISOString(),
+      end: new Date(e.end).toISOString()
+    }));
+
     selectedDays.value = matchingEvents.map(e => convertDateToShortCode(new Date(e.start)));
   } else {
     selectedDays.value = [convertDateToShortCode(currentEvent.value.start)];
+
+    selectedEvents.value = [{
+      title: currentEvent.value.title,
+      start: currentEvent.value.start.toISOString(),
+      end: currentEvent.value.end.toISOString()
+    }];
   }
 }
 
+// Reforms the time to match the form start/end time
 function formatTime(date) {
   return date.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
+// Reforms the date to a day
 function convertDateToShortCode(date) {
   const days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
   return days[date.getDay()];
 }
 
+// Removes the selected events
+function handleEventRemove(eventToRemove) {
+  // Filter out the event from the `events` array based on matching properties
+  events.value = events.value.filter(existingEvent => 
+    !(existingEvent.start === eventToRemove.start &&
+      existingEvent.end === eventToRemove.end &&
+      existingEvent.title === eventToRemove.title)
+  );
+}
+
+// Removes and adds the edited events
+function saveChanges () {
+  selectedEvents.value.forEach(selectedEvent => {
+    // Call handleEventRemove to filter and remove matching events
+    handleEventRemove(selectedEvent);
+  });
+
+  // Add the events from the form
+  handleSubmit()
+
+  // Reset to the add an event form
+  showCheckbox.value = false;
+  changeButton.value = false;
+  submitButton.value = true;
+}
 
 // Handles the creation of a new event
 function handleSubmit() {
@@ -155,8 +218,8 @@ function handleSubmit() {
       // Add the event with the calculated date and time
       events.value.push({
         title: 'Event',  // Customize event title
-        start: eventStart.toISOString(),  // FullCalendar expects ISO format for date-time
-        end: eventEnd.toISOString(),     // FullCalendar expects ISO format for date-time
+        start: eventStart.toISOString(), 
+        end: eventEnd.toISOString(),     
       });
     }
   });
@@ -164,7 +227,7 @@ function handleSubmit() {
   // Empty the form and reset selected days
   startTime.value = '';
   endTime.value = '';
-  selectedDays.value = []; // Reset selected day
+  selectedDays.value = [];
 
   console.log(events);
 }
