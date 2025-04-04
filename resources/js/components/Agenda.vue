@@ -2,6 +2,7 @@
   <div>
     <div v-if="calendarOptions">
       <FullCalendar 
+        ref="calendarRef"
         :options="calendarOptions" 
       />
       <!-- Form to collect event details -->
@@ -51,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, toRaw } from 'vue';
+import { ref, onMounted, toRaw, watch } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
 import interactionPlugin from '@fullcalendar/interaction';  
@@ -83,20 +84,33 @@ const submitButton = ref(true); // Keeps track of visibility sumbitButton
 const currentEvent = ref(null); // Stores the current event for toggleApplyToAll
 const selectedEvents = ref([]); // Array to store the selected events
 
+const calendarRef = ref(null);
+
 
 // Calendar options including initial view setup
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
   initialView: 'timeGridWeek',
   locale: 'nl',
+  timeZone: 'local',
   dayHeaderFormat: { weekday: 'long' },
   firstDay: 1,
   allDaySlot: false,
   headerToolbar: false,
-  events: events.value,
+  events: function(info, successCallback) {
+    successCallback(events.value);
+  },
   eventClick: handleEventClick,
   eventRemove: handleEventRemove,
 });
+
+// Watch for changes to the events array and update the calendar
+watch(events, () => {
+  if (calendarRef.value) {
+    const calendar = calendarRef.value.getApi();
+    calendar.refetchEvents();
+  }
+}, { deep: true });
 
 // Het formulier moet worden ingevuld met het evenement maar mss ook een extra checkbox van enkel dit event of alle
 // als dit ene is die verschillende dezelfde heeft dus das extra veel check werk en ook een delete knop zou zichtbaar moeten zijn 
@@ -114,8 +128,8 @@ function handleEventClick(info) {
 
   selectedEvents.value = [{
     title: currentEvent.value.title,
-    start: currentEvent.value.start.toISOString(),
-    end: currentEvent.value.end.toISOString()
+    start: currentEvent.value.start,
+    end: currentEvent.value.end
   }];
 
   startTime.value = formatTime(currentEvent.value.start); 
@@ -141,8 +155,8 @@ function toggleApplyToAll() {
 
     selectedEvents.value = matchingEvents.map(e => ({
       title: e.title,
-      start: new Date(e.start).toISOString(),
-      end: new Date(e.end).toISOString()
+      start: new Date(e.start),
+      end: new Date(e.end)
     }));
 
     selectedDays.value = matchingEvents.map(e => convertDateToShortCode(new Date(e.start)));
@@ -151,15 +165,15 @@ function toggleApplyToAll() {
 
     selectedEvents.value = [{
       title: currentEvent.value.title,
-      start: currentEvent.value.start.toISOString(),
-      end: currentEvent.value.end.toISOString()
+      start: currentEvent.value.start,
+      end: currentEvent.value.end
     }];
   }
 }
 
 // Reforms the time to match the form start/end time
 function formatTime(date) {
-  return date.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', hour12: false });
+  return date.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Brussels' });
 }
 
 // Reforms the date to a day
@@ -172,8 +186,8 @@ function convertDateToShortCode(date) {
 function handleEventRemove(eventToRemove) {
   // Filter out the event from the `events` array based on matching properties
   events.value = events.value.filter(existingEvent => 
-    !(existingEvent.start === eventToRemove.start &&
-      existingEvent.end === eventToRemove.end &&
+    !(existingEvent.start.getTime() === eventToRemove.start.getTime() &&
+      existingEvent.end.getTime() === eventToRemove.end.getTime() &&
       existingEvent.title === eventToRemove.title)
   );
 }
@@ -184,6 +198,8 @@ function saveChanges () {
     // Call handleEventRemove to filter and remove matching events
     handleEventRemove(selectedEvent);
   });
+  
+  events.value = events.value.map(event => toRaw(event));
 
   // Add the events from the form
   handleSubmit()
@@ -194,6 +210,7 @@ function saveChanges () {
   submitButton.value = true;
 }
 
+// Clears the form
 function resetForm () {
   // Empty the form and reset selected days
   startTime.value = '';
@@ -232,9 +249,9 @@ function handleSubmit() {
 
       // Add the event with the calculated date and time
       events.value.push({
-        title: 'Event',  // Customize event title
-        start: eventStart.toISOString(), 
-        end: eventEnd.toISOString(),     
+        title: 'Event',
+        start: eventStart, 
+        end: eventEnd,     
       });
     }
   });
@@ -295,8 +312,8 @@ async function getEvents() {
           // Push the modified event into the events array
           events.value.push({
             title: event.title,
-            start: eventStart.toISOString(),
-            end: eventEnd.toISOString(),
+            start: eventStart,
+            end: eventEnd,
           });
         }
       });
