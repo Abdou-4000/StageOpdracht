@@ -41,6 +41,9 @@
 
           <!-- Button to save new events -->
           <button v-if="submitButton" type="submit">Add</button>
+
+          <!-- Cancel button -->
+          <button @click="resetForm">Cancel</button>
         </form>
       </div>
     </div>
@@ -185,6 +188,18 @@ function saveChanges () {
   // Add the events from the form
   handleSubmit()
 
+  // Reset to the add an event form
+  showCheckbox.value = false;
+  changeButton.value = false;
+  submitButton.value = true;
+}
+
+function resetForm () {
+  // Empty the form and reset selected days
+  startTime.value = '';
+  endTime.value = '';
+  selectedDays.value = [];
+  
   // Reset to the add an event form
   showCheckbox.value = false;
   changeButton.value = false;
