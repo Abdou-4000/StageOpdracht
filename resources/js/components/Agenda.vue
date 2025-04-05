@@ -45,6 +45,9 @@
 
           <!-- Cancel button -->
           <button @click="resetForm">Cancel</button>
+
+          <!-- Button to save the week to the database -->
+          <button @click="saveWeek">Save week</button>
         </form>
       </div>
     </div>
@@ -59,6 +62,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid'; 
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
+import axios from 'axios';
 
 
 const events = ref([]);
@@ -112,15 +116,49 @@ watch(events, () => {
   }
 }, { deep: true });
 
-// Het formulier moet worden ingevuld met het evenement maar mss ook een extra checkbox van enkel dit event of alle
-// als dit ene is die verschillende dezelfde heeft dus das extra veel check werk en ook een delete knop zou zichtbaar moeten zijn 
-// en die houdt maar gwn rekening met de checkbox of die die ene of allemaal verwijdert, wel een ben je zeker natuurlijk
-// dan als ik dat gedaan heb kan ik zorgen dat er een opslaan knop is die alle veranderingen opslaat
-// deze zal de events array nemen en alles omzetten naar de rrule standaard, dus moeten zoeken op gelijke start en eindtijden 
-// van verschillende dagen en de dagen moeten terug naar shortcode en samengezet worden en die objecten die overblijven 
-// worden allemaal opgeslagen, de entries die er eerst waren moeten verwijderd worden. 
-// dan is de vraag doen we business en school apart? Nee mss dat admins gwn enkel toegang hebben tot school gegevens 
-// ma das dan een andere fetch/verwijder/vervang situatie. Maakt het hard uit dat zij eraan kunnen?
+// Reduces the event array and saves it to the database
+function saveWeek () {
+  // extract hours and day from the start and end
+  const dayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+
+  const extractTimes = events.value.map(event => ({
+    title: event.title, 
+    start: event.start.toTimeString().split(' ')[0],
+    end: event.end.toTimeString().split(' ')[0],
+    day: dayMap[new Date(event.start).getDay()]
+  }));
+
+  // Reduce to save the same events on different days together
+  const reform = extractTimes.reduce((acc, event) => {
+    const key = `${event.title}_${event.start}_${event.end}`;
+
+    if (!acc[key]) {
+      acc[key] = {
+        title: event.title,
+        start: event.start,
+        end: event.end,
+        days: []
+      };
+    }
+
+    acc[key].days.push(event.day);
+
+    return acc;
+  }, {});
+
+  // Make an array with the rrule structure
+  const makeRrule = Object.values(reform).map(event => ({
+    title: event.title,
+    start: event.start,
+    end: event.end,
+    rrule: `FREQ=WEEKLY;BYDAY=${Array.from(event.days).join(',')}`
+  }));
+  
+  // Save the events to the database
+  axios.post('/availabilities', { makeRrule })
+  .then(response => {console.log(response.data);})
+  .catch(error => {console.error('Error:', error);});
+}
 
 // Handles the clicked event/form
 function handleEventClick(info) {
