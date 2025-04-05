@@ -8,17 +8,26 @@ use App\Models\Sort;
 
 class AvailabilityController extends Controller
 {
-    public function index() {
+    public function index () {
         
         $availabilities = Availability::with('sort')->where('teacher_id', 2)->get();
 
-        return response()->json($availabilities->map(function ($event) {
-            return [
-                'title' => $event->sort->name, // Example: "school"
-                'start' => date('H:i:s', strtotime($event->start)),
-                'end' => date('H:i:s', strtotime($event->end)),
-                'rrule' => $event->rrule,
-            ];
-        }));
+        $sort = Sort::get();
+
+        return response()->json([
+            'sorts' => $sort,
+            'availabilities' => $availabilities->map(function ($event) {
+                return [
+                    'title' => $event->sort->name,
+                    'start' => $event->start,
+                    'end' => $event->end,
+                    'rrule' => $event->rrule,
+                ];
+            })
+        ]);
+    }
+
+    public function storeEvents () {
+        // Overwrite the events
     }
 }

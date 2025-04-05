@@ -37,6 +37,17 @@
             Selecteer alle gelijkaardige events
           </label>
 
+           <!-- Radio to select a sort -->
+           <div v-if="showSort" v-for="(sort, id) in sort" :key="id">
+            <input 
+              type="radio"
+              :id="sort.name"
+              :value="sort.name"
+              v-model="selectedSort"
+            />
+            <label :for="sort.name">{{ sort.name }}</label>
+           </div>          
+
           <!-- Button for adjusting events -->
           <button v-if="changeButton" @click="saveChanges">Save Changes</button>
 
@@ -66,6 +77,7 @@ import axios from 'axios';
 
 
 const events = ref([]);
+const sort = ref([]);
 const startTime = ref(''); // For user-entered start time
 const endTime = ref(''); // For user-entered end time
 
@@ -81,6 +93,8 @@ const weekdays = ref([
 ]);
 
 const selectedDays = ref([]); // Array to store selected days
+const selectedSort = ref(null); // Keeps track of the selected sort
+const showSort = ref(true); // Keeps track of the visibility of sort radio
 const showCheckbox = ref(false); // Keeps track of visibility selectAll checkbox
 const applyToAll = ref(false); // Keeps track of the state of selectAll checkbox
 const changeButton = ref(false); // Keeps track of visibility changeButton
@@ -115,6 +129,11 @@ watch(events, () => {
     calendar.refetchEvents();
   }
 }, { deep: true });
+
+watch(() => selectedSort.value, (newValue) => {
+  console.log('Selected Sort:', newValue);
+});
+
 
 // Reduces the event array and saves it to the database
 function saveWeek () {
@@ -163,6 +182,7 @@ function saveWeek () {
 // Handles the clicked event/form
 function handleEventClick(info) {
   currentEvent.value = info.event;
+  selectedSort.value = currentEvent.value.title;
 
   selectedEvents.value = [{
     title: currentEvent.value.title,
@@ -178,7 +198,8 @@ function handleEventClick(info) {
   showCheckbox.value = true;
   changeButton.value = true;
   submitButton.value = false;
-  applyToAll.value = false; 
+  applyToAll.value = false;
+  showSort.value = false; 
 }
 
 // Handles if only the clicked or all similar events get selected
@@ -246,6 +267,7 @@ function saveChanges () {
   showCheckbox.value = false;
   changeButton.value = false;
   submitButton.value = true;
+  showSort.value = true;
 }
 
 // Clears the form
@@ -254,11 +276,13 @@ function resetForm () {
   startTime.value = '';
   endTime.value = '';
   selectedDays.value = [];
+  selectedSort.value = '';
   
   // Reset to the add an event form
   showCheckbox.value = false;
   changeButton.value = false;
   submitButton.value = true;
+  showSort.value = true;
 }
 
 // Handles the creation of a new event
@@ -270,6 +294,11 @@ function handleSubmit() {
   // Check if at least one day is selected
   if (selectedDays.value.length === 0) {
     alert('Please select at least one day.');
+    return;
+  }
+
+  if (!selectedSort.value) {
+    alert('Please select the type of activity');
     return;
   }
 
@@ -287,7 +316,7 @@ function handleSubmit() {
 
       // Add the event with the calculated date and time
       events.value.push({
-        title: 'Event',
+        title: selectedSort.value,
         start: eventStart, 
         end: eventEnd,     
       });
@@ -298,6 +327,7 @@ function handleSubmit() {
   startTime.value = '';
   endTime.value = '';
   selectedDays.value = [];
+  selectedSort.value = '';
 
   console.log(events);
 }
@@ -328,8 +358,18 @@ async function getEvents() {
     const response = await fetch('/availabilities');
     const data = await response.json();
 
+    const sorts = data.sorts;
+    const availabilities = data.availabilities;
+
+    sorts.forEach(s => {
+      sort.value.push({
+        id: s.id,
+        name: s.name,
+      });
+    })
+
     // Transform events based on rrule
-    data.forEach(event => {
+    availabilities.forEach(event => {
       const rrule = event.rrule; // The rrule string, e.g., "FREQ=WEEKLY;BYDAY=MO,SA"
       const eventDays = rrule.split(';')[1].replace('BYDAY=', '').split(','); // Extract days like ['MO', 'SA']
 
@@ -369,6 +409,7 @@ onMounted(() => {
   });
   getEvents();
   console.log(events);
+  console.log(sort);
 });
 </script>
 
