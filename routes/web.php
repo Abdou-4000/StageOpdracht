@@ -72,6 +72,11 @@ Route::get('/madeby', function () {
     return view('madeby');
 });
 
+// Agenda test
+Route::get('/test', function () {
+    return Inertia::render('Test'); // 🔹 This will load `Test.vue`
+})->name('test');
+
 Route::get('/debug-role', function () {
     $user = auth()->user()->load('roles', 'permissions');
     dd([
