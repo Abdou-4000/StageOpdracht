@@ -56,10 +56,9 @@
 
           <!-- Cancel button -->
           <button @click="resetForm">Cancel</button>
-
-          <!-- Button to save the week to the database -->
-          <button @click="saveWeek">Save week</button>
         </form>
+        <!-- Button to save the week to the database -->
+        <button @click="saveWeek">Save week</button>
       </div>
     </div>
   </div>
@@ -174,7 +173,7 @@ function saveWeek () {
   }));
   
   // Save the events to the database
-  axios.post('/availabilities', { makeRrule })
+  axios.post('/availabilities', makeRrule)
   .then(response => {console.log(response.data);})
   .catch(error => {console.error('Error:', error);});
 }
