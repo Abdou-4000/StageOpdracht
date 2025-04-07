@@ -55,13 +55,23 @@
         </div>
       </div>
     </div>
+    <TeacherProfile 
+      :show="showDetailPopup"
+      :teacher="selectedTeacher"
+      :distance="selectedTeacherDistance"
+      @close="showDetailPopup = false"
+    />
 </template>
 
 <script>
 import L from 'leaflet';
+import TeacherProfile from './TeacherProfile.vue'; 
 
 export default {
   name: 'TeacherMap',
+  components: {
+    TeacherProfile 
+  },
   props: {
     teachers: {
       type: Array,
@@ -79,7 +89,10 @@ export default {
       radius: 15,
       showSearchResults: false,
       searchResults: [],
-      categories: []
+      categories: [],
+      showDetailPopup: false,
+      selectedTeacher: null,
+      selectedTeacherDistance: 'N/A'
     }
   },
   mounted() {
@@ -239,7 +252,8 @@ export default {
             Location: ${teacher.details?.location || 'N/A'}<br>
             Email: ${teacher.details?.email || 'N/A'}<br>
             Phone: ${teacher.details?.phone || 'N/A'}<br>
-            Distance: ${distance} km
+            Distance: ${distance} km<br>
+            <button class="more-info-btn">More Information</button>
           </div>
         `;
         
@@ -266,6 +280,17 @@ export default {
         
         // Bind click popup
         marker.bindPopup(clickPopupContent);
+
+        marker.on('popupopen', (popup) => {
+          const moreInfoBtn = document.querySelector('.more-info-btn');
+          if (moreInfoBtn) {
+            moreInfoBtn.addEventListener('click', () => {
+              this.selectedTeacher = teacher;
+              this.selectedTeacherDistance = distance;
+              this.showDetailPopup = true;
+            });
+          }
+        });
         
         this.markersLayer.addLayer(marker);
         this.markers[teacher.name.toLowerCase()] = marker;
@@ -317,4 +342,18 @@ export default {
 
 <style>
 @import '../../css/teacher-map.css';
+
+.more-info-btn {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #8b0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.more-info-btn:hover {
+  background-color: #660000;
+}
 </style>
