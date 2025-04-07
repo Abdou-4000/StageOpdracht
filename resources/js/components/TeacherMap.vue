@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <div class="header">
-      <img :src="'/assets/Logo.png'" alt="Logo">
-    </div>
+  <div class="map-wrapper">
+
 
     <div class="map-container">
+      <div id="map"></div>
+    </div>
       <div class="controls">
         <div class="search-container">
           <input 
@@ -13,17 +13,24 @@
             class="search-input" 
             id="search-input"
             placeholder="Teacher"
+            @keyup.enter="performSearch"
           >
           <button id="search-button" @click="performSearch">
             <i class="fas fa-search"></i>
           </button>
-          <div id="search-results" v-show="showSearchResults">
+          <div id="search-results" v-if="showSearchResults" class="search-dropdown">
             <div v-for="result in searchResults" 
                  :key="result.id" 
                  class="search-result-item"
                  @click="selectTeacher(result)">
-              {{ result.name }} - {{ getCategoryDisplay(result) }}
-              <span v-if="userLocation">({{ getDistance(result) }} km)</span>
+              <div class="result-name">{{ result.name }}</div>
+              <div class="result-details">
+                <span class="category">{{ getCategoryDisplay(result) }}</span>
+                <span v-if="userLocation" class="distance">({{ getDistance(result) }} km)</span>
+              </div>
+            </div>
+            <div v-if="searchResults.length === 0" class="no-results">
+              No results found
             </div>
           </div>
         </div>
@@ -47,10 +54,7 @@
           <span>Km</span>
         </div>
       </div>
-
-      <div id="map"></div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -79,9 +83,21 @@ export default {
     }
   },
   mounted() {
-    this.initMap();
-    this.initCategories();
-    this.requestLocation();
+    // Add console log for debugging
+    console.log('Component mounted', this.teachers);
+    
+    // Wait for DOM and try multiple times if needed
+    const initializeMap = () => {
+      if (document.getElementById('map')) {
+        this.initMap();
+        this.initCategories();
+        this.requestLocation();
+      } else {
+        setTimeout(initializeMap, 100);
+      }
+    };
+
+    this.$nextTick(initializeMap);
   },
   watch: {
     selectedCategory() {
@@ -96,10 +112,10 @@ export default {
       this.map = L.map('map', {
         zoomControl: true,
         attributionControl: true
-      }).setView([50.996, 5.538], 16.5);
+      }).setView([50.996, 5.538], 1);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+        maxZoom: 15,
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(this.map);
 
@@ -118,7 +134,7 @@ export default {
       this.categories = [...allCategories];
     },
     requestLocation() {
-      this.map.locate({ setView: false, maxZoom: 17 });
+      this.map.locate({ setView: false, maxZoom: 15 });
       this.map.on('locationfound', this.onLocationFound);
       this.map.on('locationerror', this.onLocationError);
     },
@@ -139,7 +155,7 @@ export default {
       L.marker(e.latlng).addTo(this.map)
         .bindPopup("You are within " + radius + " meters from this point").openPopup();
       
-      this.map.setView(e.latlng, 17);
+      this.map.setView(e.latlng, 15);
       this.createMarkers();
     },
     onLocationError(e) {
@@ -270,11 +286,11 @@ export default {
       ).toFixed(2);
     },
     performSearch() {
-      this.createMarkers();
-      this.showSearchResults = true;
       this.searchResults = this.teachers.filter(teacher =>
         teacher.name.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
+      this.showSearchResults = true;
+      this.createMarkers();
     },
     selectTeacher(teacher) {
       this.map.setView([teacher.lat, teacher.lng], 15);
@@ -288,8 +304,8 @@ export default {
       const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
+      const a 
+        = Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
         Math.sin(dLon/2) * Math.sin(dLon/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
@@ -299,4 +315,6 @@ export default {
 }
 </script>
 
-<style src="@/assets/css/teacher-map.css"></style>
+<style>
+@import '../../css/teacher-map.css';
+</style>
