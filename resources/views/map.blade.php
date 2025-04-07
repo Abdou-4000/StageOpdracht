@@ -21,9 +21,13 @@
             height: 100vh;
             width: 100vw;
         }
+
     </style>
 </head>
 <body>
+    <div class="header">
+        <img src="{{ asset('images/Logo.png') }}" alt="Logo">
+    </div>
     <div id="app">
         <teacher-map :teachers='@json($teachers)'></teacher-map>
     </div>

@@ -9,21 +9,23 @@ body {
   justify-content: center;
   align-items: center;
 }
-/* Header styles
 .header {
-  width: 15px;   
   position: absolute;
-  top: 0;
+  top: 1%;
   left: 0;
-  right: 60;
+  width: 100%;
+  height: 80px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+
+  z-index: 1000;
 }
 .header img {
-  width: 200px;
-  height: 200px;
-  margin-top: -30px;
-  margin-left: 25px;
+  height: 90px;
   object-fit: contain;
-} */
+}
 .leaflet-control-attribution {
 left : 400px;
 }
@@ -34,7 +36,7 @@ left : 400px;
 /* Controls container for search and filters - positioned vertically on the right */
 .controls {
   position: fixed;
-  top: 12%;
+  top: 11%;
   right: 5%;
   display: flex;
   flex-direction: column;
@@ -48,7 +50,7 @@ left : 400px;
 /* Map container styles */
 .map-container {
   position: absolute;
-  top: 12%;
+  top: 11%;
   left: 2.5%;
   width: 90%;
   height: 80%;
@@ -188,44 +190,54 @@ left : 400px;
 /* Responsive media queries */
 @media (max-width: 1280px) {
   .controls {
-    width: 30%;
-    right: 3%;
+    width: 25%;
+    right: 5%;
+    gap: 5px;
+    top: 11%;
   }
   
   .map-container {
     clip-path: none;
-    width: 80%;
-    height: 60%;
+    width: 90%;
+    height: 80%;
+    top: 10%;
+    border-radius: 45px;
   }
   
 }
 @media (max-width: 1024px) {
   .controls {
-    width: 35%;
-    right: 2.5%;
+    width: 95%;
+    right: 50%;
+    top: 12%;
+    flex-direction: row;
+    transform: translateX(50%);
   }
   
   .map-container {
     left: 2%;
-    width: 96%;
+    width: 90%;
     height: 85%;
+    top: 20%;
   }
   
   #search-input, .filter-select, .radius-container {
     height: 55px;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 790px) {
   .controls {
-    top: 2%;
+    top: 12%;
     right: 50%;
     transform: translateX(50%);
     width: 90%;
+    flex-direction: row;
   }
   
   .map-container {
-    top: 25%;
+    top: 20%;
     height: 72%;
+    width: 90%;
   }
   
   #search-input, .filter-select, .radius-container {
