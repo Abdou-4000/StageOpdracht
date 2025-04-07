@@ -1,10 +1,10 @@
 <template>
   <div class="map-wrapper">
-    <div class="header">
-      <img src="/assets/Logo.png" alt="Logo">
-    </div>
+
+
     <div class="map-container">
       <div id="map"></div>
+    </div>
       <div class="controls">
         <div class="search-container">
           <input 
@@ -55,7 +55,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -113,10 +112,10 @@ export default {
       this.map = L.map('map', {
         zoomControl: true,
         attributionControl: true
-      }).setView([50.996, 5.538], 16.5);
+      }).setView([50.996, 5.538], 1);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+        maxZoom: 15,
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(this.map);
 
@@ -135,7 +134,7 @@ export default {
       this.categories = [...allCategories];
     },
     requestLocation() {
-      this.map.locate({ setView: false, maxZoom: 17 });
+      this.map.locate({ setView: false, maxZoom: 15 });
       this.map.on('locationfound', this.onLocationFound);
       this.map.on('locationerror', this.onLocationError);
     },
@@ -156,7 +155,7 @@ export default {
       L.marker(e.latlng).addTo(this.map)
         .bindPopup("You are within " + radius + " meters from this point").openPopup();
       
-      this.map.setView(e.latlng, 17);
+      this.map.setView(e.latlng, 15);
       this.createMarkers();
     },
     onLocationError(e) {
@@ -305,8 +304,8 @@ export default {
       const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
+      const a 
+        = Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
         Math.sin(dLon/2) * Math.sin(dLon/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
@@ -316,80 +315,6 @@ export default {
 }
 </script>
 
-<style scoped>
-.map-wrapper {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
-
-.map-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-#map {
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* Keep your existing additional styles */
-</style>
-
 <style>
 @import '../../css/teacher-map.css';
-
-.search-dropdown {
-  position: absolute;
-  top: 65px;
-  left: 0;
-  width: 100%;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 1001;
-}
-
-.search-result-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.search-result-item:hover {
-  background-color: #f8f9fa;
-}
-
-.result-name {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
-}
-
-.result-details {
-  font-size: 0.9em;
-  color: #666;
-}
-
-.category {
-  color: #8b0000;
-}
-
-.distance {
-  margin-left: 8px;
-  color: #666;
-}
-
-.no-results {
-  padding: 12px 16px;
-  color: #666;
-  text-align: center;
-}
 </style>
