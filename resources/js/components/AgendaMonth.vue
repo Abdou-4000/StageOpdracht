@@ -286,6 +286,27 @@ function handleDateClick (info) {
     selectedDate.value = new Date(info.date);
 }
 
+async function getExceptions () {
+    try {
+        const response = await fetch('/exceptions');
+        const data = await response.json();
+
+        exceptions.value = [];
+
+        data.exceptions.map(event => {
+          exceptions.value.push({
+            title: event.title,
+            start: event.start,
+            end: event.end,
+            isException: true
+          });
+        });
+        console.log(data);
+    } catch (error) {
+        console.error('Error fetching events:', error);
+    }
+}
+
 // Fetches the availability data
 async function getEvents () {
     try {
@@ -353,6 +374,7 @@ async function getEvents () {
 onMounted(() => {
   console.log("Calendar Options:", calendarOptions.value);
   getEvents();
+  getExceptions();
   console.log(events);
 });
 </script>
