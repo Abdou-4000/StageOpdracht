@@ -39,6 +39,9 @@
   
             <!-- Cancel button -->
             <button v-if="cancelButton" @click="resetForm">Cancel</button>
+
+            <!-- Delete button -->
+            <button v-if="deleteButton" @click="removeEvent">Delete</button>
           </form>
         </div>
       </div>
@@ -63,10 +66,12 @@ const startTime = ref(''); // For user-entered start time
 const endTime = ref(''); // For user-entered end time
 const selectedSort = ref(null); // Keeps track of the selected sort
 const selectedDate = ref(null); // Keeps track of the selected date
+const selectedEvent = ref(null); // Keeps track of the selected event
 
 const changeButton = ref(false); // Keeps track of visibility changeButton
 const submitButton = ref(false); // Keeps track of visibility submitButton
 const cancelButton = ref(false); // Keeps track of visibility cancelButton
+const deleteButton = ref(false); // Keeps track of visibility deleteButton
 const showSort = ref(false); // Keeps track of the visibility of sort radio
 const showStartTime = ref(false); // Keeps track of visibility startTime
 const showEndTime = ref(false); // Keeps track of visibility endTime
@@ -83,17 +88,29 @@ const calendarOptions = ref({
   headerToolbar: {
     left: 'next today',
     center: 'title',
-    right: 'dayGridMonth dayGridWeek timeGridWeek'
+    right: 'dayGridMonth dayGridWeek'
   },
-  events: function(info, successCallback) {
-    successCallback(events.value);
-  },
+  eventSources: [
+    {
+        events: function(info, successCallback) {
+            successCallback(events.value);
+        },
+        color: 'red'
+    },
+    {
+        events: function(info, successCallback) {
+            successCallback(exceptions.value);
+        },
+        color: 'blue',
+    }
+  ],
   eventTimeFormat: {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false // set to true for AM/PM
   },
   dateClick: handleDateClick,
+  eventClick: handleEventClick,
 });
 
 // Watch for changes to the events array and update the calendar
@@ -103,6 +120,101 @@ watch(events, () => {
     calendar.refetchEvents();
   }
 }, { deep: true });
+
+watch(exceptions, () => {
+  if (calendarRef.value) {
+    const calendar = calendarRef.value.getApi();
+    calendar.refetchEvents();
+  }
+}, { deep: true });
+
+function removeEvent () {
+
+  }
+
+  function saveChanges() {
+    console.log('clicked');
+    
+    // Find the exception based on the original values we stored
+    const updatedEvent = exceptions.value.find(event => 
+        isSameDateTime(event.start, selectedEvent.value.start) && 
+        isSameDateTime(event.end, selectedEvent.value.end) &&
+        event.title === selectedEvent.value.title
+    );
+    
+    if (updatedEvent) {
+        // Create new Date objects based on the time input values
+        const newStart = createDateFromTimeString(startTime.value, selectedEvent.value.start);
+        const newEnd = createDateFromTimeString(endTime.value, selectedEvent.value.end);
+
+        // Update the properties
+        updatedEvent.start = newStart;
+        updatedEvent.end = newEnd;
+        
+        console.log('Updated event:', updatedEvent);
+        console.log('Updated exceptions array:', exceptions.value);
+    } else {
+        console.log('Event not found!');
+    }
+    
+    // Reset and hide the form
+    startTime.value = '';
+    endTime.value = '';
+    showStartTime.value = false;
+    showEndTime.value = false;
+    showSort.value = false;
+    cancelButton.value = false;
+    changeButton.value = false;
+    deleteButton.value = false;
+}
+
+// Helper function to compare two dates including time
+function isSameDateTime(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate() &&
+           date1.getHours() === date2.getHours() &&
+           date1.getMinutes() === date2.getMinutes();
+}
+
+// Helper function to create a date from a time string and a reference date
+function createDateFromTimeString(timeString, referenceDate) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const date = new Date(referenceDate);
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+}
+
+// Shows the edit form
+function handleEventClick(info) {
+    if (info.event.extendedProps.isException) {
+        // Shows the form
+        showStartTime.value = true;
+        showEndTime.value = true;
+        changeButton.value = true;
+        cancelButton.value = true;
+        deleteButton.value = true;
+
+        // Set the time to the currently saved time
+        startTime.value = formatTime(info.event.start);
+        endTime.value = formatTime(info.event.end);
+
+        // Extract only the needed properties
+        selectedEvent.value = {
+            title: info.event.title,
+            start: info.event.start,
+            end: info.event.end,
+            isException: true
+        };
+        
+        console.log('selected event:', selectedEvent.value);
+    }
+}
+
+// Reforms the time to the correct form
+function formatTime(date) {
+  return date.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Brussels' });
+}
 
 // Resets the form
 function resetForm () {
@@ -118,6 +230,7 @@ function resetForm () {
     submitButton.value = false;
     cancelButton.value = false;
     changeButton.value = false;
+    deleteButton.value = false;
 }
 
 // Save the details from the form to the exceptions array
@@ -142,10 +255,15 @@ function handleSubmit () {
     exceptions.value.push({
         title: selectedSort.value,
         start: eventStart,
-        end: eventEnd
+        end: eventEnd,
+        isException: true
     });
 
     console.log(exceptions);
+    
+    // Resets the input
+    startTime.value = '';
+    endTime.value = '';
 
     // Resets the form
     showStartTime.value = false;
