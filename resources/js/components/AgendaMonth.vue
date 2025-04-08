@@ -252,14 +252,20 @@ function handleSubmit () {
     eventEnd.setHours(endHour, endMinute);
 
     // Pushes the object into the exceptions array
-    exceptions.value.push({
+    const exception = {
         title: selectedSort.value,
-        start: eventStart,
-        end: eventEnd,
-        isException: true
-    });
+        start: formatToDateTimeString(eventStart),
+        end: formatToDateTimeString(eventEnd), 
+    };
 
     console.log(exceptions);
+
+    // Save the events to the database
+    axios.post('/exceptions', exception)
+    .then(response => {console.log(response.data);})
+    .catch(error => {console.error('Error:', error);});
+
+    getExceptions();
     
     // Resets the input
     startTime.value = '';
@@ -271,6 +277,15 @@ function handleSubmit () {
     showSort.value = false;
     submitButton.value = false;
     cancelButton.value = false;
+}
+
+function formatToDateTimeString(date) {
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date
+    .getHours()
+    .toString()
+    .padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:00`;
 }
 
 // Select the day to add an exception and show the form
