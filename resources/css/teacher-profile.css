@@ -1,0 +1,188 @@
+.profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 4;
+}
+
+.card-container {
+    
+  width: 85%;
+  height: 65%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.main-card {
+    clip-path: polygon( 0% 7.725%,0% 7.725%,0.056% 6.472%,0.22% 5.283%,0.481% 4.175%,0.832% 3.163%,1.262% 2.263%,1.765% 1.49%,2.329% 0.862%,2.948% 0.394%,3.611% 0.101%,4.31% 0%,95.69% 0%,95.69% 0%,96.389% 0.101%,97.052% 0.394%,97.671% 0.862%,98.235% 1.49%,98.738% 2.263%,99.168% 3.163%,99.519% 4.175%,99.78% 5.283%,99.944% 6.472%,100% 7.725%,100% 92.275%,100% 92.275%,99.944% 93.528%,99.78% 94.717%,99.519% 95.825%,99.168% 96.837%,98.738% 97.738%,98.235% 98.51%,97.671% 99.138%,97.052% 99.606%,96.389% 99.899%,95.69% 100%,50% 100%,40.596% 100%,40.596% 100%,39.896% 99.899%,39.233% 99.606%,38.615% 99.138%,38.05% 98.51%,37.548% 97.738%,37.117% 96.837%,36.766% 95.825%,36.505% 94.717%,36.342% 93.528%,36.285% 92.275%,36.285% 70.435%,36.285% 70.435%,36.229% 69.182%,36.066% 67.994%,35.804% 66.885%,35.454% 65.873%,35.023% 64.973%,34.521% 64.201%,33.956% 63.573%,33.337% 63.104%,32.674% 62.812%,31.975% 62.711%,4.31% 62.711%,4.31% 62.711%,3.611% 62.61%,2.948% 62.317%,2.329% 61.848%,1.765% 61.22%,1.262% 60.448%,0.832% 59.548%,0.481% 58.536%,0.22% 57.428%,0.056% 56.239%,0% 54.986%,0% 7.725% );
+  position: relative;
+  width: 70%;
+  height: 100%;
+  background-color: #333;
+
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Red info box on bottom left */
+.info-box {
+  position: absolute;
+  bottom: -20px;
+  left: 9%;
+  background-color: #c62828;
+  border-radius: 45px;
+    width: 30%;
+    height: 37%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 2;
+}
+
+.info-item {
+  background-color: #ef5350;
+  color: white;
+  padding: 15px 10px;
+  border-radius: 35px;
+  font-weight: bolder;
+  font-size: 25px;
+  width: 95%;
+  height: 50%;
+  text-align: center;
+  
+  
+}
+
+.detail-label {
+  font-weight: bolder;
+  font-size: 25px;
+}
+
+.main-info-item {
+  background-color: #c7b5b5;
+  color: rgb(26, 25, 25);
+  margin-top: 5%;
+  margin-left: 55%;
+  padding: 15px 10px;
+  border-radius: 45px;
+  font-weight: 500;
+  font-size: 18px;
+  width: 35%;
+  height: 6%;
+  text-align: center;
+  left: 50%;
+}
+.main-info-item-2 {
+    background-color: #ef5350;
+    color: white;
+    margin-top: 3%;
+    margin-left: 45%;
+    padding: 10px 10px;
+    border-radius: 45px;
+    font-weight: 500;
+    font-size: 18px;
+    width: 35%;
+    height: 8%;
+    text-align: center;
+  }
+  .main-info-item-3 {
+    background-color: #ef5350;
+    color: white;
+    margin-top: 3%;
+    margin-left: 35%;
+    padding: 10px 10px;
+    border-radius: 45px;
+    font-weight: 500;
+    font-size: 18px;
+    width: 35%;
+    height: 8%;
+    text-align: center;
+  }
+  .main-info-item-4 {
+    background-color: #ef5350;
+    color: white;
+    margin-top: 2%;
+    margin-left: 60%;
+    padding: 10px 10px;
+    border-radius: 45px;
+    font-weight: 500;
+    font-size: 18px;
+    width: 35%;
+    height: 8%;
+    text-align: center;
+  }
+
+/* Logo box on top right */
+.logo-box {
+  position: absolute;
+  top: 20%;
+  right: 8%;
+  background-color: white;
+  border: 3px solid #ef5350;
+  border-radius: 15px;
+  padding: 0px 0px;
+  z-index: 3;
+}
+
+.logo-image {
+  height: 150px;
+    width: 200px;
+  display: flex;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.detail-box {
+  position: absolute;
+  top: 30%;
+  left: 45%;
+  background-color: #c62828;
+  border-radius: 45px;
+  width: 35%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 2;
+}
+
+.detail-box .info-item {
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  padding: 15px 20px;
+  border-radius: 35px;
+  font-weight: bold;
+  font-size: 20px;
+  width: 90%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.detail-label {
+  font-size: 16px;
+  opacity: 0.9;
+  text-transform: uppercase;
+}

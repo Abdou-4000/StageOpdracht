@@ -343,17 +343,4 @@ export default {
 <style>
 @import '../../css/teacher-map.css';
 
-.more-info-btn {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #8b0000;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.more-info-btn:hover {
-  background-color: #660000;
-}
 </style>
