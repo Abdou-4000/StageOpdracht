@@ -217,7 +217,7 @@ left : 400px;
   .map-container {
     left: 2%;
     width: 90%;
-    height: 85%;
+    height: 75%;
     top: 20%;
   }
   
@@ -260,4 +260,18 @@ left : 400px;
     font-size: 14px;
     padding: 8px 15px;
   }
+}
+
+.more-info-btn {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #8b0000;
+  color: white;
+  border: none;
+  border-radius: 35px;
+  cursor: pointer;
+}
+
+.more-info-btn:hover {
+  background-color: #660000;
 }
