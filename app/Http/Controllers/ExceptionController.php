@@ -20,6 +20,7 @@ class ExceptionController extends Controller
         return response()->json([
             'exceptions' => $exceptions->map(function ($event) {
                 return [
+                    'id' => $event->id,
                     'title' => $event->sort->name,
                     'start' => $event->start,
                     'end' => $event->end,
@@ -34,7 +35,7 @@ class ExceptionController extends Controller
     public function storeExceptions (Request $request) {
         // add $teacherId
     
-        $validatedData = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
             'start' => 'required|date_format:Y-m-d H:i:s',
             'end' => 'required|date_format:Y-m-d H:i:s',
@@ -42,7 +43,7 @@ class ExceptionController extends Controller
          
     
         // Find the Sort that matches the event title
-        $sort = Sort::where('name', $validatedData['title'])->first();
+        $sort = Sort::where('name', $request['title'])->first();
              
         // If the Sort is found, use its id
         if ($sort) {
@@ -51,11 +52,41 @@ class ExceptionController extends Controller
             Exception::create([
                 'teacher_id' => 2,
                 'sort_id' => $sortId,
-                'start' => $validatedData['start'],
-                'end' => $validatedData['end'],
+                'start' => $request['start'],
+                'end' => $request['end'],
             ]);
         }
          
         return response()->json(['message' => 'Events saved successfully']);
+    }
+
+    /**
+     * 
+     */
+    public function update($id, Request $request) {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'start' => 'required|date_format:Y-m-d H:i:s',
+            'end' => 'required|date_format:Y-m-d H:i:s',
+        ]);
+
+        $sort = Sort::where('name', $request['title'])->first();
+
+        if ($sort) {
+            $sortId = $sort->id;
+        }
+
+        $exception = Exception::find($id);
+
+        if (!$exception) {
+            return response()->json(['message' => 'Exception not found'], 404);
+        }
+
+         $exception->sort_id = $sortId;
+         $exception->start = $request->input('start');
+         $exception->end = $request->input('end');
+         $exception->save();
+ 
+         return response()->json($exception, 200);
     }
 }

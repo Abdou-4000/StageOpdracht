@@ -32,16 +32,16 @@
             </div>          
   
             <!-- Button for adjusting events -->
-            <button v-if="changeButton" @click="saveChanges">Save Changes</button>
+            <button v-if="changeButton" type="button" @click="saveChanges">Save Changes</button>
   
             <!-- Button to save new events -->
             <button v-if="submitButton" type="submit">Add exception</button>
   
             <!-- Cancel button -->
-            <button v-if="cancelButton" @click="resetForm">Cancel</button>
+            <button v-if="cancelButton" type="button" @click="resetForm">Cancel</button>
 
             <!-- Delete button -->
-            <button v-if="deleteButton" @click="removeEvent">Delete</button>
+            <button v-if="deleteButton" type="button" @click="removeEvent">Delete</button>
           </form>
         </div>
       </div>
@@ -130,33 +130,39 @@ watch(exceptions, () => {
 
 function removeEvent () {
 
-  }
+}
 
-  function saveChanges() {
-    console.log('clicked');
-    
-    // Find the exception based on the original values we stored
-    const updatedEvent = exceptions.value.find(event => 
-        isSameDateTime(event.start, selectedEvent.value.start) && 
-        isSameDateTime(event.end, selectedEvent.value.end) &&
-        event.title === selectedEvent.value.title
-    );
-    
-    if (updatedEvent) {
-        // Create new Date objects based on the time input values
-        const newStart = createDateFromTimeString(startTime.value, selectedEvent.value.start);
-        const newEnd = createDateFromTimeString(endTime.value, selectedEvent.value.end);
+// Saves the changes made to the selecetedEvent
+function saveChanges() {
+    // Set the selectedEvent with the chosen hours
+    const [startHour, startMinute] = startTime.value.split(':');
+    const [endHour, endMinute] = endTime.value.split(':');
 
-        // Update the properties
-        updatedEvent.start = newStart;
-        updatedEvent.end = newEnd;
-        
-        console.log('Updated event:', updatedEvent);
-        console.log('Updated exceptions array:', exceptions.value);
-    } else {
-        console.log('Event not found!');
+    selectedEvent.value.start.setHours(startHour, startMinute);
+    selectedEvent.value.end.setHours(endHour, endMinute);
+
+    const updatedEvent = {
+        id: selectedEvent.value.id,
+        title: selectedEvent.value.title,
+        start: formatToDateTimeString(selectedEvent.value.start),
+        end: formatToDateTimeString(selectedEvent.value.end),
     }
+
+    // The URL to send the PUT request to
+    const url = `/exceptions/${updatedEvent.id}`;
+
+    // Axios PUT request
+    axios.put(url, updatedEvent)
+         .then(response => {
+            console.log('Event updated successfully:', response.data);
+         })
+         .catch(error => {
+            console.error('Error updating event:', error);
+         });
     
+    // Fetch the exceptions
+    getExceptions();
+
     // Reset and hide the form
     startTime.value = '';
     endTime.value = '';
@@ -168,32 +174,17 @@ function removeEvent () {
     deleteButton.value = false;
 }
 
-// Helper function to compare two dates including time
-function isSameDateTime(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth() &&
-           date1.getDate() === date2.getDate() &&
-           date1.getHours() === date2.getHours() &&
-           date1.getMinutes() === date2.getMinutes();
-}
-
-// Helper function to create a date from a time string and a reference date
-function createDateFromTimeString(timeString, referenceDate) {
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const date = new Date(referenceDate);
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-}
-
 // Shows the edit form
 function handleEventClick(info) {
     if (info.event.extendedProps.isException) {
         // Shows the form
         showStartTime.value = true;
         showEndTime.value = true;
+        showSort.value = false;
         changeButton.value = true;
         cancelButton.value = true;
         deleteButton.value = true;
+        submitButton.value = false;
 
         // Set the time to the currently saved time
         startTime.value = formatTime(info.event.start);
@@ -201,10 +192,10 @@ function handleEventClick(info) {
 
         // Extract only the needed properties
         selectedEvent.value = {
+            id: info.event.id,
             title: info.event.title,
             start: info.event.start,
             end: info.event.end,
-            isException: true
         };
         
         console.log('selected event:', selectedEvent.value);
@@ -279,6 +270,7 @@ function handleSubmit () {
     cancelButton.value = false;
 }
 
+// Sets the date into the correct format for the database
 function formatToDateTimeString(date) {
   return `${date.getFullYear()}-${(date.getMonth() + 1)
     .toString()
@@ -296,6 +288,8 @@ function handleDateClick (info) {
     showSort.value = true;
     submitButton.value = true;
     cancelButton.value = true;
+    changeButton.value = false;
+    deleteButton.value = false;
 
     // Saves the selected date
     selectedDate.value = new Date(info.date);
@@ -310,6 +304,7 @@ async function getExceptions () {
 
         data.exceptions.map(event => {
           exceptions.value.push({
+            id: event.id,
             title: event.title,
             start: event.start,
             end: event.end,
