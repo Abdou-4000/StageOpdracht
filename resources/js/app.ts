@@ -6,7 +6,8 @@ import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
-import Agenda from './components/Agenda.vue';
+import AgendaWeek from './components/AgendaWeek.vue';
+import AgendaMonth from './components/AgendaMonth.vue';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -30,7 +31,8 @@ createInertiaApp({
         const vueApp = createApp({ render: () => h(App, props) });
 
         // Register the component globally
-        vueApp.component('Agenda', Agenda);
+        vueApp.component('AgendaWeek', AgendaWeek);
+        vueApp.component('AgendaMonth', AgendaMonth);        
 
         vueApp.use(plugin).use(ZiggyVue).mount(el);
     },
