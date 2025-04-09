@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, toRaw } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
 import interactionPlugin from '@fullcalendar/interaction';  
@@ -56,6 +56,20 @@ const calendarOptions = ref({
     minute: '2-digit',
     hour12: false // set to true for AM/PM
   },
+  eventDidMount: function(info) {
+    const event = info.event;
+    const eventDate = event.start.toISOString().split('T')[0]; // Get the date in YYYY-MM-DD format
+    
+    // Check if this event's date should be excluded
+    if (event.extendedProps.exdate && event.extendedProps.exdate.includes(eventDate)) {
+      console.log(`Event ${event.title} is being excluded on ${eventDate}`);
+      // You could also mark the event as invisible if needed
+      event.remove();  // This will remove the event from the calendar (for testing purposes)
+    }
+    
+    console.log('Event being rendered:', event.title, event.start);
+    console.log('Exclusion Dates:', event.extendedProps.exdate);
+  }
 });
 
 // Fetches the exceptions data
@@ -126,6 +140,25 @@ async function getEvents () {
 
             const duration = `${String(durationHours).padStart(2, "0")}:${String(durationMinutes).padStart(2, "0")}`;
 
+            const pad = num => num.toString().padStart(2, '0');
+
+            const exceptionDates = exceptions.value.map(event => {
+            // Split input string into date and time
+            const [date, time] = event.start.split(' ');
+            const [year, month, day] = date.split('-');
+
+            // Create a Date object
+            const eventDate = new Date(year, month - 1, day); // months are 0-indexed
+
+            // Set the desired time (replace with your actual values)
+            eventDate.setHours(startHour, startMinute, 0, 0);
+
+            // Format into 'YYYY-MM-DDTHH:MM:SS'
+            const formattedDate = `${eventDate.getFullYear()}-${pad(eventDate.getMonth() + 1)}-${pad(eventDate.getDate())}T${pad(eventDate.getHours())}:${pad(eventDate.getMinutes())}:${pad(eventDate.getSeconds())}`;
+
+            return formattedDate;
+            });
+            
             // Push the event into the events array
             events.value.push({
                 title: event.title,
@@ -134,7 +167,8 @@ async function getEvents () {
                     byweekday: byweekday,
                     dtstart: dtstart
                 },
-                duration: duration 
+                duration: duration ,
+                exdate: exceptionDates
             })
         });
 
@@ -145,11 +179,14 @@ async function getEvents () {
 }
 
 // Log the options to ensure they're being set correctly
-onMounted(() => {
+onMounted(async () => {
   console.log("Calendar Options:", calendarOptions.value);
-  getEvents();
-  getExceptions();
+  await getExceptions();
+  await getEvents();
   console.log(events);
+  if (calendarRef.value) {
+    calendarRef.value.getApi().refetchEvents();
+  }
 });
 </script>
 
