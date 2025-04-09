@@ -21,7 +21,6 @@ import rrulePlugin from '@fullcalendar/rrule';
 const calendarRef = ref(null);
 const events = ref([]);
 const exceptions = ref([]);
-const sort = ref([]);
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
@@ -101,30 +100,23 @@ async function getEvents () {
         const response = await fetch('/availabilities');
         const data = await response.json();
 
-        const sorts = data.sorts;
         const availabilities = data.availabilities;
-
-        sorts.forEach(s => {
-            sort.value.push({
-                id: s.id,
-                name: s.name,
-            });
-        });
         
         const startDate = new Date();
+        const pad = num => num.toString().padStart(2, '0');
 
         availabilities.forEach(event => {
-            // Set the startdate to the correct format
+        // Set the startdate to the correct format
             startDate.setHours(...event.start.split(":").map(Number));
             const dtstart = `${startDate.getFullYear()}-${(startDate.getMonth() + 1).toString().padStart(2, '0')}-${startDate.getDate().toString().padStart(2, '0')}T${startDate.toTimeString().split(' ')[0]}`;
 
-            // Make an array of the days
+        // Make an array of the days
             const byweekday = event.rrule
                 .split(';')[1] // Get the part after FREQ=weekly;
                 .split('=')[1] // Extract the days part (BYDAY=MO,WE,TH,FR)
                 .split(','); // Split into individual days
             
-            // Calculate duration
+        // Calculate duration
             const [startHour, startMinute] = event.start.split(":").map(Number);
             const [endHour, endMinute] = event.end.split(":").map(Number);
 
@@ -140,26 +132,26 @@ async function getEvents () {
 
             const duration = `${String(durationHours).padStart(2, "0")}:${String(durationMinutes).padStart(2, "0")}`;
 
-            const pad = num => num.toString().padStart(2, '0');
+            const type = event.title;
 
-            const exceptionDates = exceptions.value.map(event => {
-            // Split input string into date and time
-            const [date, time] = event.start.split(' ');
-            const [year, month, day] = date.split('-');
+        // Set exdate
+            const exceptionDates = exceptions.value
+                .filter(exception => exception.title === type)
+                .map(exception => {
+                    const [date, time] = exception.start.split(' ');
+                    const [year, month, day] = date.split('-');
 
-            // Create a Date object
-            const eventDate = new Date(year, month - 1, day); // months are 0-indexed
+                    const eventDate = new Date(year, month - 1, day); // months are 0-indexed
+                    eventDate.setHours(startHour, startMinute, 0, 0);
 
-            // Set the desired time (replace with your actual values)
-            eventDate.setHours(startHour, startMinute, 0, 0);
+                    const formattedDate = `${eventDate.getFullYear()}-${pad(eventDate.getMonth() + 1)}-${pad(eventDate.getDate())}T${pad(eventDate.getHours())}:${pad(eventDate.getMinutes())}:${pad(eventDate.getSeconds())}`;
 
-            // Format into 'YYYY-MM-DDTHH:MM:SS'
-            const formattedDate = `${eventDate.getFullYear()}-${pad(eventDate.getMonth() + 1)}-${pad(eventDate.getDate())}T${pad(eventDate.getHours())}:${pad(eventDate.getMinutes())}:${pad(eventDate.getSeconds())}`;
+                    return formattedDate;
+                });
 
-            return formattedDate;
-            });
+            console.log('exceptions', exceptionDates)
             
-            // Push the event into the events array
+        // Push the event into the events array
             events.value.push({
                 title: event.title,
                 rrule: {
