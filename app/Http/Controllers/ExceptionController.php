@@ -30,7 +30,7 @@ class ExceptionController extends Controller
     }
 
     /**
-     * 
+     * Saves the exception
      */
     public function storeExceptions (Request $request) {
         // add $teacherId
@@ -61,7 +61,7 @@ class ExceptionController extends Controller
     }
 
     /**
-     * 
+     * Updates the exception with new times
      */
     public function update($id, Request $request) {
         $request->validate([
@@ -88,5 +88,20 @@ class ExceptionController extends Controller
          $exception->save();
  
          return response()->json($exception, 200);
+    }
+
+    /**
+     * Deletes the exception
+     */
+    public function destroy($id) {
+        $exception = Exception::find($id);
+
+        if (!$exception) {
+            return response()->json(['message' => 'Exception not found'], 404);
+        }
+
+        $exception->delete();
+
+        return response()->json(['message' => 'Exception deleted successfully']);
     }
 }

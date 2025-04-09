@@ -129,7 +129,37 @@ watch(exceptions, () => {
 }, { deep: true });
 
 function removeEvent () {
+    const deletedEvent = {
+        id: selectedEvent.value.id,
+        title: selectedEvent.value.title,
+        start: formatToDateTimeString(selectedEvent.value.start),
+        end: formatToDateTimeString(selectedEvent.value.end),
+    }
 
+    // The URL to send the  request to
+    const url = `/exceptions/${deletedEvent.id}`;
+
+    // Axios PUT request
+    axios.delete(url, deletedEvent)
+        .then(response => {
+            console.log('Event deleted successfully:', response.data);
+        })
+        .catch(error => {
+            console.error('Error deleting event:', error);
+        });
+    
+    // Fetch the exceptions
+    getExceptions();
+    
+    // Reset and hide the form
+    startTime.value = '';
+    endTime.value = '';
+    showStartTime.value = false;
+    showEndTime.value = false;
+    showSort.value = false;
+    cancelButton.value = false;
+    changeButton.value = false;
+    deleteButton.value = false;
 }
 
 // Saves the changes made to the selecetedEvent
