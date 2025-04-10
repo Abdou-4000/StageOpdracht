@@ -65,18 +65,12 @@
 
 <script>
 import L from 'leaflet';
-import TeacherProfile from './TeacherProfile.vue'; 
+import TeacherProfile from './TeacherProfile.vue';
 
 export default {
   name: 'TeacherMap',
   components: {
     TeacherProfile 
-  },
-  props: {
-    teachers: {
-      type: Array,
-      required: true
-    }
   },
   data() {
     return {
@@ -92,10 +86,20 @@ export default {
       categories: [],
       showDetailPopup: false,
       selectedTeacher: null,
-      selectedTeacherDistance: 'N/A'
+      selectedTeacherDistance: 'N/A',
+      teachers: [],
     }
   },
-  mounted() {
+  async mounted() {
+    try {
+      const response = await fetch('/map/teachers');
+      const data = await response.json();
+
+      this.teachers = data.teachers;
+
+    } catch (error) {
+      console.error('Failed to fetch teachers data:', error);
+    }
     // Add console log for debugging
     console.log('Component mounted', this.teachers);
     
@@ -135,7 +139,12 @@ export default {
       this.markersLayer = L.layerGroup().addTo(this.map);
 
       this.map.on('click', this.handleMapClick);
-      this.createMarkers(); // Initial markers creation
+      // this.createMarkers(); // Initial markers creation
+      this.$watch('teachers', () => {
+        if (this.teachers.length > 0) {
+          this.createMarkers();
+        }
+      });
     },
     initCategories() {
       const allCategories = new Set();

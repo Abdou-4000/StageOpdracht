@@ -52,9 +52,11 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     });
 });
 
+
 Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat');
 
 Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
+
 
 // CRUD routes (Teacher/Categories)
 
@@ -77,6 +79,11 @@ Route::get('/madeby', function () {
 Route::get('/test', function () {
     return Inertia::render('Test'); // 🔹 This will load `Test.vue`
 })->name('test');
+
+// Map
+Route::get('/map', function () {
+    return Inertia::render('Map');
+})->name('map');
 
 Route::get('/debug-role', function () {
     $user = auth()->user()->load('roles', 'permissions');
