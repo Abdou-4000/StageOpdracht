@@ -52,6 +52,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     });
 });
 
+Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat');
 
 Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
 
