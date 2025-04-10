@@ -10,6 +10,7 @@ import AgendaWeek from './components/AgendaWeek.vue';
 import AgendaMonth from './components/AgendaMonth.vue';
 import AgendaList from './components/AgendaList.vue';
 import TeacherMap from './components/TeacherMap.vue';
+import GiveReviews from './components/GiveReviews.vue';
 import 'leaflet/dist/leaflet.css';
 
 // Extend ImportMeta interface for Vite...
@@ -37,6 +38,8 @@ createInertiaApp({
         vueApp.component('AgendaWeek', AgendaWeek);
         vueApp.component('AgendaMonth', AgendaMonth);
         vueApp.component('AgendaList', AgendaList);
+
+        vueApp.component('GiveReviews', GiveReviews);
         
         vueApp.component('TeacherMap', TeacherMap);
 
