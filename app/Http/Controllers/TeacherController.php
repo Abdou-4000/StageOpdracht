@@ -202,29 +202,4 @@ class TeacherController extends Controller
 
         return back()->with('success', 'Teachers imported successfully.');
     }
-
-    public function showMap()
-{
-    $teachers = Teacher::with(['city', 'category']) 
-        ->whereNotNull('lat')
-        ->whereNotNull('lng')
-        ->get()
-        ->map(function($teacher) {
-            return [
-                'name' => $teacher->firstname . ' ' . $teacher->lastname,
-                'lat' => (float)$teacher->lat,
-                'lng' => (float)$teacher->lng,
-                'compname' => $teacher->companyname ?? 'Uncategorized',
-                'category' => $teacher->category->pluck('name')->toArray(), 
-                'details' => [
-                    'location' => $teacher->street . ' ' . $teacher->streetnumber,
-                    'email' => $teacher->email,
-                    'phone' => $teacher->phone,
-                    'hours' => 'Contact for availability',
-                ]
-            ];
-        });
-
-    return view('map', ['teachers' => $teachers]);
-}
 }
