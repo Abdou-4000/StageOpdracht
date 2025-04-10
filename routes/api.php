@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\ExceptionController;
+use App\Http\Controllers\MapController;
 
 Route::get('/availabilities', [AvailabilityController::class, 'index']);
 
@@ -14,3 +15,5 @@ Route::post('/exceptions', [ExceptionController::class, 'storeExceptions']);
 Route::put('/exceptions/{id}', [ExceptionController::class, 'update']);
 
 Route::delete('/exceptions/{id}', [ExceptionController::class, 'destroy']);
+
+Route::get('/map/teachers', [MapController::class, 'index']);
