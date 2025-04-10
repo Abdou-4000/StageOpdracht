@@ -1,22 +1,27 @@
 <template>
   <div v-if="show" class="profile-overlay">
     <div class="card-container">
-      <div class="main-card">
-        <button class="close-button" @click="$emit('close')">×</button>
-          <div class="main-info-item">
+      <div class="main-card flex flex-row">
+        <div class="flex">
+          <AgendaList :id="teacher.id"/>
+        </div>
+        <div class="flex flex-col">
+          <button class="close-button" @click="$emit('close')">×</button>
+            <div class="main-info-item">
 
-            {{ teacher.compname || 'N/A' }}
-          </div>
-          <div class="main-info-item-2">
-            {{ teacher.name || 'N/A' }}
-          </div>
-          <div class="main-info-item-3">
-            <span class="detail-label">Address:</span>
-            {{ teacher.details?.location || 'N/A' }}
-          </div>
-          <div class="main-info-item-4">
-            <span class="detail-label">Distance:</span>
-            {{ distance }} km
+              {{ teacher.compname || 'N/A' }}
+            </div>
+            <div class="main-info-item-2">
+              {{ teacher.name || 'N/A' }}
+            </div>
+            <div class="main-info-item-3">
+              <span class="detail-label">Address:</span>
+              {{ teacher.details?.location || 'N/A' }}
+            </div>
+            <div class="main-info-item-4">
+              <span class="detail-label">Distance:</span>
+              {{ distance }} km
+            </div>
           </div>
         </div>
       <div class="info-box">
@@ -25,7 +30,7 @@
         <div class="info-item">{{ teacher.details?.location || 'Location' }}</div>
       </div>
       <div class="logo-box">
-        <img src="C:\Users\merli\Desktop\StageOpdracht\public\images\Logo.png" alt="Syntra Logo" class="logo-image">
+        <img src="../../../public/assets/Logo.png" alt="Syntra Logo" class="logo-image">
       </div>
     </div>
   </div>
