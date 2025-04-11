@@ -6,11 +6,11 @@ use App\Http\Controllers\Api\ChatMessageController;
 use App\Http\Controllers\MapController;
 
 
-Route::get('/availabilities', [AvailabilityController::class, 'index']);
+Route::get('/availabilities/{id}', [AvailabilityController::class, 'index']);
 
 Route::post('/availabilities', [AvailabilityController::class, 'storeEvents']);
 
-Route::get('/exceptions', [ExceptionController::class, 'index']);
+Route::get('/exceptions/{id}', [ExceptionController::class, 'index']);
 
 Route::post('/exceptions', [ExceptionController::class, 'storeExceptions']);
 

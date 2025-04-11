@@ -22,6 +22,13 @@ const calendarRef = ref(null);
 const events = ref([]);
 const exceptions = ref([]);
 
+const props = defineProps({
+  id: {
+    type: [Number, String],
+    required: true
+  }
+});
+
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
   initialView: 'listWeek',
@@ -74,7 +81,7 @@ const calendarOptions = ref({
 // Fetches the exceptions data
 async function getExceptions () {
     try {
-        const response = await fetch('/exceptions');
+        const response = await fetch(`/exceptions/${props.id}`);
         const data = await response.json();
 
         exceptions.value = [];
@@ -97,7 +104,7 @@ async function getExceptions () {
 // Fetches the availability data
 async function getEvents () {
     try {
-        const response = await fetch('/availabilities');
+        const response = await fetch(`/availabilities/${props.id}`);
         const data = await response.json();
 
         const availabilities = data.availabilities;

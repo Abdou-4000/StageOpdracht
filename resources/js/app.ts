@@ -11,6 +11,7 @@ import AgendaMonth from './components/AgendaMonth.vue';
 import ChatComponent from './components/ChatComponent.vue';
 import AgendaList from './components/AgendaList.vue';
 import TeacherMap from './components/TeacherMap.vue';
+import TeacherProfile from './components/TeacherProfile.vue';
 import 'leaflet/dist/leaflet.css';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
@@ -48,6 +49,8 @@ createInertiaApp({
         vueApp.component('AgendaMonth', AgendaMonth);
         vueApp.component('AgendaList', AgendaList);
         vueApp.component('TeacherMap', TeacherMap);
+        vueApp.component('TeacherProfile', TeacherProfile);
+
         vueApp.component('ChatComponent', ChatComponent);
         
         const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY;
@@ -66,6 +69,7 @@ createInertiaApp({
             (window as any).Echo = echoInstance;
             console.log('Echo init with pusher:', (window as any).Echo);
         }
+
 
 
         vueApp.use(plugin).use(ZiggyVue).mount(el);
