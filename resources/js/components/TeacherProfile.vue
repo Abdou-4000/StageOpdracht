@@ -25,8 +25,7 @@
         <div class="info-item">{{ teacher.details?.location || 'Location' }}</div>
       </div>
       <div class="logo-box">
-        <img src="C:\Users\merli\Desktop\StageOpdracht\public\images\Logo.png" alt="Syntra Logo" class="logo-image">
-      </div>
+        <img src="../../../public/assets/Logo.png" alt="Syntra Logo" class="logo-image">      </div>
     </div>
   </div>
 </template>
