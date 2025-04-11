@@ -80,6 +80,11 @@ Route::get('/test', function () {
     return Inertia::render('Test'); // 🔹 This will load `Test.vue`
 })->name('test');
 
+// Teacher Profiles
+Route::get('/teacherprofile', function () {
+    return Inertia::render('ProfileTeacher');
+})->name('teacherprofile');
+
 // Map
 Route::get('/map', function () {
     return Inertia::render('Map');

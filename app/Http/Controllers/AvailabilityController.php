@@ -12,10 +12,9 @@ class AvailabilityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index () {
-        // add $teacherId 
+    public function index ($id) {
         
-        $availabilities = Availability::with('sort')->where('teacher_id', 2)->get();
+        $availabilities = Availability::with('sort')->where('teacher_id', $id)->get();
 
         $sort = Sort::get();
 
