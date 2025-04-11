@@ -52,6 +52,12 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     });
 });
 
+
+Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat');
+
+Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
+
+
 // CRUD routes (Teacher/Categories)
 
 Route::resource('teachers', TeacherController::class);
@@ -73,6 +79,11 @@ Route::get('/madeby', function () {
 Route::get('/test', function () {
     return Inertia::render('Test'); // 🔹 This will load `Test.vue`
 })->name('test');
+
+// Teacher Profiles
+Route::get('/teacherprofile', function () {
+    return Inertia::render('ProfileTeacher');
+})->name('teacherprofile');
 
 // Map
 Route::get('/map', function () {

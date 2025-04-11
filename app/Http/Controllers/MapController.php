@@ -19,6 +19,7 @@ class MapController extends Controller
             return response()->json([
                 'teachers' => $teacher->map(function($teacher) {
                     return [
+                        'id' => $teacher->id,
                         'name' => $teacher->firstname . ' ' . $teacher->lastname,
                         'lat' => (float)$teacher->lat,
                         'lng' => (float)$teacher->lng,
