@@ -26,4 +26,12 @@ class Teacher extends Model
     public function category() {
         return $this->belongsToMany(Category::class);
     }
+
+    public function availabilities() {
+        return $this->hasMany(Availability::class);
+    }
+
+    public function exceptions() {
+        return $this->hasMany(Exception::class);
+    }
 }
