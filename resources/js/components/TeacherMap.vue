@@ -128,7 +128,7 @@ export default {
     initMap() {
       this.map = L.map('map', {
         zoomControl: true,
-        attributionControl: true
+        attributionControl: false,
       }).setView([50.996, 5.538], 1);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
