@@ -13,7 +13,6 @@
 
 <div class="flex flex-wrap flex-row justify-between bg-white sticky top-0">
     <img class="flex w-64 pt-8 pl-8 bg-white" src="{{ asset('assets/Logo.png') }}" alt="Logo">
-    <div>naam</div>
     <div class="mt-[80px]">
         <a class="text-black {{ request()->routeIs('teachers.index') ? 'active' : '' }}" href="{{ route('teachers.index')}}">Leerkrachtenoverzicht</a>
     </div>
