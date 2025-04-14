@@ -32,7 +32,7 @@ class AvailabilityController extends Controller
     }
 
     /**
-     * 
+     * Deletes the old saved week and saves the new week
      */
     public function storeEvents ($id, Request $request) {
 

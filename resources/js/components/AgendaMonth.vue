@@ -1,5 +1,16 @@
 <template>
-    <div>
+    <div class="text-gray-dark">
+      <!-- Succes message-->
+      <p v-if="saveMessage"
+        :class="[
+          'mt-2 px-4 py-2 rounded transition-opacity duration-300',
+          saveMessageType === 'success' ? 'bg-green-100 text-green-700 border border-green-300' : '',
+          saveMessageType === 'error' ? 'bg-red-100 text-red-700 border border-red-300' : ''
+        ]">
+        {{ saveMessage }}
+      </p>
+
+      <!-- Calendar -->
       <div v-if="calendarOptions">
         <FullCalendar 
           ref="calendarRef"
@@ -50,6 +61,7 @@
 
 <script setup>
 import { ref, onMounted, toRaw, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
 import interactionPlugin from '@fullcalendar/interaction';  
@@ -57,6 +69,9 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
 import axios from 'axios';
+
+const page = usePage();
+const teacherId = page.props.teacherId;
 
 const calendarRef = ref(null);
 const events = ref([]);
@@ -75,6 +90,8 @@ const deleteButton = ref(false); // Keeps track of visibility deleteButton
 const showSort = ref(false); // Keeps track of the visibility of sort radio
 const showStartTime = ref(false); // Keeps track of visibility startTime
 const showEndTime = ref(false); // Keeps track of visibility endTime
+const saveMessage = ref('');
+const saveMessageType = ref('');
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
@@ -141,12 +158,22 @@ function removeEvent () {
 
     // Axios PUT request
     axios.delete(url, deletedEvent)
-        .then(response => {
-            console.log('Event deleted successfully:', response.data);
-        })
-        .catch(error => {
-            console.error('Error deleting event:', error);
-        });
+      .then(response => {
+        console.log('Event deleted successfully:', response.data)
+        saveMessage.value = 'Uitzondering succesvol verwijderd!'
+        saveMessageType.value = 'success'
+      })
+      .catch(error => {
+        console.error('Error deleting event:', error)
+        saveMessage.value = 'Fout bij het verwijderen van de uitzondering. Probeer opnieuw.'
+        saveMessageType.value = 'error'
+      })
+      .finally(() => {
+        setTimeout(() => {
+          saveMessage.value = ''
+          saveMessageType.value = ''
+        }, 3000)
+      });
     
     // Fetch the exceptions
     getExceptions();
@@ -183,12 +210,22 @@ function saveChanges() {
 
     // Axios PUT request
     axios.put(url, updatedEvent)
-         .then(response => {
-            console.log('Event updated successfully:', response.data);
-         })
-         .catch(error => {
-            console.error('Error updating event:', error);
-         });
+      .then(response => {
+        console.log('Event updated successfully:', response.data)
+        saveMessage.value = 'Uitzondering succesvol bijgewerkt!'
+        saveMessageType.value = 'success'
+      })
+      .catch(error => {
+        console.error('Error updating event:', error)
+        saveMessage.value = 'Fout bij het bijwerken van de uitzondering. Probeer opnieuw.'
+        saveMessageType.value = 'error'
+      })
+      .finally(() => {
+        setTimeout(() => {
+          saveMessage.value = ''
+          saveMessageType.value = ''
+        }, 3000)
+      });
     
     // Fetch the exceptions
     getExceptions();
@@ -282,9 +319,23 @@ function handleSubmit () {
     console.log(exceptions);
 
     // Save the events to the database
-    axios.post('/exceptions', exception)
-    .then(response => {console.log(response.data);})
-    .catch(error => {console.error('Error:', error);});
+    axios.post(`/exceptions/${teacherId}`, exception)
+      .then(response => {
+        console.log(response.data)
+        saveMessage.value = 'Uitzondering succesvol opgeslagen!'
+        saveMessageType.value = 'success'
+      })
+      .catch(error => {
+        console.error('Error:', error)
+        saveMessage.value = 'Fout bij het opslaan van de uitzondering. Probeer opnieuw.'
+        saveMessageType.value = 'error'
+      })
+      .finally(() => {
+        setTimeout(() => {
+          saveMessage.value = ''
+          saveMessageType.value = ''
+        }, 3000)
+      });
 
     getExceptions();
     
@@ -327,7 +378,7 @@ function handleDateClick (info) {
 
 async function getExceptions () {
     try {
-        const response = await fetch('/exceptions');
+        const response = await fetch(`/exceptions/${teacherId}`);
         const data = await response.json();
 
         exceptions.value = [];
@@ -350,7 +401,7 @@ async function getExceptions () {
 // Fetches the availability data
 async function getEvents () {
     try {
-        const response = await fetch('/availabilities');
+        const response = await fetch(`/availabilities/${teacherId}`);
         const data = await response.json();
 
         const sorts = data.sorts;

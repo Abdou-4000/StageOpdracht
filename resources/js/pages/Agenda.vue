@@ -4,7 +4,8 @@
 </script>
 
 <template>
-    <div>
-        <AgendaWeek /> <!-- Render the Agenda component here -->
+    <div class="flex flex-wrap flex-row gap-32">
+        <AgendaWeek/>
+        <AgendaMonth/>
     </div>
 </template>

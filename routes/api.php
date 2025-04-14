@@ -13,7 +13,7 @@ Route::post('/availabilities/{id}', [AvailabilityController::class, 'storeEvents
 
 Route::get('/exceptions/{id}', [ExceptionController::class, 'index']);
 
-Route::post('/exceptions', [ExceptionController::class, 'storeExceptions']);
+Route::post('/exceptions/{id}', [ExceptionController::class, 'storeExceptions']);
 
 Route::put('/exceptions/{id}', [ExceptionController::class, 'update']);
 
