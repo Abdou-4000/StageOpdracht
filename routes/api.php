@@ -28,6 +28,3 @@ Route::group(['prefix' => 'chat'], function () {
     Route::get('messages', [ChatMessageController::class, 'fetchMessages']);
     Route::post('messages', [ChatMessageController::class, 'sendMessage']);
 });
-
-Route::get('/map/teachers', [MapController::class, 'index']);
-
