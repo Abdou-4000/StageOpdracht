@@ -9,7 +9,7 @@ use App\Http\Controllers\ReviewController;
 
 Route::get('/availabilities/{id}', [AvailabilityController::class, 'index']);
 
-Route::post('/availabilities', [AvailabilityController::class, 'storeEvents']);
+Route::post('/availabilities/{id}', [AvailabilityController::class, 'storeEvents']);
 
 Route::get('/exceptions/{id}', [ExceptionController::class, 'index']);
 

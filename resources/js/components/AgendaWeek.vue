@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-gray-dark">
     <div v-if="calendarOptions">
       <FullCalendar 
         ref="calendarRef"
@@ -66,6 +66,7 @@
 
 <script setup>
 import { ref, onMounted, toRaw, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
 import interactionPlugin from '@fullcalendar/interaction';  
@@ -74,6 +75,8 @@ import listPlugin from '@fullcalendar/list';
 import rrulePlugin from '@fullcalendar/rrule';
 import axios from 'axios';
 
+const page = usePage();
+const teacherId = page.props.teacherId;
 
 const events = ref([]);
 const sort = ref([]);
@@ -173,7 +176,7 @@ function saveWeek () {
   }));
   
   // Save the events to the database
-  axios.post('/availabilities', makeRrule)
+  axios.post(`/availabilities/${teacherId}`, makeRrule)
   .then(response => {console.log(response.data);})
   .catch(error => {console.error('Error:', error);});
 }
@@ -354,7 +357,7 @@ function calculateDayOfWeek(dayCode) {
 // Reforms all the data to seperate events
 async function getEvents() {
   try {
-    const response = await fetch('/availabilities');
+    const response = await fetch(`/availabilities/${teacherId}`);
     const data = await response.json();
 
     const sorts = data.sorts;

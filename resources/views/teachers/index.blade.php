@@ -81,6 +81,7 @@
                                     @method('DELETE')
                                     <button type="submit" class="text-red hover:underline">Delete</button>
                                 </form>
+                                <a href="{{ route('agenda', $teacher) }}" class="text-accentBlue hover:underline">Bewerk kalender</a>
                             </td>
                         </tr>
                     @endforeach
