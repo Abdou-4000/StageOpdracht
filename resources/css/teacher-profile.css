@@ -12,7 +12,7 @@
 }
 
 .close-button {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 10px;
   background: none;
@@ -24,7 +24,6 @@
 }
 
 .card-container {
-    
   width: 85%;
   height: 65%;
   display: flex;
@@ -38,40 +37,65 @@
   position: relative;
   width: 70%;
   height: 100%;
-  background-color: #333;
+  background-color: #22262d;
 
   padding: 20px;
   box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .main-card {
+    clip-path: none;
+    border-radius: 45px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+  }
 }
 
 /* Red info box on bottom left */
 .info-box {
   position: absolute;
   bottom: -20px;
-  left: 9%;
-  background-color: #c62828;
+  left: 3%;
+  background-color: #920000;
   border-radius: 45px;
-    width: 30%;
-    height: 37%;
+    width: 37%;
+    max-width: 550px;
+    height: 40%;
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 4%;
   z-index: 2;
 }
 
 .info-item {
-  background-color: #ef5350;
+  background-color: #ff3521;
   color: white;
   padding: 15px 10px;
   border-radius: 35px;
   font-weight: bolder;
   font-size: 25px;
-  width: 95%;
+  width: 100%;
   height: 50%;
   text-align: center;
+}
+
+
+
+@media (max-width: 1200px) {
+  .info-box {
   
-  
+    width: 320px;
+    height: 220px;
+    bottom: 5%;
+    left: 4%;
+    padding: 10px;
+  }
+  .info-item {
+    font-size: 20px;
+  }
 }
 
 .detail-label {
@@ -80,69 +104,76 @@
 }
 
 .main-info-item {
-  background-color: #c7b5b5;
+  background-color: #71bdba;
   color: rgb(26, 25, 25);
-  margin-top: 5%;
-  margin-left: 55%;
-  padding: 15px 10px;
+  margin-top: 25%;
+  margin-left: 95%;
+  padding-top: 6%;
   border-radius: 45px;
   font-weight: 500;
   font-size: 18px;
-  width: 35%;
-  height: 6%;
+  width: 120%;
+  height: 10%;
   text-align: center;
   left: 50%;
 }
 .main-info-item-2 {
-    background-color: #ef5350;
+    background-color: #9C91c5;
     color: white;
-    margin-top: 3%;
-    margin-left: 45%;
-    padding: 10px 10px;
-    border-radius: 45px;
-    font-weight: 500;
-    font-size: 18px;
-    width: 35%;
-    height: 8%;
-    text-align: center;
-  }
-  .main-info-item-3 {
-    background-color: #ef5350;
-    color: white;
-    margin-top: 3%;
+    margin-top: 25%;
     margin-left: 35%;
     padding: 10px 10px;
     border-radius: 45px;
     font-weight: 500;
     font-size: 18px;
-    width: 35%;
-    height: 8%;
+    width: 120%;
+    height: 10%;
     text-align: center;
   }
-  .main-info-item-4 {
-    background-color: #ef5350;
+  .main-info-item-3 {
+    background-color: #e76;
     color: white;
-    margin-top: 2%;
-    margin-left: 60%;
+    margin-top: 25%;
+    margin-left: 115%;
     padding: 10px 10px;
     border-radius: 45px;
     font-weight: 500;
     font-size: 18px;
-    width: 35%;
-    height: 8%;
+    width: 120%;
+    height: 10%;
+    text-align: center;
+  }
+  .main-info-item-4 {
+    background-color: #fbba00;
+    color: white;
+    margin-top: 25%;
+    margin-left: 50%;
+    padding: 10px 10px;
+    border-radius: 45px;
+    font-weight: 500;
+    font-size: 18px;
+    width: 120%;
+    height: 10%;
     text-align: center;
   }
 
 /* Logo box on top right */
 .logo-box {
   position: absolute;
-  top: 20%;
+  top: 15%;
   right: 8%;
   background-color: white;
-  border: 3px solid #ef5350;
+  border: 3px solid #920000;
   border-radius: 15px;
   padding: 0px 0px;
   z-index: 3;
+}
+
+@media (max-width: 1480px) {
+  .logo-box {
+ display: none;
+  }
+  
 }
 
 .logo-image {

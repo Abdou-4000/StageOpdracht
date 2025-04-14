@@ -1,12 +1,12 @@
 <template>
-  <div v-if="show" class="profile-overlay">
+  <div v-if="show" class="profile-overlay" @click="closeProfile">
     <div class="card-container">
-      <div class="main-card flex flex-row">
+      <div class="main-card flex flex-row" @click.stop>
         <div class="flex">
           <AgendaList :id="teacher.id"/>
         </div>
         <div class="flex flex-col">
-          <button class="close-button" @click="$emit('close')">×</button>
+
             <div class="main-info-item">
 
               {{ teacher.compname || 'N/A' }}
@@ -19,15 +19,15 @@
               {{ teacher.details?.location || 'N/A' }}
             </div>
             <div class="main-info-item-4">
-              <span class="detail-label">Distance:</span>
-              {{ distance }} km
+              <span class="detail-label">City:</span>
+              {{ teacher.city || 'N/A' }}
             </div>
           </div>
         </div>
-      <div class="info-box">
+      <div class="info-box" @click.stop>
         <div class="info-item">{{ teacher.details?.email || 'Email' }}</div>
         <div class="info-item">{{ teacher.details?.phone || 'Phone' }}</div>
-        <div class="info-item">{{ teacher.details?.location || 'Location' }}</div>
+        <div class="info-item">{{ this.getCategoryDisplay || 'Category' }} </div>
       </div>
       <div class="logo-box">
 
@@ -51,6 +51,11 @@ export default {
         ? this.teacher.category.join(', ') 
         : 'Uncategorized';
     }
+  },
+  methods: {
+    closeProfile() {
+      this.$emit('close');
+    }
   }
 }
 </script>
@@ -72,15 +77,5 @@ export default {
 
 .card-container {
   position: relative;
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
 }
 </style>
