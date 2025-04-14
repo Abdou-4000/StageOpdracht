@@ -1,6 +1,17 @@
 <template>
   <div class="text-gray-dark">
     <div v-if="calendarOptions">
+      <!-- Succes message-->
+      <p v-if="saveMessage"
+        :class="[
+          'mt-2 px-4 py-2 rounded transition-opacity duration-300',
+          saveMessageType === 'success' ? 'bg-green-100 text-green-700 border border-green-300' : '',
+          saveMessageType === 'error' ? 'bg-red-100 text-red-700 border border-red-300' : ''
+        ]">
+        {{ saveMessage }}
+      </p>
+
+      <!-- Calendar -->
       <FullCalendar 
         ref="calendarRef"
         :options="calendarOptions" 
@@ -59,6 +70,9 @@
         </form>
         <!-- Button to save the week to the database -->
         <button @click="saveWeek">Save week</button>
+
+        <!-- Button to delete events-->
+        <button v-if="deleteButton" @click="deleteEvents">Delete Event</button>
       </div>
     </div>
   </div>
@@ -101,8 +115,11 @@ const showCheckbox = ref(false); // Keeps track of visibility selectAll checkbox
 const applyToAll = ref(false); // Keeps track of the state of selectAll checkbox
 const changeButton = ref(false); // Keeps track of visibility changeButton
 const submitButton = ref(true); // Keeps track of visibility sumbitButton
+const deleteButton = ref(false); // Keeps track of visibility deleteButton
 const currentEvent = ref(null); // Stores the current event for toggleApplyToAll
 const selectedEvents = ref([]); // Array to store the selected events
+const saveMessage = ref('');
+const saveMessageType = ref('');
 
 const calendarRef = ref(null);
 
@@ -177,8 +194,22 @@ function saveWeek () {
   
   // Save the events to the database
   axios.post(`/availabilities/${teacherId}`, makeRrule)
-  .then(response => {console.log(response.data);})
-  .catch(error => {console.error('Error:', error);});
+  .then(response => {
+    console.log(response.data)
+    saveMessage.value = 'Week succesvol opgeslagen!'
+    saveMessageType.value = 'success'
+  })
+  .catch(error => {
+    console.error('Error:', error)
+    saveMessage.value = 'Fout bij het opslaan van de week. Probeer opnieuw.'
+    saveMessageType.value = 'error'
+  })
+  .finally(() => {
+    setTimeout(() => {
+      saveMessage.value = ''
+      saveMessageType.value = ''
+    }, 3000)
+  })
 }
 
 // Handles the clicked event/form
@@ -200,6 +231,7 @@ function handleEventClick(info) {
   showCheckbox.value = true;
   changeButton.value = true;
   submitButton.value = false;
+  deleteButton.value = true;
   applyToAll.value = false;
   showSort.value = false; 
 }
@@ -253,22 +285,28 @@ function handleEventRemove(eventToRemove) {
   );
 }
 
-// Removes and adds the edited events
-function saveChanges () {
+// Removes the selected events
+function deleteEvents () {
   selectedEvents.value.forEach(selectedEvent => {
     // Call handleEventRemove to filter and remove matching events
     handleEventRemove(selectedEvent);
   });
+}
+
+// Removes and adds the edited events
+function saveChanges () {
+  deleteEvents();
   
   events.value = events.value.map(event => toRaw(event));
 
   // Add the events from the form
-  handleSubmit()
+  handleSubmit();
 
   // Reset to the add an event form
   showCheckbox.value = false;
   changeButton.value = false;
   submitButton.value = true;
+  deleteButton.value = false;
   showSort.value = true;
 }
 
@@ -284,6 +322,7 @@ function resetForm () {
   showCheckbox.value = false;
   changeButton.value = false;
   submitButton.value = true;
+  deleteButton.value = false;
   showSort.value = true;
 }
 
