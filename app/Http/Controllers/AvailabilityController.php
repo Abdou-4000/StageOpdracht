@@ -32,12 +32,11 @@ class AvailabilityController extends Controller
     }
 
     /**
-     * 
+     * Deletes the old saved week and saves the new week
      */
-    public function storeEvents (Request $request) {
-        // add $teacherId
+    public function storeEvents ($id, Request $request) {
 
-        DB::table('availabilities')->where('teacher_id', 2)->delete();
+        DB::table('availabilities')->where('teacher_id', $id)->delete();
     
         $validatedData = $request->validate([
             '*.title' => 'required|string|max:255',
@@ -56,7 +55,7 @@ class AvailabilityController extends Controller
                 $sortId = $sort->id;
                  
                 Availability::create([
-                    'teacher_id' => 2,
+                    'teacher_id' => $id,
                     'sort_id' => $sortId,
                     'start' => $event['start'],
                     'end' => $event['end'],

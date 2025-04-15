@@ -9,14 +9,14 @@
 
             <div class="main-info-item">
 
-              {{ teacher.compname || 'N/A' }}
+              {{ normalizedTeacher.compname || 'N/A' }}
             </div>
             <div class="main-info-item-2">
-              {{ teacher.name || 'N/A' }}
+              {{ normalizedTeacher.name || 'N/A' }}
             </div>
             <div class="main-info-item-3">
               <span class="detail-label">Address:</span>
-              {{ teacher.details?.location || 'N/A' }}
+              {{ normalizedTeacher.details?.location || 'N/A' }}
             </div>
             <div class="main-info-item-4">
               <span class="detail-label">City:</span>
@@ -25,8 +25,8 @@
           </div>
         </div>
       <div class="info-box" @click.stop>
-        <div class="info-item">{{ teacher.details?.email || 'Email' }}</div>
-        <div class="info-item">{{ teacher.details?.phone || 'Phone' }}</div>
+        <div class="info-item">{{ normalizedTeacher.details?.email || 'Email' }}</div>
+        <div class="info-item">{{ normalizedTeacher.details?.phone || 'Phone' }}</div>
         <div class="info-item">{{ this.getCategoryDisplay || 'Category' }} </div>
       </div>
       <div class="logo-box">
@@ -50,6 +50,28 @@ export default {
       return Array.isArray(this.teacher.category) 
         ? this.teacher.category.join(', ') 
         : 'Uncategorized';
+    },
+    normalizedTeacher() {
+      if (!this.teacher) return {}; // Early return if null
+
+      if (this.teacher.details) {
+        // Already normalized
+        return this.teacher;
+      }
+
+      return {
+        name: `${this.teacher.firstname} ${this.teacher.lastname}`,
+        compname: this.teacher.companyname,
+        category: this.teacher.category ?? [],
+        lat: this.teacher.lat,
+        lng: this.teacher.lng,
+        details: {
+          location: `${this.teacher.street} ${this.teacher.streetnumber}`,
+          email: this.teacher.email,
+          phone: this.teacher.phone,
+          hours: 'Contact for availability'
+        }
+      };
     }
   },
   methods: {

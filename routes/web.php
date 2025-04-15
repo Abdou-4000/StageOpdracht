@@ -5,6 +5,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ProfileController;
+
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
@@ -80,10 +83,11 @@ Route::get('/test', function () {
     return Inertia::render('Test'); // 🔹 This will load `Test.vue`
 })->name('test');
 
+// Agenda
+Route::get('/agenda/{teacher}', [AgendaController::class, 'index'])->name('agenda');
+
 // Teacher Profiles
-Route::get('/teacherprofile', function () {
-    return Inertia::render('ProfileTeacher');
-})->name('teacherprofile');
+Route::get('/teacherprofile', [ProfileController::class, 'index'])->name('teacherprofile');
 
 // Map
 Route::get('/map', function () {

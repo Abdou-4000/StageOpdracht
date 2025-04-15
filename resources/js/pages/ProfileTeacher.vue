@@ -1,14 +1,19 @@
 <script setup>
 
-// Add fetching the teacher (start with teacher_id 2)
+defineProps({
+  teacher: Object
+})
 
 </script>
 
 <template>
     <div class="header">
         <img src="../../../public/assets/Logo.png" alt="Logo">
+        <div>
+            <a :href="`/agenda/${teacher.id}`" class="text-accentBlue hover:underline">Bewerk kalender</a>
+        </div>
     </div>
     <div>
-        <TeacherProfile/> 
+        <TeacherProfile :teacher="teacher" :show="true"/> 
     </div>
 </template>

@@ -1,3 +1,4 @@
+@vite(['resources/js/blade/email.js'])
 @extends('layout')
 
 @section('content')
@@ -6,8 +7,10 @@
         @include('teachers._form', [
             'action' => route('teachers.store'),
             'isEdit' => false,
+            'isCreate' => true,
             'teacher' => null,
             'categories' => $categories
         ])
     </div>
+
 @endsection

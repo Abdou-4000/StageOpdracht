@@ -12,10 +12,9 @@ class ExceptionController extends Controller
      /**
      * Display a listing of the resource.
      */
-    public function index () {
-        // add $teacherId 
+    public function index ($id) {
         
-        $exceptions = Exception::with('sort')->where('teacher_id', 2)->get();
+        $exceptions = Exception::with('sort')->where('teacher_id', $id)->get();
 
         return response()->json([
             'exceptions' => $exceptions->map(function ($event) {
@@ -32,8 +31,7 @@ class ExceptionController extends Controller
     /**
      * Saves the exception
      */
-    public function storeExceptions (Request $request) {
-        // add $teacherId
+    public function storeExceptions ($id, Request $request) {
     
         $request->validate([
             'title' => 'required|string|max:255',
@@ -50,7 +48,7 @@ class ExceptionController extends Controller
             $sortId = $sort->id;
                  
             Exception::create([
-                'teacher_id' => 2,
+                'teacher_id' => $id,
                 'sort_id' => $sortId,
                 'start' => $request['start'],
                 'end' => $request['end'],

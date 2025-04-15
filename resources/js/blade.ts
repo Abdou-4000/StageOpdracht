@@ -1,0 +1,1 @@
+console.log('Blade-only JS loaded');
