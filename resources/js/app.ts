@@ -13,6 +13,7 @@ import AgendaList from './components/AgendaList.vue';
 import TeacherMap from './components/TeacherMap.vue';
 import GiveReviews from './components/GiveReviews.vue';
 import TeacherProfile from './components/TeacherProfile.vue';
+import Footer from './components/Footer.vue';
 import 'leaflet/dist/leaflet.css';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
@@ -49,6 +50,8 @@ createInertiaApp({
         vueApp.component('AgendaWeek', AgendaWeek);
         vueApp.component('AgendaMonth', AgendaMonth);
         vueApp.component('AgendaList', AgendaList);
+
+        vueApp.component('Footer', Footer);
 
         vueApp.component('GiveReviews', GiveReviews);
         
