@@ -48,7 +48,7 @@
             </div>
           </div>
         </div>
-
+      </div>
 
       <div class="absolute bottom-[20%] left-[3%] bg-[#920000] rounded-[45px] w-[33%] max-w-[650px] h-[35%] p-2.5 flex flex-col gap-[4%] z-[2]
                   2xl:w-[33%] 2xl:max-w-[650px]
