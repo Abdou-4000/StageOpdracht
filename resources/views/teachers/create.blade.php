@@ -7,19 +7,10 @@
         @include('teachers._form', [
             'action' => route('teachers.store'),
             'isEdit' => false,
+            'isCreate' => true,
             'teacher' => null,
             'categories' => $categories
         ])
-    </div>
-    <div class="flex flex-col p-4">
-        <div class="pb-2 font-semibold">
-            <p>Het account zal gecreëerd worden op het volgende email adres</p>
-        </div>
-        <div>
-            <input id="emailPrefixPreview" type="text" class="w-1/2 p-1.5 pl-4 rounded-3xl border border-gray-300">
-            <span>@docent.syntrapxl.be</span>
-            <input type="hidden" name="email" id="emailFull">
-        </div>
     </div>
 
 @endsection

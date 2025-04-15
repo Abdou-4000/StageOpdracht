@@ -6,6 +6,7 @@
         @include('teachers._form', [
             'action' => route('teachers.update', $teacher->id),
             'isEdit' => true,
+            'isCreate' => false,
             'teacher' => $teacher,
             'categories' => $categories
         ])

@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Teacher;
 use App\Models\City;
 use App\Models\Category;
+use App\Models\User;
 use App\Services\TeacherDataService;
 use App\Imports\TeachersImport;
 
@@ -60,7 +63,16 @@ class TeacherController extends Controller
             'companyname' => 'required|string|max:255',
             'street' => 'required|string|max:255',
             'streetnumber' => 'required|string|max:10',
+            'login_email' => 'required|email|unique:users,email',
         ]);
+
+        $user = User::create([
+            'name' => $request['firstname'] . ' ' . $request['lastname'],
+            'email' => $request['login_email'],
+            'password' => Hash::make(Str::random(12)),
+        ]);
+
+        $user->assignRole('teacher');
 
         // Create the teacher
         $teacher = Teacher::create([
@@ -74,6 +86,9 @@ class TeacherController extends Controller
             'streetnumber' => $request->streetnumber,
             'city_id' => $city->id,
         ]);
+
+        $teacher->user_id = $user->id;
+        $teacher->save();
  
         // Attach categories if selected
         if ($request->has('categories')) {
