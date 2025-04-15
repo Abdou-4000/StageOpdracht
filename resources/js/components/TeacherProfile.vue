@@ -9,14 +9,14 @@
           <button class="close-button" @click="$emit('close')">×</button>
             <div class="main-info-item">
 
-              {{ teacher.compname || 'N/A' }}
+              {{ normalizedTeacher.compname || 'N/A' }}
             </div>
             <div class="main-info-item-2">
-              {{ teacher.name || 'N/A' }}
+              {{ normalizedTeacher.name || 'N/A' }}
             </div>
             <div class="main-info-item-3">
               <span class="detail-label">Address:</span>
-              {{ teacher.details?.location || 'N/A' }}
+              {{ normalizedTeacher.details?.location || 'N/A' }}
             </div>
             <div class="main-info-item-4">
               <span class="detail-label">Distance:</span>
@@ -25,9 +25,9 @@
           </div>
         </div>
       <div class="info-box">
-        <div class="info-item">{{ teacher.details?.email || 'Email' }}</div>
-        <div class="info-item">{{ teacher.details?.phone || 'Phone' }}</div>
-        <div class="info-item">{{ teacher.details?.location || 'Location' }}</div>
+        <div class="info-item">{{ normalizedTeacher.details?.email || 'Email' }}</div>
+        <div class="info-item">{{ normalizedTeacher.details?.phone || 'Phone' }}</div>
+        <div class="info-item">{{ normalizedTeacher.details?.location || 'Location' }}</div>
       </div>
       <div class="logo-box">
 
@@ -50,8 +50,33 @@ export default {
       return Array.isArray(this.teacher.category) 
         ? this.teacher.category.join(', ') 
         : 'Uncategorized';
+    },
+    normalizedTeacher() {
+      if (!this.teacher) return {}; // Early return if null
+
+      if (this.teacher.details) {
+        // Already normalized
+        return this.teacher;
+      }
+
+      return {
+        name: `${this.teacher.firstname} ${this.teacher.lastname}`,
+        compname: this.teacher.companyname,
+        category: this.teacher.category ?? [],
+        lat: this.teacher.lat,
+        lng: this.teacher.lng,
+        details: {
+          location: `${this.teacher.street} ${this.teacher.streetnumber}`,
+          email: this.teacher.email,
+          phone: this.teacher.phone,
+          hours: 'Contact for availability'
+        }
+      };
     }
-  }
+  },
+  mounted() {
+    console.log('Teacher:', this.normalizedTeacher);
+  },
 }
 </script>
 

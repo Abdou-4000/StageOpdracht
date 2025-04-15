@@ -1,6 +1,8 @@
 <script setup>
 
-// Add fetching the teacher (start with teacher_id 2)
+defineProps({
+  teacher: Object
+})
 
 </script>
 
@@ -9,6 +11,6 @@
         <img src="../../../public/assets/Logo.png" alt="Logo">
     </div>
     <div>
-        <TeacherProfile/> 
+        <TeacherProfile :teacher="teacher" :show="true"/> 
     </div>
 </template>
