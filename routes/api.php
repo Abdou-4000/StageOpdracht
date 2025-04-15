@@ -9,11 +9,11 @@ use App\Http\Controllers\ReviewController;
 
 Route::get('/availabilities/{id}', [AvailabilityController::class, 'index']);
 
-Route::post('/availabilities', [AvailabilityController::class, 'storeEvents']);
+Route::post('/availabilities/{id}', [AvailabilityController::class, 'storeEvents']);
 
 Route::get('/exceptions/{id}', [ExceptionController::class, 'index']);
 
-Route::post('/exceptions', [ExceptionController::class, 'storeExceptions']);
+Route::post('/exceptions/{id}', [ExceptionController::class, 'storeExceptions']);
 
 Route::put('/exceptions/{id}', [ExceptionController::class, 'update']);
 
@@ -28,6 +28,3 @@ Route::group(['prefix' => 'chat'], function () {
     Route::get('messages', [ChatMessageController::class, 'fetchMessages']);
     Route::post('messages', [ChatMessageController::class, 'sendMessage']);
 });
-
-Route::get('/map/teachers', [MapController::class, 'index']);
-

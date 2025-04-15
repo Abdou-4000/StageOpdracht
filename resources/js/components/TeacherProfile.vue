@@ -18,7 +18,7 @@
                         text-[clamp(16px,1.5vw,20px)] w-[50%] min-h-[50px] text-center
                         lg:translate-x-[80%] lg:w-[50%]
                         md:translate-x-0 md:w-[90%]">
-              {{ teacher.compname || 'N/A' }}
+              {{ normalizedTeacher.compname || 'N/A' }}
             </div>
 
             <!-- Teacher Name -->
@@ -26,7 +26,7 @@
                         font-medium text-[clamp(14px,1.5vw,18px)] w-[50%] min-h-[50px] text-center
                         lg:translate-x-[30%] lg:w-[50%]
                         md:w-[90%]">
-              {{ teacher.name || 'N/A' }}
+              {{ normalizedTeacher.name || 'N/A' }}
             </div>
 
             <!-- Address -->
@@ -35,7 +35,7 @@
                         lg:translate-x-[90%] lg:w-[50%]
                         md:translate-x-0 md:w-[90%]">
               <span class="font-bold">Address:</span>
-              {{ teacher.details?.location || 'N/A' }}
+              {{ normalizedTeacher.details?.location || 'N/A' }}
             </div>
 
             <!-- City -->
@@ -48,7 +48,7 @@
             </div>
           </div>
         </div>
-      </div>
+
 
       <div class="absolute bottom-[20%] left-[3%] bg-[#920000] rounded-[45px] w-[33%] max-w-[650px] h-[35%] p-2.5 flex flex-col gap-[4%] z-[2]
                   2xl:w-[33%] 2xl:max-w-[650px]
@@ -56,7 +56,7 @@
                   lg:w-[350px]
                   md:w-[300px] md:left-[5%]
                   sm:w-[250px]" @click.stop>
-        <div v-for="item in [teacher.details?.email || 'Email', teacher.details?.phone || 'Phone', getCategoryDisplay || 'Category']" 
+        <div v-for="item in [normalizedTeacher.details?.email || 'Email', normalizedTeacher.details?.phone || 'Phone', getCategoryDisplay || 'Category']" 
              class="bg-[#ff3521] text-white p-4 rounded-[35px] font-bold text-2xl w-full h-1/2 text-center
                     xl:text-xl
                     lg:text-lg
@@ -86,6 +86,28 @@ export default {
       return Array.isArray(this.teacher.category) 
         ? this.teacher.category.join(', ') 
         : 'Uncategorized';
+    },
+    normalizedTeacher() {
+      if (!this.teacher) return {}; // Early return if null
+
+      if (this.teacher.details) {
+        // Already normalized
+        return this.teacher;
+      }
+
+      return {
+        name: `${this.teacher.firstname} ${this.teacher.lastname}`,
+        compname: this.teacher.companyname,
+        category: this.teacher.category ?? [],
+        lat: this.teacher.lat,
+        lng: this.teacher.lng,
+        details: {
+          location: `${this.teacher.street} ${this.teacher.streetnumber}`,
+          email: this.teacher.email,
+          phone: this.teacher.phone,
+          hours: 'Contact for availability'
+        }
+      };
     }
   },
   methods: {

@@ -1,4 +1,4 @@
-<form method="POST" action="{{ $action }}" class="m-3 p-6 w-full max-w-lg mx-auto bg-white rounded-xl shadow-md">
+<form method="POST" action="{{ $action }}" class="m-3 p-6 w-full max-w-lg mx-auto">
     @csrf
     @if($isEdit)
         @method('PUT')

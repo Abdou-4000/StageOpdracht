@@ -1,3 +1,4 @@
+@vite(['resources/js/blade/searchbar.js'])
 @extends('layout')
 
 @section('content')
@@ -81,6 +82,7 @@
                                     @method('DELETE')
                                     <button type="submit" class="text-red hover:underline">Delete</button>
                                 </form>
+                                <a href="{{ route('agenda', $teacher) }}" class="text-accentBlue hover:underline">Bewerk kalender</a>
                             </td>
                         </tr>
                     @endforeach
@@ -89,20 +91,5 @@
         </div>
     </div>
 </div>
-<script>
-    // Searchbar
-    function search() {
-        const searchbar = document.getElementById('searchbar');
-        const searchTerm = searchbar.value.toLowerCase();
-        const rows = document.querySelectorAll('tbody tr');
 
-        rows.forEach(row => {
-            const rowText = row.textContent.toLowerCase();
-            row.style.display = rowText.includes(searchTerm) ? '' : 'none';
-        });
-    }
-
-    // Attach event listener
-    document.getElementById('searchbar').addEventListener('input', search);
-</script>
 @endsection
