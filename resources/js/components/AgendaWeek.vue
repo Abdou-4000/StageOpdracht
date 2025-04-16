@@ -1,80 +1,108 @@
 <template>
-  <div class="text-gray-dark">
+  <div class="text-gray-dark flex flex-col w-screen">
     <div v-if="calendarOptions">
       <!-- Succes message-->
       <p v-if="saveMessage"
         :class="[
-          'mt-2 px-4 py-2 rounded transition-opacity duration-300',
+          'mt-2 px-4 py-2 rounded transition-opacity duration-300 flex justify-center',
           saveMessageType === 'success' ? 'bg-green-100 text-green-700 border border-green-300' : '',
           saveMessageType === 'error' ? 'bg-red-100 text-red-700 border border-red-300' : ''
         ]">
         {{ saveMessage }}
       </p>
 
-      <!-- Calendar -->
-      <FullCalendar 
-        ref="calendarRef"
-        :options="calendarOptions" 
-      />
-      <!-- Form to collect event details -->
-      <div class="event-form">
-        <form @submit.prevent="handleSubmit">
-          <!-- Input for choosing the start time of an event -->
-          <label for="start-time">Start Time</label>
-          <input v-model="startTime" type="time" id="start-time" class="text-gray-dark" required />
-
-          <!-- Input for choosing the end time if an event -->
-          <label for="end-time">End Time</label>
-          <input v-model="endTime" type="time" id="end-time" class="text-gray-dark" required />
-
-          <!-- Checkboxes to select which days the event will take place -->
-          <label>Days of the Week</label>
-          <div>
-            <!-- Generate checkboxes dynamically from the weekdays array -->
-            <div v-for="(day, index) in weekdays" :key="index">
-              <input 
-                type="checkbox" 
-                :id="day.shortCode" 
-                :value="day.shortCode"
-                v-model="selectedDays" 
-              />
-              <label :for="day.shortCode">{{ day.name }}</label>
-            </div>
+      <div class="flex flex-col lg:flex-row justify-between">
+        <!-- Calendar -->
+        <div class="flex w-5/6 lg:w-3/5 m-10" v-if="calendarOptions">
+          <div class="w-full flex-1">
+            <FullCalendar
+              ref="calendarRef"
+              :options="calendarOptions" 
+            />
           </div>
+        </div>
+        <!-- Form to collect event details -->
+        <div class="event-form flex flex-col w-3/5 lg:w-2/6 m-4 lg:mt-10 ml-10 lg:ml-4">
+          <form class="flex flex-col w-full" @submit.prevent="handleSubmit">
+            <!-- titel -->
+            <div v-if="submitButton" class="ml-3 text-2xl font-semibold">Planning maken</div>
+            <div v-if="changeButton" class="ml-3 text-2xl font-semibold">Planning bewerken</div>
 
-          <!-- Checkbox for adjusting one or all matching events -->
-          <label v-if="showCheckbox">
-            <input type="checkbox" v-model="applyToAll" @change="toggleApplyToAll" />
-            Selecteer alle gelijkaardige events
-          </label>
-
-          <!-- Radio to select a sort -->
-          <div v-if="showSort">
-            <div v-for="(sort, id) in sort" :key="id">
-              <input 
-                type="radio"
-                :id="sort.name"
-                :value="sort.name"
-                v-model="selectedSort"
-              />
-              <label :for="sort.name">{{ sort.name }}</label>
+            <!-- Input for choosing the start time of an event -->
+            <div class="flex justify-between m-2">
+                <label class="flex p-2" for="start-time">Start Time</label>
+                <input v-model="startTime" type="time" id="start-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
             </div>
-          </div>         
+    
+            <!-- Input for choosing the end time if an event -->
+            <div class="flex justify-between m-2">
+                <label class="flex p-2" for="end-time">End Time</label>
+                <input v-model="endTime" type="time" id="end-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
+            </div>
 
-          <!-- Button for adjusting events -->
-          <button v-if="changeButton" @click="saveChanges">Save Changes</button>
+            <div class="flex justify-between">
+              <!-- Checkboxes to select which days the event will take place -->
+              <label class="ml-4 font-semibold">Days of the Week</label>
 
-          <!-- Button to save new events -->
-          <button v-if="submitButton" type="submit">Add</button>
+              <!-- Checkbox for adjusting one or all matching events -->
+              <label class="flex justify-end text-accentPink" v-if="showCheckbox">
+                <input class="m-2" type="checkbox" v-model="applyToAll" @change="toggleApplyToAll" />
+                Selecteer gelijkaardig
+              </label>
+            </div>
 
-          <!-- Cancel button -->
-          <button @click="resetForm">Cancel</button>
-        </form>
-        <!-- Button to save the week to the database -->
-        <button @click="saveWeek">Save week</button>
+            <div>
+              <!-- Generate checkboxes dynamically from the weekdays array -->
+              <div class="m-2" v-for="(day, index) in weekdays" :key="index">
+                <input 
+                  type="checkbox" 
+                  :id="day.shortCode" 
+                  :value="day.shortCode"
+                  v-model="selectedDays"
+                  class="m-2"
+                />
+                <label :for="day.shortCode">{{ day.name }}</label>
+              </div>
+            </div>
 
-        <!-- Button to delete events-->
-        <button v-if="deleteButton" @click="deleteEvents">Delete Event</button>
+            <!-- Radio to select a sort -->
+            <div v-if="showSort">
+                <!-- tussentitel -->
+                <div class="ml-4 font-semibold">Type</div>
+                <!-- radio buttons -->
+                <div class="m-2 ml-4" v-for="(sort, id) in sort" :key="id">
+                  <label class="custom-radio-wrapper">
+                    <input 
+                      type="radio"
+                      :id="sort.name"
+                      :value="sort.name"
+                      v-model="selectedSort"
+                      name="sort"
+                      class="custom-radio"
+                    />
+                    <span class="custom-radio-style"></span>
+                    <span class="ml-2">{{ sort.name }}</span>
+                  </label>
+                </div>  
+              </div>        
+            
+            <div class="flex justify-between m-2">
+              <!-- Button for adjusting events -->
+              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" type="button" v-if="changeButton" @click="saveChanges">Save Changes</button>
+
+              <!-- Button to save new events -->
+              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="submitButton" type="submit">Add</button>
+
+              <!-- Cancel button -->
+              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" type="button" @click="resetForm">Cancel</button>
+            </div>
+          </form>
+          <!-- Button to save the week to the database -->
+          <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="saveWeekButton" @click="saveWeek">Save week</button>
+
+          <!-- Button to delete events-->
+          <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="deleteButton" @click="deleteEvents">Delete Event</button>
+        </div>
       </div>
     </div>
   </div>
@@ -90,6 +118,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
 import axios from 'axios';
+import '../../css/radioButton.css';
 
 const page = usePage();
 const teacherId = page.props.teacherId;
@@ -102,7 +131,7 @@ const endTime = ref(''); // For user-entered end time
 // Array of weekdays with short codes
 const weekdays = ref([
   { name: 'Maandag', shortCode: 'MO' },
-  { name: 'Disndag', shortCode: 'TU' },
+  { name: 'Dinsdag', shortCode: 'TU' },
   { name: 'Woensdag', shortCode: 'WE' },
   { name: 'Donderdag', shortCode: 'TH' },
   { name: 'Vrijdag', shortCode: 'FR' },
@@ -118,6 +147,7 @@ const applyToAll = ref(false); // Keeps track of the state of selectAll checkbox
 const changeButton = ref(false); // Keeps track of visibility changeButton
 const submitButton = ref(true); // Keeps track of visibility sumbitButton
 const deleteButton = ref(false); // Keeps track of visibility deleteButton
+const saveWeekButton = ref(true); // Keeps track of visibility saveWeekButton
 const currentEvent = ref(null); // Stores the current event for toggleApplyToAll
 const selectedEvents = ref([]); // Array to store the selected events
 const saveMessage = ref('');
@@ -234,6 +264,7 @@ function handleEventClick(info) {
   changeButton.value = true;
   submitButton.value = false;
   deleteButton.value = true;
+  saveWeekButton.value = false;
   applyToAll.value = false;
   showSort.value = false; 
 }
@@ -309,6 +340,7 @@ function saveChanges () {
   changeButton.value = false;
   submitButton.value = true;
   deleteButton.value = false;
+  saveWeekButton.value = true;
   showSort.value = true;
 }
 
@@ -325,6 +357,7 @@ function resetForm () {
   changeButton.value = false;
   submitButton.value = true;
   deleteButton.value = false;
+  saveWeekButton.value = true;
   showSort.value = true;
 }
 
@@ -456,6 +489,6 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-/* Optional: Add custom styles for FullCalendar */
+<style>
+
 </style>

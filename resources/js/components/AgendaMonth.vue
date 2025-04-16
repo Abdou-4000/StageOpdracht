@@ -3,7 +3,7 @@
       <!-- Succes message-->
       <p v-if="saveMessage"
         :class="[
-          'mt-2 px-4 py-2 rounded transition-opacity duration-300',
+          'mt-2 px-4 py-2 rounded transition-opacity duration-300 flex justify-center',
           saveMessageType === 'success' ? 'bg-green-100 text-green-700 border border-green-300' : '',
           saveMessageType === 'error' ? 'bg-red-100 text-red-700 border border-red-300' : ''
         ]">
@@ -88,6 +88,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
 import axios from 'axios';
+import '../../css/radioButton.css';
 
 const page = usePage();
 const teacherId = page.props.teacherId;
@@ -512,40 +513,5 @@ onMounted(() => {
 </script>
 
 <style>
-.custom-radio-wrapper {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
 
-.custom-radio {
-  display: none;
-}
-
-.custom-radio-style {
-  width: 16px;
-  height: 16px;
-  border: 1px solid #D1D5DB; /* gray-300 */
-  border-radius: 50%;
-  background-color: white;
-  position: relative;
-  transition: all 0.2s ease;
-}
-
-.custom-radio:checked + .custom-radio-style {
-  border-color: #ff3521; 
-  background-color: #ff3521; 
-}
-
-.custom-radio:checked + .custom-radio-style::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: white;
-  transform: translate(-50%, -50%);
-}
 </style>
