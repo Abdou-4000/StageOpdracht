@@ -166,6 +166,7 @@ const calendarOptions = ref({
   firstDay: 1,
   allDaySlot: false,
   headerToolbar: false,
+  slotEventOverlap: false,
   events: function(info, successCallback) {
     successCallback(events.value);
   },

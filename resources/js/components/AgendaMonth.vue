@@ -401,6 +401,14 @@ function formatToDateTimeString(date) {
 
 // Select the day to add an exception and show the form
 function handleDateClick (info) {
+    const clickedDate = info.date;
+    const today = new Date();
+  
+    // Prevent selecting dates in the past
+    if (clickedDate < today) {
+      return;
+    }
+    
     // Shows the form
     showStartTime.value = true;
     showEndTime.value = true;

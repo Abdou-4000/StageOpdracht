@@ -1,14 +1,34 @@
-<script setup>
+<script setup lang=js>
+
+const props = defineProps({
+  user: Object,
+})
 
 </script>
 
 <template>
     <div>
-        <div class="header">
-            <img src="../../../public/assets/Logo.png" alt="Logo">
+        <!-- header -->
+        <div class="flex flex-row justify-between m-4">
+            <!-- Logo -->
+            <div class="w-1/12">
+                <img src="../../../public/assets/Logo.png" alt="Logo">
+            </div>
+            <div class="flex justify-center w-1/6 h-10 bg-red text-white p-2 rounded-3xl">
+                <!-- Teacher button to teacherprofile -->
+                <a :href="`/teacherprofile`" v-if="user?.roles?.includes('teacher')"> 
+                    Leerkrachtenprofiel
+                </a>
+
+                <!-- Admin button to adminpage -->
+                <a :href="`/teachers`" v-if="user?.roles?.includes('admin')">
+                    Beheer
+                </a>
+            </div>
         </div>
+        <!-- Map -->
         <div id="app">
-            <TeacherMap />
+            <TeacherMap/>
         </div>
     </div>
 </template>

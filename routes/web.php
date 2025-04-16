@@ -7,7 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\MapController;
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
@@ -90,9 +90,7 @@ Route::get('/agenda/{teacher}', [AgendaController::class, 'index'])->name('agend
 Route::get('/teacherprofile', [ProfileController::class, 'index'])->name('teacherprofile');
 
 // Map
-Route::get('/map', function () {
-    return Inertia::render('Map');
-})->name('map');
+Route::get('/map', [MapController::class, 'map'])->name('map');
 
 Route::get('/debug-role', function () {
     $user = auth()->user()->load('roles', 'permissions');
