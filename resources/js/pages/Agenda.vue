@@ -1,36 +1,31 @@
-<script setup>
+<script setup lang="js">
 import { ref } from 'vue'
 
-const agendaWeek = ref(false);
-const agendaMonth = ref(true);
+const agendaView = ref('month') // of 'week'
 
-function showMonth () {
-    agendaWeek.value = false;
-    agendaMonth.value = true;
-}
-
-function showWeek () {
-    agendaWeek.value = true;
-    agendaMonth.value = false;
+function setView(view) {
+  agendaView.value = view
 }
 
 </script>
 
 <template>
-    <div class="flex justify-between p-4">
-        <button class="text-gray-dark" @click="showMonth">
-            month
-        </button>
-        <button class="text-gray-dark" @click="showWeek">
-            week
-        </button>
-    </div>
-    <div class="flex flex-wrap flex-row gap-32">
-        <div v-if="agendaWeek">
-            <AgendaWeek/>
+    <div class="w-screen overflow-y-auto overflow-x-hidden h-screen flex flex-col">
+        <div class="flex justify-between p-4">
+            <button class="text-gray-dark" @click="setView('month')">
+                month
+            </button>
+            <button class="text-gray-dark" @click="setView('week')">
+                week
+            </button>
         </div>
-        <div v-if="agendaMonth"> 
-            <AgendaMonth/>
+        <div class="flex justify-center">
+            <div v-if="agendaView === 'week'">
+                <AgendaWeek/>
+            </div>
+            <div v-if="agendaView === 'month'"> 
+                <AgendaMonth/>
+            </div>
         </div>
     </div>
 </template>

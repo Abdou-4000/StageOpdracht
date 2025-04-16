@@ -48,16 +48,18 @@
             Selecteer alle gelijkaardige events
           </label>
 
-           <!-- Radio to select a sort -->
-           <div v-if="showSort" v-for="(sort, id) in sort" :key="id">
-            <input 
-              type="radio"
-              :id="sort.name"
-              :value="sort.name"
-              v-model="selectedSort"
-            />
-            <label :for="sort.name">{{ sort.name }}</label>
-           </div>          
+          <!-- Radio to select a sort -->
+          <div v-if="showSort">
+            <div v-for="(sort, id) in sort" :key="id">
+              <input 
+                type="radio"
+                :id="sort.name"
+                :value="sort.name"
+                v-model="selectedSort"
+              />
+              <label :for="sort.name">{{ sort.name }}</label>
+            </div>
+          </div>         
 
           <!-- Button for adjusting events -->
           <button v-if="changeButton" @click="saveChanges">Save Changes</button>
@@ -78,7 +80,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="js">
 import { ref, onMounted, toRaw, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import FullCalendar from '@fullcalendar/vue3'; 

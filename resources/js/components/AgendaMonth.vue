@@ -1,5 +1,5 @@
 <template>
-    <div class="text-gray-dark">
+    <div class="text-gray-dark flex flex-col w-screen">
       <!-- Succes message-->
       <p v-if="saveMessage"
         :class="[
@@ -10,56 +10,64 @@
         {{ saveMessage }}
       </p>
 
-      <!-- Calendar -->
-      <div v-if="calendarOptions">
-        <FullCalendar 
-          ref="calendarRef"
-          :options="calendarOptions" 
-        />
+      <div class="flex flex-col lg:flex-row justify-between">
+        <!-- Calendar -->
+        <div class="flex w-5/6 lg:w-3/5 m-10" v-if="calendarOptions">
+          <div class="w-full flex-1">
+            <FullCalendar
+              ref="calendarRef"
+              :options="calendarOptions" 
+            />
+          </div>
+        </div>
         <!-- Form to collect event details -->
-        <div class="event-form">
-          <form @submit.prevent="handleSubmit">
-            <!-- Input for choosing the start time of an event -->
-            <div v-if="showStartTime">
-                <label for="start-time">Start Time</label>
-                <input v-model="startTime" type="time" id="start-time" class="text-gray-dark" required />
-            </div>
-  
-            <!-- Input for choosing the end time if an event -->
-            <div v-if="showEndTime">
-                <label for="end-time">End Time</label>
-                <input v-model="endTime" type="time" id="end-time" class="text-gray-dark" required />
-            </div>
-  
-            <!-- Radio to select a sort -->
-            <div v-if="showSort" v-for="(sort, id) in sort" :key="id">
-              <input 
-                type="radio"
-                :id="sort.name"
-                :value="sort.name"
-                v-model="selectedSort"
-              />
-              <label :for="sort.name">{{ sort.name }}</label>
-            </div>          
-  
-            <!-- Button for adjusting events -->
-            <button v-if="changeButton" type="button" @click="saveChanges">Save Changes</button>
-  
-            <!-- Button to save new events -->
-            <button v-if="submitButton" type="submit">Add exception</button>
-  
-            <!-- Cancel button -->
-            <button v-if="cancelButton" type="button" @click="resetForm">Cancel</button>
+        <div class="event-form flex">
+            <form class="flex flex-col w-[300px] m-4" @submit.prevent="handleSubmit">
+              <!-- Input for choosing the start time of an event -->
+              <div class="flex justify-between" v-if="showStartTime">
+                  <label class="flex" for="start-time">Start Time</label>
+                  <input v-model="startTime" type="time" id="start-time" class="text-gray-dark flex" required />
+              </div>
+    
+              <!-- Input for choosing the end time if an event -->
+              <div class="flex justify-between" v-if="showEndTime">
+                  <label class="flex" for="end-time">End Time</label>
+                  <input v-model="endTime" type="time" id="end-time" class="text-gray-dark flex" required />
+              </div>
+    
+              <!-- Radio to select a sort -->
+              <div v-if="showSort">
+                <div v-for="(sort, id) in sort" :key="id">
+                  <input 
+                    type="radio"
+                    :id="sort.name"
+                    :value="sort.name"
+                    v-model="selectedSort"
+                  />
+                  <label :for="sort.name">{{ sort.name }}</label>
+                </div>  
+              </div>        
+              
+              <div class="flex justify-between">
+                <!-- Button for adjusting events -->
+                <button v-if="changeButton" type="button" @click="saveChanges">Save Changes</button>
+      
+                <!-- Button to save new events -->
+                <button v-if="submitButton" type="submit">Add exception</button>
+      
+                <!-- Cancel button -->
+                <button v-if="cancelButton" type="button" @click="resetForm">Cancel</button>
 
-            <!-- Delete button -->
-            <button v-if="deleteButton" type="button" @click="removeEvent">Delete</button>
-          </form>
+                <!-- Delete button -->
+                <button v-if="deleteButton" type="button" @click="removeEvent">Delete</button>
+              </div>
+            </form>
         </div>
       </div>
     </div>
-  </template>
+</template>
 
-<script setup>
+<script setup lang="js">
 import { ref, onMounted, toRaw, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import FullCalendar from '@fullcalendar/vue3'; 
@@ -112,19 +120,37 @@ const calendarOptions = ref({
         events: function(info, successCallback) {
             successCallback(events.value);
         },
-        color: 'red'
+        color: '#fbba00'
     },
     {
         events: function(info, successCallback) {
             successCallback(exceptions.value);
         },
-        color: 'blue',
+        color: '#ff3521',
     }
   ],
   eventTimeFormat: {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false // set to true for AM/PM
+  },
+  eventContent: function (arg) {
+    console.log(arg);
+    const time = arg.timeText;
+    const title = arg.event.title;
+    const dotColor = arg.backgroundColor || '#3788d8'; // fallback default color
+
+    return {
+      html: `
+        <div class="fc-event-custom flex items-start gap-1 text-sm leading-tight whitespace-normal break-words overflow-hidden">
+          <span class="mt-[0.3rem] w-[0.5rem] h-[0.5rem] rounded-full" style="background-color: ${dotColor};"></span>
+          <div>
+            <span>${time}</span>
+            <span class="font-semibold"> ${title}</span>
+          </div>
+        </div>
+      `,
+    };
   },
   dateClick: handleDateClick,
   eventClick: handleEventClick,

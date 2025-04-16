@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="js">
 import { ref, onMounted, toRaw } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
@@ -145,7 +145,7 @@ async function getEvents () {
             const exceptionDates = exceptions.value
                 .filter(exception => exception.title === type)
                 .map(exception => {
-                    const [date, time] = exception.start.split(' ');
+                    const [date] = exception.start.split(' ');
                     const [year, month, day] = date.split('-');
 
                     const eventDate = new Date(year, month - 1, day); // months are 0-indexed
