@@ -75,8 +75,8 @@ Route::get('/export-pdf', [ExportController::class, 'exportPDF']);
 
 // Made by
 Route::get('/madeby', function () {
-    return view('madeby');
-});
+    return Inertia::render('MadeBy');
+})->name('madeby');
 
 // Agenda test
 Route::get('/test', function () {

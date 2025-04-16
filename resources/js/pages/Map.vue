@@ -7,7 +7,6 @@ const props = defineProps({
 </script>
 
 <template>
-    <div>
         <!-- header -->
         <div class="flex flex-row justify-between m-4">
             <!-- Logo -->
@@ -30,7 +29,9 @@ const props = defineProps({
         <div id="app">
             <TeacherMap/>
         </div>
-    </div>
+        <div>
+            <Footer/>
+        </div>
 </template>
 
 <style>
@@ -39,7 +40,8 @@ const props = defineProps({
         padding: 0;
         height: 100vh;
         width: 100vw;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto; 
     }
     #app {
         height: 100vh;
