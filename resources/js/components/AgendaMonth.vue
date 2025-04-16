@@ -21,7 +21,7 @@
           </div>
         </div>
         <!-- Form to collect event details -->
-        <div class="event-form flex w-3/5 lg:w-2/6 m-4 ml-10 lg:ml-4">
+        <div class="event-form flex w-3/5 lg:w-2/6 m-4 lg:mt-10 ml-10 lg:ml-4">
             <form class="flex flex-col w-full" @submit.prevent="handleSubmit">
               <!-- titel -->
               <div v-if="submitButton" class="ml-3 text-2xl font-semibold">Uitzondering maken</div>
