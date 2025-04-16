@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Teacher;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class MapController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Teacher data for the map
      */
     public function index() {
         $teacher = Teacher::with(['city', 'category']) 
@@ -34,5 +36,18 @@ class MapController extends Controller
                     ];
                 })
             ]);
+    }
+
+    /**
+     * Looks for a logged in user, sends the role.
+     */
+    public function map () {
+        $user = Auth::user();
+
+        return Inertia::render('Map', [
+            'user' => $user ? $user->only(['id', 'name', 'email']) + [
+                'roles' => $user->roles->pluck('name'),
+            ] : null,
+        ]);
     }
 }

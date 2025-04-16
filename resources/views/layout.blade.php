@@ -6,5 +6,3 @@
         @yield('content')
     </div>
 </div>
-
-@include('footer')
