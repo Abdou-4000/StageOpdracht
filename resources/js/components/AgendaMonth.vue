@@ -21,46 +21,57 @@
           </div>
         </div>
         <!-- Form to collect event details -->
-        <div class="event-form flex">
-            <form class="flex flex-col w-[300px] m-4" @submit.prevent="handleSubmit">
+        <div class="event-form flex w-3/5 lg:w-2/6 m-4 ml-10 lg:ml-4">
+            <form class="flex flex-col w-full" @submit.prevent="handleSubmit">
+              <!-- titel -->
+              <div v-if="submitButton" class="ml-3 text-2xl font-semibold">Uitzondering maken</div>
+              <div v-if="changeButton" class="ml-3 text-2xl font-semibold">Uitzondering bewerken</div>
+
               <!-- Input for choosing the start time of an event -->
-              <div class="flex justify-between" v-if="showStartTime">
-                  <label class="flex" for="start-time">Start Time</label>
-                  <input v-model="startTime" type="time" id="start-time" class="text-gray-dark flex" required />
+              <div class="flex justify-between m-2" v-if="showStartTime">
+                  <label class="flex p-2" for="start-time">Start Time</label>
+                  <input v-model="startTime" type="time" id="start-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
               </div>
     
               <!-- Input for choosing the end time if an event -->
-              <div class="flex justify-between" v-if="showEndTime">
-                  <label class="flex" for="end-time">End Time</label>
-                  <input v-model="endTime" type="time" id="end-time" class="text-gray-dark flex" required />
+              <div class="flex justify-between m-2" v-if="showEndTime">
+                  <label class="flex p-2" for="end-time">End Time</label>
+                  <input v-model="endTime" type="time" id="end-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
               </div>
-    
+
               <!-- Radio to select a sort -->
               <div v-if="showSort">
-                <div v-for="(sort, id) in sort" :key="id">
-                  <input 
-                    type="radio"
-                    :id="sort.name"
-                    :value="sort.name"
-                    v-model="selectedSort"
-                  />
-                  <label :for="sort.name">{{ sort.name }}</label>
+                <!-- tussentitel -->
+                <div class="ml-4 font-semibold">Type</div>
+                <!-- radio buttons -->
+                <div class="m-2 ml-4" v-for="(sort, id) in sort" :key="id">
+                  <label class="custom-radio-wrapper">
+                    <input 
+                      type="radio"
+                      :id="sort.name"
+                      :value="sort.name"
+                      v-model="selectedSort"
+                      name="sort"
+                      class="custom-radio"
+                    />
+                    <span class="custom-radio-style"></span>
+                    <span class="ml-2">{{ sort.name }}</span>
+                  </label>
                 </div>  
-              </div>        
-              
-              <div class="flex justify-between">
+              </div>
+
+              <div class="flex justify-between m-2">
                 <!-- Button for adjusting events -->
-                <button v-if="changeButton" type="button" @click="saveChanges">Save Changes</button>
+                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="changeButton" type="button" @click="saveChanges">Save Changes</button>
       
                 <!-- Button to save new events -->
-                <button v-if="submitButton" type="submit">Add exception</button>
+                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="submitButton" type="submit">Add exception</button>
       
                 <!-- Cancel button -->
-                <button v-if="cancelButton" type="button" @click="resetForm">Cancel</button>
-
-                <!-- Delete button -->
-                <button v-if="deleteButton" type="button" @click="removeEvent">Delete</button>
+                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="cancelButton" type="button" @click="resetForm">Cancel</button>
               </div>
+                <!-- Delete button -->
+                <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="deleteButton" type="button" @click="removeEvent">Delete</button>
             </form>
         </div>
       </div>
@@ -398,6 +409,10 @@ function handleDateClick (info) {
     changeButton.value = false;
     deleteButton.value = false;
 
+    startTime.value = '';
+    endTime.value = '';
+    selectedSort.value = '';
+
     // Saves the selected date
     selectedDate.value = new Date(info.date);
 }
@@ -497,5 +512,40 @@ onMounted(() => {
 </script>
 
 <style>
-/* Optional: Add custom styles for FullCalendar */
+.custom-radio-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.custom-radio {
+  display: none;
+}
+
+.custom-radio-style {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #D1D5DB; /* gray-300 */
+  border-radius: 50%;
+  background-color: white;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.custom-radio:checked + .custom-radio-style {
+  border-color: #ff3521; 
+  background-color: #ff3521; 
+}
+
+.custom-radio:checked + .custom-radio-style::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: white;
+  transform: translate(-50%, -50%);
+}
 </style>
