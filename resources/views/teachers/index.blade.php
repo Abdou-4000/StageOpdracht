@@ -11,6 +11,7 @@
             @csrf
             <label for="file" class="block text-gray-dark font-semibold mb-2">Upload CSV File:</label>
             <input type="file" name="file" id="file" required class="block w-full text-gray-dark border border-gray-300 rounded-2xl p-2">
+            <a class="m-1" href="{{ asset('assets/CSVvoorbeeld.xlsx') }}" download>Download Excel template</a>
             <button type="submit" class="mt-4 w-full bg-red text-white font-semibold py-2 rounded-3xl">
                 Leerkrachten toevoegen
             </button>

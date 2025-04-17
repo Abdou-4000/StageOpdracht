@@ -11,6 +11,8 @@ use App\Models\Teacher;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Availability;
+use App\Models\Exception;
 use App\Services\TeacherDataService;
 use App\Imports\TeachersImport;
 
@@ -200,8 +202,14 @@ class TeacherController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Teacher $teacher) {
+        $user = User::where('id', $teacher->user_id)->first();
+        $availabilities = Availability::where('teacher_id', $teacher->id)->get();
+        $exceptions = Exception::where('teacher_id', $teacher->id)->get();
         $teacher->category()->detach();
         $teacher->delete();
+        $user->delete();
+        $availabilities->each->delete();
+        $exceptions->each->delete();
         return redirect()->route('teachers.index');
     }
 

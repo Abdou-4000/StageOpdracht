@@ -30,7 +30,7 @@ const props = defineProps({
             <TeacherMap/>
         </div>
         <div>
-            <Footer/>
+            <FooterF/>
         </div>
 </template>
 
