@@ -78,8 +78,8 @@
     </div>
 </template>
 
-<script setup lang="js">
-import { ref, onMounted, toRaw, watch } from 'vue';
+<script setup lang>
+import { ref, onMounted, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
@@ -88,7 +88,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
 import axios from 'axios';
-import '../../css/radioButton.css';
 
 const page = usePage();
 const teacherId = page.props.teacherId;
@@ -233,14 +232,22 @@ function saveChanges() {
     const [startHour, startMinute] = startTime.value.split(':');
     const [endHour, endMinute] = endTime.value.split(':');
 
-    selectedEvent.value.start.setHours(startHour, startMinute);
-    selectedEvent.value.end.setHours(endHour, endMinute);
+    const eventStart = new Date(selectedEvent.value.start);
+    const eventEnd = new Date(selectedEvent.value.end);
+
+    eventStart.setHours(startHour, startMinute);
+    eventEnd.setHours(endHour, endMinute);
+
+    // Checks if the end time is on the next day
+    if (eventEnd <= eventStart) {
+        eventEnd.setDate(eventEnd.getDate() + 1);
+    }
 
     const updatedEvent = {
         id: selectedEvent.value.id,
         title: selectedEvent.value.title,
-        start: formatToDateTimeString(selectedEvent.value.start),
-        end: formatToDateTimeString(selectedEvent.value.end),
+        start: formatToDateTimeString(eventStart),
+        end: formatToDateTimeString(eventEnd),
     }
 
     // The URL to send the PUT request to
@@ -347,6 +354,11 @@ function handleSubmit () {
     eventStart.setHours(startHour, startMinute);
     eventEnd.setHours(endHour, endMinute);
 
+    // Checks if the end time is on the next day
+    if (eventEnd <= eventStart) {
+        eventEnd.setDate(eventEnd.getDate() + 1);
+    }
+
     // Pushes the object into the exceptions array
     const exception = {
         title: selectedSort.value,
@@ -424,6 +436,7 @@ function handleDateClick (info) {
 
     // Saves the selected date
     selectedDate.value = new Date(info.date);
+    console.log('selected day', selectedDate.value)
 }
 
 async function getExceptions () {
@@ -521,5 +534,5 @@ onMounted(() => {
 </script>
 
 <style>
-
+@import '../../css/radioButton.css';
 </style>
