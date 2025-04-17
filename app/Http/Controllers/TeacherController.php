@@ -217,12 +217,19 @@ class TeacherController extends Controller
      * csv import.
      */
     public function import(Request $request) {
+        TeachersImport::$added = 0;
+        TeachersImport::$exists = 0;
+
         $request->validate([
             'file' => 'required|mimes:csv,txt'
         ]);
 
         Excel::import(new TeachersImport, $request->file('file'));
 
-        return back()->with('success', 'Teachers imported successfully.');
+        return back()->with([
+            'success' => 'Teachers imported successfully.',
+            'added' => TeachersImport::$added,
+            'exists' => TeachersImport::$exists,
+        ]);
     }
 }

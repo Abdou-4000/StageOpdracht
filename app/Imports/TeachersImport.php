@@ -15,6 +15,9 @@ use Illuminate\Support\Str;
 
 class TeachersImport implements ToModel, WithHeadingRow
 {
+    public static $added = 0;
+    public static $exists = 0;
+
     /**
     * @param array $row
     *
@@ -42,13 +45,20 @@ class TeachersImport implements ToModel, WithHeadingRow
         $streetnumber = (empty($row['streetnumber']) || strlen($row['streetnumber']) > 10) ? null : $row['streetnumber'];
         $userEmail = $this->generateEmail($firstname, $lastname);
 
-        $user = User::create([
-            'name' => $firstname . ' ' . $lastname,
-            'email' => $userEmail,
-            'password' => Hash::make(Str::random(12)),
-        ]);
-
-        $user->assignRole('teacher');
+        // Checks if the user already exists
+        if (User::where('email', $userEmail)->exists()) {
+            self::$exists++;
+            return;
+        } else {
+            $user = User::create([
+                'name' => $firstname . ' ' . $lastname,
+                'email' => $userEmail,
+                'password' => Hash::make(Str::random(12)),
+            ]);
+        
+            self::$added++;
+            $user->assignRole('teacher');
+        }
 
         // If any required fields are null, flag the record
         if (is_null($firstname) || is_null($lastname) || is_null($email) || is_null($phone) || is_null($companynumber) || is_null($companyname) || is_null($street) || is_null($streetnumber)) {
@@ -68,10 +78,8 @@ class TeachersImport implements ToModel, WithHeadingRow
             'city_id'       => $city_id,
             'lat'           => null, 
             'lng'           => null,
+            'user_id'       => $user->id,
         ]);
-
-        $teacher->user_id = $user->id;
-        $teacher->save();
 
         // Attach categories to teacher
         $categories = explode(',', $row['categories']);
