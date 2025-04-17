@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang>
-import { ref, onMounted, toRaw } from 'vue';
+import { ref, onMounted } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
 import interactionPlugin from '@fullcalendar/interaction';  
@@ -48,13 +48,13 @@ const calendarOptions = ref({
         events: function(info, successCallback) {
             successCallback(events.value);
         },
-        color: 'red'
+        color: '#9C91c5'
     },
     {
         events: function(info, successCallback) {
             successCallback(exceptions.value);
         },
-        color: 'blue',
+        color: '#71bdba',
     }
   ],
   eventTimeFormat: {
@@ -190,5 +190,22 @@ onMounted(async () => {
 </script>
 
 <style>
-/* Optional: Add custom styles for FullCalendar */
+.fc-list-day-cushion {
+    background-color: #343943 !important; /* bg color days */
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    font-size: 1.1rem;
+}
+.fc .fc-list-day {
+  border-bottom: 2px solid #fbba00; /* border days */
+}
+.fc .fc-list-event {
+  border-bottom: 2px solid #fbba00; /* border event */
+}
+.fc .fc-list {
+  border: 2px solid #fbba00; /* whole calendar border */
+  border-radius: 8px;
+  overflow: hidden;
+}
 </style>
