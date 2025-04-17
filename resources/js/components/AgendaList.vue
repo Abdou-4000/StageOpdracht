@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script setup lang="js">
+<script setup lang>
 import { ref, onMounted, toRaw } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
