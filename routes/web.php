@@ -25,9 +25,8 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return redirect()->route('map');
 })->name('home');
-
 
 Route::get('login', function () {
     return Inertia::render('Auth/Login');
@@ -58,11 +57,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 
 Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat');
 
-Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
-
-
 // CRUD routes (Teacher/Categories)
-
 Route::resource('teachers', TeacherController::class);
 Route::resource('categories', CategoryController::class);
 
@@ -77,11 +72,6 @@ Route::get('/export-pdf', [ExportController::class, 'exportPDF']);
 Route::get('/madeby', function () {
     return Inertia::render('MadeBy');
 })->name('madeby');
-
-// Agenda test
-Route::get('/test', function () {
-    return Inertia::render('Test'); // 🔹 This will load `Test.vue`
-})->name('test');
 
 // Agenda
 Route::get('/agenda/{teacher}', [AgendaController::class, 'index'])->name('agenda');

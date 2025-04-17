@@ -1,4 +1,5 @@
 <script setup lang>
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
   user: Object,
@@ -10,8 +11,15 @@ const props = defineProps({
         <!-- header -->
         <div class="flex flex-row justify-between m-4">
             <!-- Logo -->
-            <div class="w-1/12">
-                <img src="../../../public/assets/Logo.png" alt="Logo">
+            <div class="flex flex-row">
+                <img class="w-1/6" src="../../../public/assets/Logo.png" alt="Logo">
+                <div class="flex text-gray-dark w-1/4 ml-2 items-center justify-between w-full font-medium" v-if="user">
+                    <p>Welkom {{ user.name }}</p>
+                    <Link class="text-red" href="/logout" method="POST" as="button">Log uit</Link>
+                </div>
+                <a v-else class="flex text-gray-dark ml-2 items-center font-medium" :href="`/login`"> 
+                    Inloggen
+                </a>
             </div>
             <div class="flex w-1/6 h-10">
                 <!-- Teacher button to teacherprofile -->
