@@ -1,57 +1,60 @@
 <template>
   <div class="map-wrapper">
 
-
     <div class="map-container">
       <div id="map"></div>
     </div>
       <div class="controls">
-        <div class="search-container">
+        <!-- searchbar -->
+        <div class="flex bg-red rounded-3xl">
           <input 
             type="text" 
             v-model="searchQuery" 
-            class="search-input" 
-            id="search-input"
-            placeholder="Teacher"
+            class="flex bg-red w-full p-2 pl-6 pr-6 rounded-3xl text-white" 
+            placeholder="Zoeken"
             @keyup.enter="performSearch"
           >
-          <button id="search-button" @click="performSearch">
-            <i class="fas fa-search"></i>
+          <button id="" @click="performSearch">
+            <i class=""></i>
           </button>
-          <div id="search-results" v-if="showSearchResults" class="search-dropdown">
+          <div v-if="showSearchResults" class="hidden">
             <div v-for="result in searchResults" 
                  :key="result.id" 
-                 class="search-result-item"
+                 class="hidden"
                  @click="selectTeacher(result)">
-              <div class="result-name">{{ result.name }}</div>
-              <div class="result-details">
-                <span class="category">{{ getCategoryDisplay(result) }}</span>
-                <span v-if="userLocation" class="distance">({{ getDistance(result) }} km)</span>
+              <div class="hidden">{{ result.name }}</div>
+              <div class="hidden">
+                <span class="hidden">{{ getCategoryDisplay(result) }}</span>
+                <span v-if="userLocation" class="hidden">({{ getDistance(result) }} km)</span>
               </div>
             </div>
-            <div v-if="searchResults.length === 0" class="no-results">
+            <div v-if="searchResults.length === 0" class="hidden">
               No results found
             </div>
           </div>
         </div>
         
-        <select v-model="selectedCategory" id="category-filter" class="filter-select">
-          <option value="all">Categorie</option>
-          <option v-for="category in categories" 
-                  :key="category" 
-                  :value="category">
-            {{ category }}
-          </option>
-        </select>
+        <!-- Categories -->
+        <div class="flex justify-center bg-darkred p-3 pl-5 pr-5 rounded-3xl">
+          <select v-model="selectedCategory" class="bg-darkred w-full">
+            <option value="all">Categorie</option>
+            <option v-for="category in categories" 
+                    :key="category" 
+                    :value="category">
+              {{ category }}
+            </option>
+          </select>
+        </div>
         
-        <div class="radius-container">
-          <span class="radius-label">Straal</span>
-          <input type="number" 
-                 v-model.number="radius" 
-                 id="radius-filter"
-                 min="1" 
-                 max="50">
-          <span>Km</span>
+        <!-- Radius -->
+        <div class="flex justify-between bg-gray-dark p-3 pl-6 pr-6 rounded-3xl">
+          <div class="flex items-center">
+            Straal
+          </div>
+          <div class="flex items-center">
+            <input type="number" v-model.number="radius" id="radius-filter" min="1" max="50">
+            <p class="ml-1">km</p>
+          </div>
         </div>
       </div>
     </div>
