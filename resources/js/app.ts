@@ -51,7 +51,7 @@ createInertiaApp({
         vueApp.component('AgendaMonth', AgendaMonth);
         vueApp.component('AgendaList', AgendaList);
 
-        vueApp.component('Footer', Footer);
+        vueApp.component('FooterF', Footer);
 
         vueApp.component('GiveReviews', GiveReviews);
         

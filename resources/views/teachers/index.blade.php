@@ -9,8 +9,16 @@
     <div class="flex flex-wrap">
         <form action="{{ route('teachers.import') }}" method="POST" enctype="multipart/form-data" class="mt-6 p-6 w-full max-w-lg mx-auto">
             @csrf
+            @if(session('success'))
+                <div class="alert alert-success text-green-500" id="success-message">
+                    {{ session('success') }}
+                    {{ session('added') }} leerkracht(en) toegevoegd.
+                    {{ session('exists') }} leerkracht(en) bestonden al.
+                </div>
+            @endif
             <label for="file" class="block text-gray-dark font-semibold mb-2">Upload CSV File:</label>
             <input type="file" name="file" id="file" required class="block w-full text-gray-dark border border-gray-300 rounded-2xl p-2">
+            <a class="m-1" href="{{ asset('assets/CSVvoorbeeld.xlsx') }}" download>Download Excel template</a>
             <button type="submit" class="mt-4 w-full bg-red text-white font-semibold py-2 rounded-3xl">
                 Leerkrachten toevoegen
             </button>
@@ -91,5 +99,17 @@
         </div>
     </div>
 </div>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const successMessage = document.getElementById('success-message');
+        
+        // Check if the success message exists
+        if (successMessage) {
+            // Set a timeout to hide the message after 5 seconds (5000 ms)
+            setTimeout(function() {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+    });
+</script>
 @endsection

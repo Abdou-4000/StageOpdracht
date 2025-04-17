@@ -4,13 +4,13 @@
 
 <template>
     <!-- Header -->
-    <div class="flex flex-row justify-between mt-40">
+    <div class="flex flex-row justify-between mt-52">
         <!-- Logo -->
         <div class="w-2/12 m-10">
             <img src="../../../public/assets/Logo.png" alt="Logo">
         </div>
         <div class="flex m-8 mt-20">
-            <a class="flex text-white bg-red w-96 h-10 p-2 justify-center rounded-full" href="/map">
+            <a class="flex text-white bg-red w-96 h-10 mr-10 p-2 justify-center rounded-full" href="/map">
                 Kaart
             </a> 
         </div>
@@ -33,7 +33,7 @@
             </a>
         </div>
     </div>
-    <div class="flex flex-row justify-between bg-red text-white w-[600px] m-4 mt-10 ml-12 xl:ml-[250px] p-2 rounded-3xl">
+    <div class="flex flex-row justify-between bg-red text-white w-[600px] m-4 mt-6 xl:mt-12 ml-12 xl:ml-[250px] p-2 rounded-3xl">
         <div class="flex text-xl p-2">
             Merlijn Ruysen
         </div>
@@ -50,7 +50,7 @@
             </a>
         </div>
     </div>
-    <div class="flex flex-row justify-between bg-gray-light text-white w-[600px] m-4 mt-10 ml-12 xl:ml-[650px] p-2 rounded-3xl">
+    <div class="flex flex-row justify-between bg-gray-light text-white w-[600px] m-4 mt-6 xl:mt-12 ml-12 xl:ml-[650px] p-2 rounded-3xl">
         <div class="flex text-xl p-2">
             Abderrahman Arreffag
         </div>
@@ -62,7 +62,7 @@
             </a>
         </div>
     </div>
-    <div class="flex flex-row justify-between bg-darkred text-white w-[600px] m-4 mt-10 ml-12 xl:ml-[350px] p-2 rounded-3xl">
+    <div class="flex flex-row justify-between bg-darkred text-white w-[600px] m-4 mt-6 xl:mt-12 ml-12 xl:ml-[350px] p-2 rounded-3xl">
         <div class="flex text-xl p-2">
             Massimo De Nittis
         </div>
@@ -75,8 +75,8 @@
         </div>
     </div>
     <!-- Footer -->
-    <div class="w-screen mt-12">
-        <Footer/>
+    <div class="w-screen mt-10 xl:mt-16">
+        <FooterF/>
     </div>
 </template>
 

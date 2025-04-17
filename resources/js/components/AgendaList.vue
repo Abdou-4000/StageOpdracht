@@ -9,8 +9,8 @@
     </div>
 </template>
 
-<script setup lang="js">
-import { ref, onMounted, toRaw } from 'vue';
+<script setup lang>
+import { ref, onMounted } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'; 
 import dayGridPlugin from '@fullcalendar/daygrid';  
 import interactionPlugin from '@fullcalendar/interaction';  
@@ -38,9 +38,12 @@ const calendarOptions = ref({
   allDaySlot: false,
   displayEventTime: true,
   displayEventEnd: true,
+  validRange: {
+    start: new Date().toISOString().split('T')[0],
+  },
   headerToolbar: {
-    left: 'next',
-    center: 'title',
+    left: 'prev,next',
+    center: '',
     right: 'today'
   },
   eventSources: [
@@ -48,13 +51,13 @@ const calendarOptions = ref({
         events: function(info, successCallback) {
             successCallback(events.value);
         },
-        color: 'red'
+        color: '#9C91c5'
     },
     {
         events: function(info, successCallback) {
             successCallback(exceptions.value);
         },
-        color: 'blue',
+        color: '#71bdba',
     }
   ],
   eventTimeFormat: {
@@ -133,6 +136,11 @@ async function getEvents () {
             const endTime = new Date();
             endTime.setHours(endHour, endMinute, 0);
 
+            // Checks if the end time is on the next day
+            if (endTime <= startTime) {
+                endTime.setDate(endTime.getDate() + 1);
+            }
+
             const durationMilliseconds = endTime - startTime;
             const durationHours = Math.floor(durationMilliseconds / (1000 * 60 * 60));
             const durationMinutes = Math.floor((durationMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
@@ -190,5 +198,28 @@ onMounted(async () => {
 </script>
 
 <style>
-/* Optional: Add custom styles for FullCalendar */
+.fc-list-day-cushion {
+    background-color: #343943 !important; /* bg color days */
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    font-size: 1.1rem;
+}
+.fc .fc-list-day {
+  border-bottom: 2px solid #fbba00; /* border days */
+}
+.fc .fc-list-event {
+  border-bottom: 2px solid #fbba00; /* border event */
+}
+.fc .fc-list {
+  border: 2px solid #fbba00; /* whole calendar border */
+  border-radius: 8px;
+  overflow: hidden;
+}
+.fc-list .fc-list-event {
+    color: white; /* text color event */
+}
+.fc-list .fc-list-event:hover {
+    color: black; /* hover text color */
+}
 </style>
