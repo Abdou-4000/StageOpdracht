@@ -1,7 +1,7 @@
 <template class="bg-white">
     <div class="flex flex-col relative m-6 mb-16 ml-12">
         <!--Contact vorm-->
-        <div class="flex justify-between bg-gray-dark p-2.5 pl-8 rounded-3xl clip-polygon">
+        <div class="flex justify-between bg-gray-dark text-white p-2.5 pl-8 rounded-3xl clip-polygon">
             <!--Contact informatie-->
             <div class="m-2">
                 <div class="text-2xl font-semibold">Heb je een vraag?</div>
