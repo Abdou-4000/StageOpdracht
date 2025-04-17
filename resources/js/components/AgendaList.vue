@@ -38,9 +38,12 @@ const calendarOptions = ref({
   allDaySlot: false,
   displayEventTime: true,
   displayEventEnd: true,
+  validRange: {
+    start: new Date().toISOString().split('T')[0],
+  },
   headerToolbar: {
-    left: 'next',
-    center: 'title',
+    left: 'prev,next',
+    center: '',
     right: 'today'
   },
   eventSources: [
