@@ -108,7 +108,7 @@
   </div>
 </template>
 
-<script setup lang="js">
+<script setup lang>
 import { ref, onMounted, toRaw, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import FullCalendar from '@fullcalendar/vue3'; 
@@ -118,7 +118,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
 import axios from 'axios';
-import '../../css/radioButton.css';
 
 const page = usePage();
 const teacherId = page.props.teacherId;
@@ -391,6 +390,11 @@ function handleSubmit() {
       const eventEnd = new Date(eventDate);
       eventEnd.setHours(endHour, endMinute); // Set the end time
 
+      // Checks if the end time is on the next day
+      if (eventEnd <= eventStart) {
+          eventEnd.setDate(eventEnd.getDate() + 1);
+      }
+
       // Add the event with the calculated date and time
       events.value.push({
         title: selectedSort.value,
@@ -464,6 +468,11 @@ async function getEvents() {
           const eventEnd = new Date(eventDate);
           eventEnd.setHours(endHour, endMinute); // Set the end time
 
+          // Checks if the end time is on the next day
+          if (eventEnd <= eventStart) {
+              eventEnd.setDate(eventEnd.getDate() + 1);
+          }
+
           // Push the modified event into the events array
           events.value.push({
             title: event.title,
@@ -491,5 +500,5 @@ onMounted(() => {
 </script>
 
 <style>
-
+@import '../../css/radioButton.css';
 </style>

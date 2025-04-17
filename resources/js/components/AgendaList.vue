@@ -133,6 +133,11 @@ async function getEvents () {
             const endTime = new Date();
             endTime.setHours(endHour, endMinute, 0);
 
+            // Checks if the end time is on the next day
+            if (endTime <= startTime) {
+                endTime.setDate(endTime.getDate() + 1);
+            }
+
             const durationMilliseconds = endTime - startTime;
             const durationHours = Math.floor(durationMilliseconds / (1000 * 60 * 60));
             const durationMinutes = Math.floor((durationMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
@@ -207,5 +212,11 @@ onMounted(async () => {
   border: 2px solid #fbba00; /* whole calendar border */
   border-radius: 8px;
   overflow: hidden;
+}
+.fc-list .fc-list-event {
+    color: white; /* text color event */
+}
+.fc-list .fc-list-event:hover {
+    color: black; /* hover text color */
 }
 </style>
