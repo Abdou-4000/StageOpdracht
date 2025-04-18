@@ -1,7 +1,8 @@
 <template>
-    <div class="space-y-3">
-      <!-- Star rating -->
-      <div class="flex items-center space-x-1 group">
+  <div class="flex flex-col h-full">
+    <!-- Star rating in dark box -->
+    <div class="bg-[#22262d] text-white p-4 rounded-[35px] font-bold text-2xl w-full h-1/4 text-center flex items-center justify-center">
+      <div class="flex items-center justify-center space-x-1 group">
         <button
           v-for="n in maxStars"
           :key="n"
@@ -33,58 +34,118 @@
           </svg>
         </button>
       </div>
-  
-       <!-- Textarea for review with maxlength for varchar(255) -->
-        <textarea
-        v-model="review"
-        placeholder="Leave a review (optional)..."
-        class="w-full p-2 text-gray-600 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
-        rows="3"
-        maxlength="255"
-        ></textarea>
-
-        <button class="text-gray-600" @click="saveReview()">Opslaan</button>
     </div>
+
+    <!-- Textarea and button in white area -->
+    <div class="flex-1 p-2 flex flex-col space-y-1">
+      <textarea
+        v-model="review"
+        :disabled="isLoading"
+        placeholder="Leave a review (optional)..."
+        class="w-full p-2 text-gray-600 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none flex-1"
+        maxlength="255"
+      ></textarea>
+
+      <!-- Error message -->
+      <div v-if="error" class="text-red  font-medium">
+        {{ error }}
+      </div>
+
+      <!-- Success message -->
+      <div v-if="successMessage" class="text-green-500 text-sm">
+        {{ successMessage }}
+      </div>
+
+      <button 
+        :disabled="isLoading || !rating"
+        :class="{'opacity-50 cursor-not-allowed': isLoading || !rating}"
+        class="bg-[#22262d] text-white px-4 py-2 rounded-[50px] max-w-[200px] hover:bg-opacity-90" 
+        @click="saveReview"
+      >
+        <span v-if="isLoading">Saving...</span>
+        <span v-else>Save Review</span>
+      </button>
+    </div>
+  </div>
 </template>
-  
+
 <script setup lang="js">
 import { ref } from 'vue';
 import axios from 'axios';
-  
+
 const rating = ref(0);
 const hoverRating = ref(0);
 const review = ref('');
 const maxStars = 5;
 const r = ref('');
-  
+const isLoading = ref(false);
+const error = ref('');
+const successMessage = ref('');
+const props = defineProps({
+teacherId: { 
+  type: Number,
+  required: true
+}
+});
+
+const emit = defineEmits(['review-saved']); 
+
 function onMouseMove(event, n) {
-    const { offsetX, currentTarget } = event
-    const isHalf = offsetX < currentTarget.offsetWidth / 2
-    hoverRating.value = n - (isHalf ? 0.5 : 0)
+  const { offsetX, currentTarget } = event
+  const isHalf = offsetX < currentTarget.offsetWidth / 2
+  hoverRating.value = n - (isHalf ? 0.5 : 0)
 }
-  
+
 function setRating(n) {
-    rating.value = hoverRating.value || n
+  rating.value = hoverRating.value || n
 }
-  
+
 function displayRating(n) {
-    const value = hoverRating.value || rating.value
-    if (value >= n) return 'full'
-    if (value >= n - 0.5) return 'half'
-    return 'empty'
+  const value = hoverRating.value || rating.value
+  if (value >= n) return 'full'
+  if (value >= n - 0.5) return 'half'
+  return 'empty'
 }
 
-function saveReview() {
-    r.value = {
-        rating: rating.value,
-        review: review.value,
-    }
+async function saveReview() {
+  if (!rating.value) {
+      error.value = 'Please select a rating';
+      return;
+  }
 
-    // Save the events to the database
-    axios.post('/reviews', r)
-    .then(response => {console.log(response.data);})
-    .catch(error => {console.error('Error:', error);});
+  try {
+      const response = await axios.post('/reviews', {
+          teacher_id: props.teacherId,
+          rating: rating.value,
+          review: review.value
+      });
+      
+      successMessage.value = 'Review saved successfully!';
+      review.value = '';
+      rating.value = 0;
+
+  } catch (err) {
+      if (err.response?.status === 401) {
+          error.value = 'Please login to leave a review';
+      } else if (err.response?.status === 422) {
+          error.value = err.response.data.message;
+      } else {
+          error.value = 'Failed to save review';
+      }
+  }
 }
 </script>
-  
-<style></style>
+
+<style>
+.error-shake {
+animation: shake 0.5s;
+}
+
+@keyframes shake {
+0% { transform: translateX(0); }
+25% { transform: translateX(5px); }
+50% { transform: translateX(-5px); }
+75% { transform: translateX(5px); }
+100% { transform: translateX(0); }
+}
+</style>

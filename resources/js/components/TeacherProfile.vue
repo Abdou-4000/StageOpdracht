@@ -55,8 +55,7 @@
                         xl:w-[55%]
                         lg:w-[80%] lg:translate-x-[10%]
                         md:w-[110%] md:translate-x-[20%]
-                        sm:w-[110%] sm:translate-x-[20%]
-                        ">
+                        sm:w-[110%] sm:translate-x-[20%]">
               <span class="font-bold">City:</span>
               {{ teacher.city || 'N/A' }}
             </div>
@@ -68,15 +67,7 @@
                       xl:w-[60%]
                       lg:w-[60%]
                       md:w-[60%]">
-            <div v-for="item in [ 'Rating']" 
-                 class="bg-[#22262d] text-white p-4 rounded-[35px] font-bold text-2xl w-full h-1/4 text-center
-                        xl:text-xl
-                        lg:text-lg
-                        md:text-base
-                        sm: h-full">
-              {{ item }}
-            </div>
-          </div>
+            <GiveReviews ref="reviewComponent" :teacher-id="teacher.id" />
           </div>
         </div>
       </div>
@@ -99,12 +90,18 @@
         <img src="../../../public/assets/Logo.png" alt="Syntra Logo" class="h-[130px] w-[180px] object-contain">
       </div>
     </div>
+  </div>
 
 </template>
 
 <script>
+import GiveReviews from './GiveReviews.vue'
+
 export default {
   name: 'TeacherProfile',
+  components: {
+    GiveReviews
+  },
   props: {
     show: Boolean,
     teacher: Object,
@@ -160,4 +157,11 @@ clip-path: none;
 }
 }
 
+.stars-only textarea, .stars-only button {
+  display: none;
+}
+
+.textarea-only .group {
+  display: none;
+}
 </style>
