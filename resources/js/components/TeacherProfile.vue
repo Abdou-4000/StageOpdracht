@@ -1,5 +1,5 @@
 <template>
-<div class="flex justify-center content-center" @click="closeProfile">
+<div class="flex justify-center w-screen bg-black/20" @click="closeProfile">
   <div v-if="show" class="flex flex-col relative">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>

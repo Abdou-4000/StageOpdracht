@@ -1,5 +1,5 @@
 <template class="bg-white">
-    <div class="flex flex-col relative m-6 mb-16 ml-12">
+    <div class="flex flex-col relative items-center xl:items-start m-10 mb-16 ml-0 xl:ml-12">
         <!--Contact vorm-->
         <div class="flex justify-between bg-gray-dark text-white p-2.5 pl-8 rounded-3xl clip-polygon">
             <!--Contact informatie-->
@@ -26,14 +26,14 @@
                 </div>
             </div>
             <!-- Mady By -->
-            <div class="flex text-xs text-gray-500">
+            <div class="flex text-xs text-gray-500 hidden sm:block">
                 <div class="p-2">
                     <a href="/madeby">Gemaakt door</a>
                 </div>
             </div>
         </div>
         <!--Sociale media-->
-        <div class="flex justify-evenly bg-gray-light mt-4 xl:mt-0 sm:w-4/5 xl:w-3/5 h-24 p-4 pl-0.5 sm:pl-4 rounded-3xl xl:absolute xl:top-[136px] xl:left-[508px]" >
+        <div class="flex justify-evenly bg-gray-light mt-4 xl:mt-0 w-4/5 xl:w-3/5 h-24 p-4 pl-0.5 sm:pl-4 rounded-3xl xl:absolute xl:top-[136px] xl:left-[508px]" >
             <div class="flex flex-row md:gap-8 lg:gap-16">
                 <!-- Facebook -->
                 <a href="https://www.facebook.com/syntrapxl/" target="_blank">
@@ -118,11 +118,5 @@
         height: 200px;
     }
 }
- @media (max-width: 640px) {
-    .clip-polygon {
-        clip-path: none;
-        width: 100%;
-        height: 200px;
-    }
- }
+
 </style>

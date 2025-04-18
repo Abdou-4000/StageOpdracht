@@ -8,10 +8,11 @@ const props = defineProps({
 </script>
 
 <template>
+    <div class="bg-white">
         <!-- header -->
-        <div class="flex flex-row justify-between m-4">
+        <div class="flex flex-row justify-between">
             <!-- Logo -->
-            <div class="flex flex-row">
+            <div class="flex flex-row pt-1">
                 <img class="w-1/6" src="../../../public/assets/Logo.png" alt="Logo">
                 <div class="flex text-gray-dark w-1/4 ml-2 items-center justify-between w-full font-medium" v-if="user">
                     <p>Welkom {{ user.name }}</p>
@@ -21,7 +22,7 @@ const props = defineProps({
                     Inloggen
                 </a>
             </div>
-            <div class="flex w-1/6 h-10">
+            <div class="flex w-1/6 h-10 m-4">
                 <!-- Teacher button to teacherprofile -->
                 <a class="flex justify-center bg-red text-white w-full p-2 rounded-3xl" :href="`/teacherprofile`" v-if="user?.roles?.includes('teacher')"> 
                     Leerkrachtenprofiel
@@ -40,6 +41,7 @@ const props = defineProps({
         <div>
             <FooterF/>
         </div>
+    </div>
 </template>
 
 <style>
@@ -50,9 +52,5 @@ const props = defineProps({
         width: 100vw;
         overflow-x: hidden;
         overflow-y: auto; 
-    }
-    #app {
-        height: 100vh;
-        width: 100vw;
     }
 </style>
