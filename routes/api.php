@@ -21,7 +21,9 @@ Route::delete('/exceptions/{id}', [ExceptionController::class, 'destroy']);
 
 Route::get('/map/teachers', [MapController::class, 'index']);
 
+// Reviews routes
 Route::post('/reviews', [ReviewController::class, 'saveReview']);
+Route::get('/teachers/{teacher}/reviews', [ReviewController::class, 'getTeacherReviews']);
 
 // Chat routes
 Route::group(['prefix' => 'chat'], function () {
