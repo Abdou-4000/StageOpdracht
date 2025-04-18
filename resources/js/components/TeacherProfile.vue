@@ -1,72 +1,78 @@
 <template>
-<div class="flex justify-center pb-28" @click="closeProfile">
-  <div v-if="show" class="flex flex-col relative">
+<div class="flex justify-center bg-black/20 pb-28" @click="closeProfile">
+  <div v-if="show" class="flex flex-col relative left-[70px]">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
         
             <!-- Main Info Items Container -->
             <div class="w-2/3 flex flex-col items-center m-6">
               <!-- Company Name -->
-              <div class="flex justify-center bg-accentBlue text-white w-3/5 m-3 ml-[200px] p-2 rounded-3xl">
-                {{ normalizedTeacher.compname || 'N/A' }}
+              <div class="flex justify-center bg-accentBlue text-white w-3/5 m-3 ml-[125px] p-2 rounded-3xl">
+                {{ normalizedTeacher.name || 'N/A' }}
               </div>
 
               <!-- Teacher Name -->
               <div class="flex justify-center bg-accentPurple text-white w-3/5 m-3 ml-[-200px] p-2 rounded-3xl">
-                {{ normalizedTeacher.name || 'N/A' }}
+                {{ normalizedTeacher.compname || 'N/A' }}
               </div>
 
               <!-- Address -->
-              <div class="flex justify-center bg-accentPink text-white w-3/5 m-3 ml-[125px] p-2 rounded-3xl">
-                <span class="font-bold">Address:</span>
+              <div class="flex justify-center bg-accentPink text-white w-3/5 m-3 ml-[200px] p-2 rounded-3xl">
                 {{ normalizedTeacher.details?.location || 'N/A' }}
               </div>
 
-              <!-- City -->
+              <!-- Address -->
               <div class="flex justify-center bg-accentYellow text-white w-3/5 m-3 ml-[-75px] p-2 rounded-3xl">
-                <span class="font-bold">City:</span>
-                {{ teacher.city || 'N/A' }}
+                {{ normalizedTeacher.details?.syntramail || 'N/A' }}
               </div>
+
+              <!-- <div v-for="item in [normalizedTeacher.details?.email || 'Email', normalizedTeacher.details?.phone || 'Phone', getCategoryDisplay || 'Category']" 
+              class="flex bg-red justify-center w-full m-1 p-2 rounded-3xl">
+                {{ item }}
+              </div> -->
             </div>
 
             <!-- Agenda List -->
-            <div class="hidden xl:block w-2/5 h-1/2 m-6">
+            <div class="hidden xl:block w-2/5 h-1/2 m-6 mr-12">
               <AgendaList :id="teacher.id"/>
-              <div v-for="item in [normalizedTeacher.details?.email || 'Email', normalizedTeacher.details?.phone || 'Phone', getCategoryDisplay || 'Category']" 
-              class="flex bg-red justify-center w-full m-1 p-2 rounded-3xl">
-                {{ item }}
+              <!-- City -->
+              <div class="flex flex-col p-2 rounded-3xl">
+                <div v-for="(item, index) in normalizedTeacher.category" 
+                  :key="index" 
+                  :style="{ backgroundColor: item.color }"
+                  class="flex justify-center text-white m-1 p-1 rounded-3xl">
+                  {{ item.name || 'N/A' }}
+                </div>
               </div>
             </div>
       </div>
 
       <!-- Side box -->
-      <div class="flex absolute top-[310px] left-[-183px]">
-        <div class="flex flex-col w-full bg-darkred items-center w-[555px] h-[220px] m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
+      <div class="flex absolute top-[310px] left-[-181px]">
+        <div class="flex flex-col w-full bg-darkred items-center w-[550px] h-[220px] m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
           <!-- review -->
-          <div class="flex bg-red justify-center w-full m-1 p-2 rounded-3xl">
+          <!-- <div class="flex bg-red justify-center w-full m-1 p-2 rounded-3xl">
               <div v-for="item in [ 'Rating']" class="">
                 {{ item }}
               </div>
-          </div>
+          </div> -->
 
-          <div class="absolute bottom-5 h-[35%] right-5 bg-white rounded-[45px] p-2.5 flex flex-col gap-[4%]
-                      2xl:w-[60%]
-                      xl:w-[60%]
-                      lg:w-[60%]
-                      md:w-[60%]">
+          <ReviewDisplay v-for="review in recentReviews" 
+                           :key="review.id" 
+                           :review="review"/>
+
+          <div class="w-full">
             <!-- Recent Reviews -->
             <button 
               @click="showReviewModal = true"
-              class="bg-[#22262d] text-white ml-auto min-w-[200px] py-2 rounded-[50px] font-bold text-xl hover:bg-opacity-90"
-            >
+              class="">
               Give Review
             </button>
-            <div class="flex-1 overflow-none">
+            <div class="">
               <ReviewDisplay v-for="review in recentReviews" 
                            :key="review.id" 
                            :review="review" />
             </div>
-
           </div>
         </div>
       </div>
@@ -85,11 +91,11 @@
       </div>
 
       <!-- Logo box -->
-      <div class="flex absolute w-1/4 top-[70px] left-[1000px]">
+      <!-- <div class="flex absolute w-1/5 top-[75px] left-[1030px]">
         <div class="flex justify-center bg-white border border-red border-4 m-3 p-1 rounded-3xl">
           <img src="../../../public/assets/Logo.png" alt="Syntra Logo">
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

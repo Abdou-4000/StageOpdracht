@@ -13,7 +13,7 @@ class MapController extends Controller
      * Teacher data for the map
      */
     public function index() {
-        $teacher = Teacher::with(['city', 'category']) 
+        $teacher = Teacher::with(['city', 'category', 'user']) 
             ->whereNotNull('lat')
             ->whereNotNull('lng')
             ->get();
@@ -26,12 +26,18 @@ class MapController extends Controller
                         'lat' => (float)$teacher->lat,
                         'lng' => (float)$teacher->lng,
                         'compname' => $teacher->companyname ?? 'Uncategorized',
-                        'category' => $teacher->category->pluck('name')->toArray(), 
+                        'category' => $teacher->category->map(function ($item) {
+                                        return [
+                                            'name' => $item->name,
+                                            'color' => $item->color,
+                                        ];
+                                    })->toArray(), 
                         'details' => [
-                            'location' => $teacher->street . ' ' . $teacher->streetnumber,
-                            'email' => $teacher->email,
-                            'phone' => $teacher->phone,
-                            'hours' => 'Contact for availability',
+                            'location'  => $teacher->street . ' ' . $teacher->streetnumber.', '.$teacher->city->zipcode.' '.$teacher->city->name,
+                            'email'     => $teacher->email,
+                            'phone'     => $teacher->phone,
+                            'syntramail'=> $teacher->user->email ?? 'No account',
+                            'hours'     => 'Contact for availability',
                         ]
                     ];
                 })
