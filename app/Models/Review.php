@@ -13,6 +13,12 @@ class Review extends Model
         'review',
     ];
 
+    protected $casts = [
+        'rating' => 'float',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
