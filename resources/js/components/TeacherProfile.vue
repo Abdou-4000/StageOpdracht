@@ -1,5 +1,5 @@
 <template>
-<div class="flex justify-center w-screen bg-black/20" @click="closeProfile">
+<div class="flex justify-center pb-28" @click="closeProfile">
   <div v-if="show" class="flex flex-col relative">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
@@ -40,8 +40,8 @@
       </div>
 
       <!-- Side box -->
-      <div class="flex absolute top-[310px] left-[-181px]">
-        <div class="flex flex-col w-full bg-darkred items-center w-[550px] h-[220px] m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
+      <div class="flex absolute top-[310px] left-[-183px]">
+        <div class="flex flex-col w-full bg-darkred items-center w-[555px] h-[220px] m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
           <!-- review -->
           <div class="flex bg-red justify-center w-full m-1 p-2 rounded-3xl">
               <div v-for="item in [ 'Rating']" class="">
@@ -120,5 +120,4 @@ export default {
     width: 80%;
   }
 }
-
 </style>

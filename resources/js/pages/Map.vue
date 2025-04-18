@@ -10,11 +10,11 @@ const props = defineProps({
 <template>
     <div class="bg-white">
         <!-- header -->
-        <div class="flex flex-row justify-between">
+        <div class="flex flex-row w-full justify-between">
             <!-- Logo -->
-            <div class="flex flex-row pt-1">
+            <div class="flex pt-1">
                 <img class="w-1/6" src="../../../public/assets/Logo.png" alt="Logo">
-                <div class="flex text-gray-dark w-1/4 ml-2 items-center justify-between w-full font-medium" v-if="user">
+                <div class="flex text-gray-dark ml-6 items-center w-full gap-10 font-medium" v-if="user">
                     <p>Welkom {{ user.name }}</p>
                     <Link class="text-red" href="/logout" method="POST" as="button">Log uit</Link>
                 </div>
@@ -22,14 +22,14 @@ const props = defineProps({
                     Inloggen
                 </a>
             </div>
-            <div class="flex w-1/6 h-10 m-4">
+            <div class="flex mr-5">
                 <!-- Teacher button to teacherprofile -->
-                <a class="flex justify-center bg-red text-white w-full p-2 rounded-3xl" :href="`/teacherprofile`" v-if="user?.roles?.includes('teacher')"> 
+                <a class="flex items-center text-gray-dark font-medium p-2 rounded-3xl" :href="`/teacherprofile`" v-if="user?.roles?.includes('teacher')"> 
                     Leerkrachtenprofiel
                 </a>
 
                 <!-- Admin button to adminpage -->
-                <a class="flex justify-center bg-red text-white w-full p-2 rounded-3xl" :href="`/teachers`" v-if="user?.roles?.includes('admin')">
+                <a class="flex items-center text-gray-dark font-medium p-2 rounded-3xl" :href="`/teachers`" v-if="user?.roles?.includes('admin')">
                     Beheer
                 </a>
             </div>
@@ -45,12 +45,7 @@ const props = defineProps({
 </template>
 
 <style>
-    html, body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
-        overflow-x: hidden;
-        overflow-y: auto; 
-    }
+html, body {
+  background-color: white;
+}
 </style>

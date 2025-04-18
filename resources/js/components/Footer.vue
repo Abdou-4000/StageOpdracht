@@ -1,5 +1,5 @@
-<template class="bg-white">
-    <div class="flex flex-col relative items-center xl:items-start m-10 mb-16 ml-0 xl:ml-12">
+<template>
+    <div class="flex flex-col relative items-center xl:items-start mt-10 pb-16 ml-0 xl:ml-12">
         <!--Contact vorm-->
         <div class="flex justify-between bg-gray-dark text-white p-2.5 pl-8 rounded-3xl clip-polygon">
             <!--Contact informatie-->

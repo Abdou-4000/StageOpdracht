@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col xl:flex-row relative justify-center items-center xl:item-start w-screen">
+  <div class="flex flex-col xl:flex-row relative justify-center items-center xl:item-start w-full">
       <!-- map -->
       <div class="flex clip-path">
         <div id="map" class="flex rounded-3xl z-0"></div>
