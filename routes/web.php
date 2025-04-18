@@ -25,9 +25,8 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return redirect()->route('map');
 })->name('home');
-
 
 Route::get('login', function () {
     return Inertia::render('Auth/Login');
@@ -35,7 +34,7 @@ Route::get('login', function () {
 
 Route::get('register', function () {
     return Inertia::render('Auth/Register');
-})->middleware(['role:super_admin'])->name('register');
+})->name('register');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
@@ -58,36 +57,27 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 
 Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat');
 
-Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
-
-
 // CRUD routes (Teacher/Categories)
-
-Route::resource('teachers', TeacherController::class);
-Route::resource('categories', CategoryController::class);
+Route::resource('teachers', TeacherController::class)->middleware(['auth', 'role:admin']);
+Route::resource('categories', CategoryController::class)->middleware(['auth', 'role:admin']);
 
 // CSV import route
-Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import');
+Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import')->middleware(['auth', 'role:admin']);
 
 // Export routes (Excel/PDF) 
-Route::get('/export-full-excel', [ExportController::class, 'exportExcel']);
-Route::get('/export-pdf', [ExportController::class, 'exportPDF']);
+Route::get('/export-full-excel', [ExportController::class, 'exportExcel'])->middleware(['auth', 'role:admin']);
+Route::get('/export-pdf', [ExportController::class, 'exportPDF'])->middleware(['auth', 'role:admin']);
 
 // Made by
 Route::get('/madeby', function () {
     return Inertia::render('MadeBy');
 })->name('madeby');
 
-// Agenda test
-Route::get('/test', function () {
-    return Inertia::render('Test'); // 🔹 This will load `Test.vue`
-})->name('test');
-
 // Agenda
-Route::get('/agenda/{teacher}', [AgendaController::class, 'index'])->name('agenda');
+Route::get('/agenda/{teacher}', [AgendaController::class, 'index'])->name('agenda')->middleware(['auth']);
 
 // Teacher Profiles
-Route::get('/teacherprofile', [ProfileController::class, 'index'])->name('teacherprofile');
+Route::get('/teacherprofile', [ProfileController::class, 'index'])->name('teacherprofile')->middleware(['auth', 'role:teacher']);
 
 // Map
 Route::get('/map', [MapController::class, 'map'])->name('map');
