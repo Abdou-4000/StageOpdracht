@@ -123,6 +123,7 @@ async function saveReview() {
       successMessage.value = 'Review saved successfully!';
       review.value = '';
       rating.value = 0;
+      emit('review-saved'); // Emit event when review is saved
 
   } catch (err) {
       if (err.response?.status === 401) {

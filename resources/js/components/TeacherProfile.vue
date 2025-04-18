@@ -67,8 +67,33 @@
                       xl:w-[60%]
                       lg:w-[60%]
                       md:w-[60%]">
-            <GiveReviews ref="reviewComponent" :teacher-id="teacher.id" />
+            <!-- Recent Reviews -->
+            <button 
+              @click="showReviewModal = true"
+              class="bg-[#22262d] text-white ml-auto min-w-[200px] py-2 rounded-[50px] font-bold text-xl hover:bg-opacity-90"
+            >
+              Give Review
+            </button>
+            <div class="flex-1 overflow-none">
+              <ReviewDisplay v-for="review in recentReviews" 
+                           :key="review.id" 
+                           :review="review" />
+            </div>
+
           </div>
+        </div>
+      </div>
+
+      <!-- Review Modal -->
+      <div v-if="showReviewModal" 
+           class="fixed inset-0 bg-black/50 flex justify-center items-center z-[1001]" 
+           @click="showReviewModal = false">
+        <div class="bg-white p-6 rounded-[35px] w-[90%] max-w-[500px]" @click.stop>
+          <GiveReviews 
+            ref="reviewComponent" 
+            :teacher-id="teacher.id" 
+            @review-saved="onReviewSaved"
+          />
         </div>
       </div>
 
@@ -96,16 +121,25 @@
 
 <script>
 import GiveReviews from './GiveReviews.vue'
+import ReviewDisplay from './ReviewDisplay.vue'
+import axios from 'axios'
 
 export default {
   name: 'TeacherProfile',
   components: {
-    GiveReviews
+    GiveReviews,
+    ReviewDisplay
   },
   props: {
     show: Boolean,
     teacher: Object,
     distance: [Number, String]
+  },
+  data() {
+    return {
+      showReviewModal: false,
+      recentReviews: []
+    }
   },
   computed: {
     getCategoryDisplay() {
@@ -139,6 +173,28 @@ export default {
   methods: {
     closeProfile() {
       this.$emit('close');
+    },
+    async fetchReviews() {
+      try {
+        const response = await axios.get(`/teachers/${this.teacher.id}/reviews`);
+        this.recentReviews = response.data.slice(0, 2); // Get only 2 most recent reviews
+      } catch (error) {
+        console.error('Failed to fetch reviews:', error);
+      }
+    },
+    onReviewSaved() {
+      this.showReviewModal = false;
+      this.fetchReviews(); // Refresh reviews after new review is saved
+    }
+  },
+  watch: {
+    teacher: {
+      immediate: true,
+      handler(newTeacher) {
+        if (newTeacher?.id) {
+          this.fetchReviews();
+        }
+      }
     }
   }
 }
