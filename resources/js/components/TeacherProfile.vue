@@ -62,7 +62,7 @@
           </div>
           
           <!-- review -->
-          <div class="absolute bottom-5 h-[35%] right-5 bg-white rounded-[45px] p-2.5 flex flex-col gap-[4%]
+          <div class="absolute bottom-5 h-[35%] right-5 bg-white rounded-[35px] p-2.5 flex flex-col gap-[4%]
                       2xl:w-[60%]
                       xl:w-[60%]
                       lg:w-[60%]
