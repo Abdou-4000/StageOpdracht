@@ -47,6 +47,7 @@
               <div v-for="item in [ 'Rating']" class="">
                 {{ item }}
               </div>
+          </div>
 
           <div class="absolute bottom-5 h-[35%] right-5 bg-white rounded-[45px] p-2.5 flex flex-col gap-[4%]
                       2xl:w-[60%]
@@ -81,6 +82,7 @@
             @review-saved="onReviewSaved"
           />
         </div>
+      </div>
 
       <!-- Logo box -->
       <div class="flex absolute w-1/4 top-[70px] left-[1000px]">
@@ -89,6 +91,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -185,6 +188,7 @@ export default {
     height: 500px;
     width: 80%;
   }
+}
 .stars-only textarea, .stars-only button {
   display: none;
 }
