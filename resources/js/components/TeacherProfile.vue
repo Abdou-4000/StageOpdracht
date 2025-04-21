@@ -1,6 +1,6 @@
 <template>
-<div class="flex justify-center bg-black/20 pb-28" @click="closeProfile">
-  <div v-if="show" class="flex flex-col relative left-[70px]">
+<div v-if="show" class="flex justify-center bg-transparent w-screen pb-28" @click="closeProfile">
+  <div class="flex flex-col relative left-[70px]">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
         
@@ -49,31 +49,24 @@
 
       <!-- Side box -->
       <div class="flex absolute top-[310px] left-[-181px]">
-        <div class="flex flex-col w-full bg-darkred items-center w-[550px] h-[220px] m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
-          <!-- review -->
-          <!-- <div class="flex bg-red justify-center w-full m-1 p-2 rounded-3xl">
-              <div v-for="item in [ 'Rating']" class="">
-                {{ item }}
-              </div>
-          </div> -->
-
-          <ReviewDisplay v-for="review in recentReviews" 
-                           :key="review.id" 
-                           :review="review"/>
-
-          <div class="w-full">
+        <div class="flex flex-col w-full bg-darkred items-center w-[551px] h-[220px] gap-1 m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
             <!-- Recent Reviews -->
-            <button 
-              @click="showReviewModal = true"
-              class="">
-              Give Review
-            </button>
-            <div class="">
-              <ReviewDisplay v-for="review in recentReviews" 
-                           :key="review.id" 
-                           :review="review" />
+            <div class="flex justify-between w-full m-1">
+              <div class="font-semibold text-2xl m-2">Reviews</div>
+              <button  v-if="user?.roles?.includes('user')"
+                @click="showReviewModal = true"
+                class="m-1">
+                Give Review
+              </button>
             </div>
-          </div>
+            <template v-if="recentReviews.length">
+              <ReviewDisplay 
+                v-for="review in recentReviews" 
+                :key="review.id" 
+                :review="review" 
+              />
+            </template>
+            <p v-else class="text-white flex bg-red justify-center w-full m-1 p-2 rounded-3xl">Nog geen reviews.</p>
         </div>
       </div>
 
@@ -114,7 +107,8 @@ export default {
   props: {
     show: Boolean,
     teacher: Object,
-    distance: [Number, String]
+    distance: [Number, String],
+    user: Object
   },
   data() {
     return {
@@ -137,15 +131,22 @@ export default {
       }
 
       return {
+        id: this.teacher.id,
         name: `${this.teacher.firstname} ${this.teacher.lastname}`,
-        compname: this.teacher.companyname,
-        category: this.teacher.category ?? [],
         lat: this.teacher.lat,
         lng: this.teacher.lng,
+        compname: this.teacher.companyname,
+        category: this.teacher.category ? [
+          {
+            name: this.teacher.category.name,
+            color: this.teacher.category.color
+          }
+        ] : [],
         details: {
-          location: `${this.teacher.street} ${this.teacher.streetnumber}`,
+          location: `${this.teacher.street} ${this.teacher.streetnumber}, ${this.teacher.zipcode} ${this.teacher.city}`,
           email: this.teacher.email,
           phone: this.teacher.phone,
+          syntramail: this.teacher.user?.email ?? 'No account',
           hours: 'Contact for availability'
         }
       };
@@ -192,7 +193,7 @@ export default {
   .clip-path-custom {
     clip-path: none;
     height: 500px;
-    width: 80%;
+    width: 800px;
   }
 }
 .stars-only textarea, .stars-only button {

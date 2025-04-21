@@ -66,6 +66,7 @@
           :show="showDetailPopup"
           :teacher="selectedTeacher"
           :distance="selectedTeacherDistance"
+          :user="user"
           @close="showDetailPopup = false"
         />
       </div>
@@ -80,6 +81,9 @@ export default {
   name: 'TeacherMap',
   components: {
     TeacherProfile 
+  },
+  props: {
+    user: Object
   },
   data() {
     return {

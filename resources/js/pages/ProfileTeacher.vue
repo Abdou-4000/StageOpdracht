@@ -7,6 +7,7 @@ defineProps({
 </script>
 
 <template>
+<div class="bg-white">
     <!-- Header -->
     <div class="flex flex-row justify-between items-center p-4">
         <div class="flex w-1/12">
@@ -16,7 +17,9 @@ defineProps({
             <a :href="`/agenda/${teacher.id}`" class="text-accentBlue hover:underline">Bewerk kalender</a>
         </div>
     </div>
+    <!-- profile -->
     <div>
         <TeacherProfile :teacher="teacher" :show="true"/> 
     </div>
+</div>
 </template>

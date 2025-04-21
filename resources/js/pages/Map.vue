@@ -36,7 +36,7 @@ const props = defineProps({
         </div>
         <!-- Map -->
         <div id="app">
-            <TeacherMap/>
+            <TeacherMap :user="user"/>
         </div>
         <div>
             <FooterF/>
