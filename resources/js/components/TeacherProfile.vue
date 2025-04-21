@@ -1,28 +1,28 @@
 <template>
-<div v-if="show" class="flex justify-center bg-transparent w-screen pb-28" @click="closeProfile">
-  <div class="flex flex-col relative left-[70px]">
+<div v-if="show" class="flex justify-center bg-transparant pb-28" @click="closeProfile">
+  <div class="flex flex-col relative items-center xl:items-start xl:left-[70px] top-[-20px] xl:top-[0px] w-screen xl:w-full">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
         
             <!-- Main Info Items Container -->
-            <div class="w-2/3 flex flex-col items-center m-6">
+            <div class="w-full xl:w-2/3 flex flex-col items-center m-6">
               <!-- Company Name -->
-              <div class="flex justify-center bg-accentBlue text-white w-3/5 m-3 ml-[125px] p-2 rounded-3xl">
+              <div class="flex justify-center bg-accentBlue text-white w-5/6 md:w-3/5 m-3 md:ml-[125px] p-2 rounded-3xl">
                 {{ normalizedTeacher.name || 'N/A' }}
               </div>
 
               <!-- Teacher Name -->
-              <div class="flex justify-center bg-accentPurple text-white w-3/5 m-3 ml-[-200px] p-2 rounded-3xl">
+              <div class="flex justify-center bg-accentPurple text-white w-5/6 md:w-3/5 m-3 md:ml-[-200px] p-2 rounded-3xl">
                 {{ normalizedTeacher.compname || 'N/A' }}
               </div>
 
               <!-- Address -->
-              <div class="flex justify-center bg-accentPink text-white w-3/5 m-3 ml-[200px] p-2 rounded-3xl">
+              <div class="flex justify-center bg-accentPink text-white w-5/6 md:w-3/5 m-3 md:ml-[200px] p-2 rounded-3xl">
                 {{ normalizedTeacher.details?.location || 'N/A' }}
               </div>
 
               <!-- Address -->
-              <div class="flex justify-center bg-accentYellow text-white w-3/5 m-3 ml-[-75px] p-2 rounded-3xl">
+              <div class="flex justify-center bg-accentYellow text-white w-5/6 md:w-3/5 m-3 md:ml-[-75px] p-2 rounded-3xl">
                 {{ normalizedTeacher.details?.syntramail || 'N/A' }}
               </div>
 
@@ -48,8 +48,8 @@
       </div>
 
       <!-- Side box -->
-      <div class="flex absolute top-[310px] left-[-181px]">
-        <div class="flex flex-col w-full bg-darkred items-center w-[551px] h-[220px] gap-1 m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
+      <div class="flex absolute top-[270px] xl:top-[310px] items-center xl:items-start xl:left-[-181px]">
+        <div class="flex flex-col w-full bg-darkred items-center w-[370px] md:w-[551px] h-[200px] xl:h-[220px] gap-1 m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
             <!-- Recent Reviews -->
             <div class="flex justify-between w-full m-1">
               <div class="font-semibold text-2xl m-2">Reviews</div>
@@ -94,9 +94,9 @@
 </template>
 
 <script>
-import GiveReviews from './GiveReviews.vue'
-import ReviewDisplay from './ReviewDisplay.vue'
-import axios from 'axios'
+import GiveReviews from './GiveReviews.vue';
+import ReviewDisplay from './ReviewDisplay.vue';
+import axios from 'axios';
 
 export default {
   name: 'TeacherProfile',
@@ -144,8 +144,6 @@ export default {
         ] : [],
         details: {
           location: `${this.teacher.street} ${this.teacher.streetnumber}, ${this.teacher.zipcode} ${this.teacher.city}`,
-          email: this.teacher.email,
-          phone: this.teacher.phone,
           syntramail: this.teacher.user?.email ?? 'No account',
           hours: 'Contact for availability'
         }
@@ -193,7 +191,7 @@ export default {
   .clip-path-custom {
     clip-path: none;
     height: 500px;
-    width: 800px;
+    width: 80%;
   }
 }
 .stars-only textarea, .stars-only button {

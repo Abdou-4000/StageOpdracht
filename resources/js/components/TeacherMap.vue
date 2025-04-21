@@ -163,7 +163,7 @@ export default {
       const allCategories = new Set();
       this.teachers.forEach(teacher => {
         if (Array.isArray(teacher.category)) {
-          teacher.category.forEach(cat => allCategories.add(cat));
+          teacher.category.forEach(cat => allCategories.add(cat.name));
         }
       });
       this.categories = [...allCategories];

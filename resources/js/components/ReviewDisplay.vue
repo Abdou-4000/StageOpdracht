@@ -10,7 +10,7 @@
       </div>
       <span class="text-sm text-white">{{ formatDate(review.created_at) }}</span>
     </div>
-    <p v-if="review.review" class="text-white text-sm">{{ review.review }}</p>
+    <p v-if="review.review" class="text-white text-sm flex flex-wrap">{{ review.review }}</p>
   </div>
 </template>
 

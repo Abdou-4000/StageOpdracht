@@ -1,11 +1,14 @@
 <template>
     <div>
-      <div v-if="calendarOptions">
+      <div v-if="calendarOptions && events.length" >
         <FullCalendar 
           ref="calendarRef"
           :options="calendarOptions" 
         />
       </div>
+      <p v-else class="text-gray-400 italic">
+        Deze leerkracht heeft nog geen beschikbaarheden.
+      </p>
     </div>
 </template>
 

@@ -34,8 +34,6 @@ class MapController extends Controller
                                     })->toArray(), 
                         'details' => [
                             'location'  => $teacher->street . ' ' . $teacher->streetnumber.', '.$teacher->city->zipcode.' '.$teacher->city->name,
-                            'email'     => $teacher->email,
-                            'phone'     => $teacher->phone,
                             'syntramail'=> $teacher->user->email ?? 'No account',
                             'hours'     => 'Contact for availability',
                         ]

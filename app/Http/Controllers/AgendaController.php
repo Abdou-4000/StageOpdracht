@@ -10,11 +10,13 @@ class AgendaController extends Controller
 {
     public function index(Teacher $teacher) {
         $user = auth()->user();
+        $roles = $user->getRoleNames();
 
         if ($user->hasRole('admin')) {
             // Admins can access any teacher's agenda
             return Inertia::render('Agenda', [
                 'teacherId' => $teacher->id,
+                'userRoles' => $roles,
             ]);
         }
         
@@ -22,6 +24,7 @@ class AgendaController extends Controller
             // Teachers can only access their own agenda
             return Inertia::render('Agenda', [
                 'teacherId' => $teacher->id,
+                'userRoles' => $roles,
             ]);
         }
 
