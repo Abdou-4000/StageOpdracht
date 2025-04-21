@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import axios from 'axios';
 
 defineProps<{
     status?: string;
@@ -20,10 +21,18 @@ const form = useForm({
     remember: false,
 });
 
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
+const submit = async () => {
+    try {
+        // Step 1: Request CSRF cookie before login
+        await axios.get('/sanctum/csrf-cookie');
+        
+        // Step 2: After CSRF cookie is set, proceed with the login request
+        form.post(route('login'), {
+            onFinish: () => form.reset('password'),
+        });
+    } catch (error) {
+        console.error('CSRF token request failed', error);
+    }
 };
 </script>
 

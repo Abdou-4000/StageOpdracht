@@ -55,7 +55,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 });
 
 
-Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat');
+Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat')->middleware(['auth', 'role:superadmin']);
 
 // CRUD routes (Teacher/Categories)
 Route::resource('teachers', TeacherController::class)->middleware(['auth', 'role:admin']);

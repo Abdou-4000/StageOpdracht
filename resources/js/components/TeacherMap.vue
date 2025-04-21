@@ -66,6 +66,7 @@
           :show="showDetailPopup"
           :teacher="selectedTeacher"
           :distance="selectedTeacherDistance"
+          :user="user"
           @close="showDetailPopup = false"
         />
       </div>
@@ -80,6 +81,9 @@ export default {
   name: 'TeacherMap',
   components: {
     TeacherProfile 
+  },
+  props: {
+    user: Object
   },
   data() {
     return {
@@ -159,7 +163,7 @@ export default {
       const allCategories = new Set();
       this.teachers.forEach(teacher => {
         if (Array.isArray(teacher.category)) {
-          teacher.category.forEach(cat => allCategories.add(cat));
+          teacher.category.forEach(cat => allCategories.add(cat.name));
         }
       });
       this.categories = [...allCategories];

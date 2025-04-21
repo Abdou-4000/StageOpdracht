@@ -23,6 +23,10 @@ class Teacher extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
     public function category() {
         return $this->belongsToMany(Category::class);
     }

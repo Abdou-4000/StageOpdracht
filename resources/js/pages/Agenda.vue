@@ -11,6 +11,13 @@ export default {
       this.view = val;
     },
   },
+  props: {
+    teacherId: Number,
+    userRoles: {
+      type: Array,
+      default: () => []
+    }
+  }
 };
 
 </script>
@@ -18,8 +25,10 @@ export default {
 <template>
   <div class="bg-white">
     <!-- Calendar buttons -->
-    <div class="flex w-1/12 p-2">
+    <div class="flex w-1/12 p-2 items-center">
         <img src="../../../public/assets/Logo.png" alt="Logo">
+        <a v-if="userRoles.includes('teacher')" :href="`/teacherprofile`" class="text-gray-dark p-2 hover:underline">Terug</a>
+        <a v-if="userRoles.includes('admin')" :href="`/teachers`" class="text-gray-dark p-2 hover:underline">Terug</a>
     </div>
     <div class="w-screen overflow-y-auto overflow-x-hidden h-screen flex flex-col">
         <div class="flex justify-center w-full">

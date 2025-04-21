@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Teacher;
 use App\Models\Category;
+use App\Models\User;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -14,7 +15,7 @@ class ProfileController extends Controller
         $userId = auth()->id();
 
         // Find the teacher profile associated with the user or fail
-        $teacher = Teacher::with('category')->where('user_id', $userId)->firstOrFail();
+        $teacher = Teacher::with('category', 'user')->where('user_id', $userId)->firstOrFail();
 
         // Pass the teacher profile data to the Inertia page
         return Inertia::render('ProfileTeacher', [
