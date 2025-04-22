@@ -269,12 +269,11 @@ export default {
         const clickPopupContent = `
           <div class="click-popup">
             <strong>${teacher.compname}</strong><br>
-            Teacher: ${teacher.name}<br>
-            Category: ${this.getCategoryDisplay(teacher)}<br>
-            Location: ${teacher.details?.location || 'N/A'}<br>
-            Email: ${teacher.details?.email || 'N/A'}<br>
-            Phone: ${teacher.details?.phone || 'N/A'}<br>
-            Distance: ${distance} km<br>
+            Leerkracht: ${teacher.name}<br>
+            Categorie: ${this.getCategoryDisplay(teacher)}<br>
+            Locatie: ${teacher.details?.location || 'N/A'}<br>
+            Email: ${teacher.details?.syntramail || 'N/A'}<br>
+            Afstand: ${distance} km<br>
             <button class="more-info-btn">More Information</button>
           </div>
         `;
@@ -320,7 +319,7 @@ export default {
     },
     getCategoryDisplay(teacher) {
       return Array.isArray(teacher.category) 
-        ? teacher.category.join(', ') 
+        ? teacher.category.map(cat => cat.name).join(', ') 
         : 'Uncategorized';
     },
     getDistance(teacher) {

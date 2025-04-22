@@ -1,6 +1,6 @@
 <template>
-<div v-if="show" class="flex justify-center bg-transparant pb-28" @click="closeProfile">
-  <div class="flex flex-col relative items-center xl:items-start xl:left-[70px] top-[-20px] xl:top-[0px] w-screen xl:w-full">
+<div v-if="show" class="flex justify-center bg-black/20 pb-28" @click="closeProfile">
+  <div class="flex flex-col relative items-center pl-28 top-[-20px] xl:top-[0px] w-screen">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
         
@@ -48,7 +48,7 @@
       </div>
 
       <!-- Side box -->
-      <div class="flex absolute top-[270px] xl:top-[310px] items-center xl:items-start xl:left-[-181px]">
+      <div class="flex absolute top-[270px] xl:top-[310px] items-center xl:items-start xl:left-[89px]">
         <div class="flex flex-col w-full bg-darkred items-center w-[370px] md:w-[551px] h-[200px] xl:h-[220px] gap-1 m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
             <!-- Recent Reviews -->
             <div class="flex justify-between w-full m-1">
