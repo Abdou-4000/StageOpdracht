@@ -50,6 +50,7 @@
 
         @routes
         @vite(['resources/js/app.ts'])
+        @umami
         @inertiaHead
     </head>
     <body class="font-sans antialiased">

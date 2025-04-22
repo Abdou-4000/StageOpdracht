@@ -57,6 +57,7 @@ Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name
 
 Route::get('/map', [TeacherController::class, 'showMap'])->name('map');
 
+Route::get('/teachers/search', [SearchController::class, 'searchTeachers']);
 
 // CRUD routes (Teacher/Categories)
 
