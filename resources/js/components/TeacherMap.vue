@@ -135,6 +135,9 @@ export default {
     },
     radius() {
       this.createMarkers();
+    },
+    'map.getZoom'() {
+      this.createMarkers();
     }
   },
   methods: {
