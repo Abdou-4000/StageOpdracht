@@ -69,72 +69,71 @@
   </div>
 </template>
 
-<script setup lang="js">
+<script setup>
 import { ref } from 'vue';
 import axios from 'axios';
 
 const rating = ref(0);
 const hoverRating = ref(0);
 const review = ref('');
-const maxStars = 5;
-const r = ref('');
 const isLoading = ref(false);
 const error = ref('');
 const successMessage = ref('');
+const maxStars = 5;
+
 const props = defineProps({
-teacherId: { 
-  type: Number,
-  required: true
-}
+  teacherId: { 
+    type: Number,
+    required: true
+  }
 });
 
 const emit = defineEmits(['review-saved']); 
 
-function onMouseMove(event, n) {
-  const { offsetX, currentTarget } = event
-  const isHalf = offsetX < currentTarget.offsetWidth / 2
-  hoverRating.value = n - (isHalf ? 0.5 : 0)
-}
+const onMouseMove = (event, n) => {
+  const { offsetX, currentTarget } = event;
+  const isHalf = offsetX < currentTarget.offsetWidth / 2;
+  hoverRating.value = n - (isHalf ? 0.5 : 0);
+};
 
-function setRating(n) {
-  rating.value = hoverRating.value || n
-}
+const setRating = (n) => rating.value = hoverRating.value || n;
 
-function displayRating(n) {
-  const value = hoverRating.value || rating.value
-  if (value >= n) return 'full'
-  if (value >= n - 0.5) return 'half'
-  return 'empty'
-}
+const displayRating = (n) => {
+  const value = hoverRating.value || rating.value;
+  if (value >= n) return 'full';
+  if (value >= n - 0.5) return 'half';
+  return 'empty';
+};
 
-async function saveReview() {
+const saveReview = async () => {
   if (!rating.value) {
-      error.value = 'Please select a rating';
-      return;
+    error.value = 'Please select a rating';
+    return;
   }
 
+  isLoading.value = true;
   try {
-      const response = await axios.post('/reviews', {
-          teacher_id: props.teacherId,
-          rating: rating.value,
-          review: review.value
-      });
+    await axios.post('/reviews', {
+      teacher_id: props.teacherId,
+      rating: rating.value,
+      review: review.value
+    });
       
-      successMessage.value = 'Review saved successfully!';
-      review.value = '';
-      rating.value = 0;
-      emit('review-saved'); // Emit event when review is saved
+    successMessage.value = 'Review saved successfully!';
+    review.value = '';
+    rating.value = 0;
+    emit('review-saved');
 
   } catch (err) {
-      if (err.response?.status === 401) {
-          error.value = 'Please login to leave a review';
-      } else if (err.response?.status === 422) {
-          error.value = err.response.data.message;
-      } else {
-          error.value = 'Failed to save review';
-      }
+    error.value = err.response?.status === 401 
+      ? 'Please login to leave a review'
+      : err.response?.status === 422 
+        ? err.response.data.message 
+        : 'Failed to save review';
+  } finally {
+    isLoading.value = false;
   }
-}
+};
 </script>
 
 <style>
