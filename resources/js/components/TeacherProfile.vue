@@ -67,6 +67,13 @@
                       xl:w-[60%]
                       lg:w-[60%]
                       md:w-[60%]">
+            <!-- Average Rating Box -->
+            <div class="absolute top-2.7 left-2.5 w-[200px]">
+              <AverageRating
+                :average-rating="averageRating" 
+              />
+            </div>
+            
             <!-- Recent Reviews -->
             <button 
               @click="showReviewModal = true"
@@ -75,12 +82,17 @@
               Give Review
             </button>
             <div class="flex-1 overflow-none">
-              <ReviewDisplay v-for="review in recentReviews" 
-                           :key="review.id" 
-                           :review="review" />
+              <template v-if="recentReviews.length > 0">
+                <ReviewDisplay v-for="review in recentReviews" 
+                             :key="review.id" 
+                             :review="review" />
+              </template>
+              <div v-else class="h-full flex items-center justify-center text-gray-500 font-medium text-lg">
+                This teacher has not been reviewed yet
+              </div>
             </div>
-
           </div>
+
         </div>
       </div>
 
@@ -91,7 +103,9 @@
         <div class="bg-white p-6 rounded-[35px] w-[90%] max-w-[500px]" @click.stop>
           <GiveReviews 
             ref="reviewComponent" 
-            :teacher-id="teacher.id" 
+            :teacher-id="teacher.id"
+            :average-rating="averageRating"
+            :total-reviews="totalReviews"
             @review-saved="onReviewSaved"
           />
         </div>
@@ -122,13 +136,15 @@
 <script>
 import GiveReviews from './GiveReviews.vue'
 import ReviewDisplay from './ReviewDisplay.vue'
+import AverageRating from './AverageRating.vue'
 import axios from 'axios'
 
 export default {
   name: 'TeacherProfile',
   components: {
     GiveReviews,
-    ReviewDisplay
+    ReviewDisplay,
+    AverageRating
   },
   props: {
     show: Boolean,
@@ -138,7 +154,9 @@ export default {
   data() {
     return {
       showReviewModal: false,
-      recentReviews: []
+      recentReviews: [],
+      averageRating: 0,
+      totalReviews: 0
     }
   },
   computed: {
@@ -177,7 +195,9 @@ export default {
     async fetchReviews() {
       try {
         const response = await axios.get(`/teachers/${this.teacher.id}/reviews`);
-        this.recentReviews = response.data.slice(0, 2); // Get only 2 most recent reviews
+        this.recentReviews = response.data.reviews.slice(0, 2);
+        this.averageRating = response.data.averageRating;
+        this.totalReviews = response.data.totalReviews;
       } catch (error) {
         console.error('Failed to fetch reviews:', error);
       }
