@@ -51,12 +51,12 @@
         <!-- Radius -->
         <div class="flex w-full md:w-1/3 xl:w-full">
         <div class="flex justify-between bg-gray-dark w-full m-1.5 ml-1 xl:ml-6 mr-1 xl:mr-6 p-3 pl-6 pr-6 rounded-3xl">
-          <div class="flex items-center">
+          <div class="flex items-center text-white">
             Straal
           </div>
           <div class="flex items-center">
             <input type="number" v-model.number="radius" id="radius-filter" min="1" max="50">
-            <p class="ml-1">km</p>
+            <p class="ml-1 text-white">km</p>
           </div>
         </div>
         </div>
@@ -212,7 +212,7 @@ export default {
       // Apply category filter
       if (this.selectedCategory !== 'all') {
         filteredTeachers = filteredTeachers.filter(teacher => 
-          Array.isArray(teacher.category) && teacher.category.includes(this.selectedCategory)
+          Array.isArray(teacher.category) && teacher.category.map(cat => cat.name).includes(this.selectedCategory)
         );
       }
       

@@ -10,10 +10,10 @@ const props = defineProps({
 <template>
     <div class="bg-white">
         <!-- header -->
-        <div class="flex flex-row w-full justify-between">
+        <div class="flex flex-row w-full items-center justify-between">
             <!-- Logo -->
-            <div class="flex pt-1">
-                <img class="w-1/6" src="../../../public/assets/Logo.png" alt="Logo">
+            <div class="flex">
+                <img class="w-[120px]" src="../../../public/assets/Logo.png" alt="Logo">
                 <div class="flex text-gray-dark ml-6 items-center w-full gap-10 font-medium" v-if="user">
                     <p>Welkom {{ user.name }}</p>
                     <Link class="text-red hover:underline" href="/logout" method="POST" as="button">Log uit</Link>
@@ -22,18 +22,19 @@ const props = defineProps({
                     Inloggen
                 </a>
             </div>
-            <div class="flex mr-5">
+            <div class="flex">
                 <!-- Teacher button to teacherprofile -->
-                <a class="flex items-center text-gray-dark font-medium p-2 hover:underline" :href="`/teacherprofile`" v-if="user?.roles?.includes('teacher')"> 
+                <a class="flex items-center text-gray-dark font-medium mr-4 hover:underline" :href="`/teacherprofile`" v-if="user?.roles?.includes('teacher')"> 
                     Leerkrachtenprofiel
                 </a>
 
                 <!-- Admin button to adminpage -->
-                <a class="flex items-center text-gray-dark font-medium p-2 hover:underline" :href="`/teachers`" v-if="user?.roles?.includes('admin')">
+                <a class="flex items-center text-gray-dark font-medium mr-4 hover:underline" :href="`/teachers`" v-if="user?.roles?.includes('admin')">
                     Beheer
                 </a>
             </div>
         </div>
+        <div class="flex justify-center pb-2 text-4xl font-semibold text-gray-middle">Leerkrachtendatabase</div>
         <!-- Map -->
         <div id="app">
             <TeacherMap :user="user"/>

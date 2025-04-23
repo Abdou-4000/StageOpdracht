@@ -52,10 +52,10 @@
         <div class="flex flex-col w-full bg-darkred items-center w-[370px] md:w-[551px] h-[200px] xl:h-[220px] gap-1 m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
             <!-- Recent Reviews -->
             <div class="flex justify-between w-full m-1">
-              <div class="font-semibold text-2xl m-2">Reviews</div>
+              <div class="font-semibold text-white text-2xl m-2">Reviews</div>
               <button  v-if="user?.roles?.includes('user')"
                 @click="showReviewModal = true"
-                class="m-1">
+                class="m-1 text-white">
                 Give Review
               </button>
             </div>
