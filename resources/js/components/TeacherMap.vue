@@ -2,7 +2,7 @@
   <div class="flex flex-col xl:flex-row relative justify-center items-center xl:item-start w-full">
       <!-- map -->
       <div class="flex clip-path">
-        <div id="map" class="flex rounded-3xl z-0"></div>
+        <div ref="map" id="map" class="flex rounded-3xl z-0"></div>
       </div>
 
       <!-- Filter items -->
@@ -115,19 +115,12 @@ export default {
     }
     // Add console log for debugging
     console.log('Component mounted', this.teachers);
-    
-    // Wait for DOM and try multiple times if needed
-    const initializeMap = () => {
-      if (document.getElementById('map')) {
-        this.initMap();
-        this.initCategories();
-        this.requestLocation();
-      } else {
-        setTimeout(initializeMap, 100);
-      }
-    };
 
-    this.$nextTick(initializeMap);
+    this.initCategories();
+    this.$nextTick(() => {
+      this.requestLocation(); // when the map is ready
+    });
+    
   },
   watch: {
     selectedCategory() {
@@ -135,7 +128,15 @@ export default {
     },
     radius() {
       this.createMarkers();
+    },
+    searchQuery() {
+      this.createMarkers();
+    },
+    teachers(newVal) {
+    if (newVal.length > 0 && this.$refs.map) {
+      this.initMap(); // init when teachers and map are ready
     }
+  }
   },
   methods: {
     initMap() {
