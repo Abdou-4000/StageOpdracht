@@ -1,97 +1,78 @@
 <template>
-  <div v-if="show" class="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]" @click="closeProfile">
-    <div class="relative w-[85%] h-[65%] flex justify-center items-center p-2.5">
-      <div class="absolute w-[70%] min-w-[450px] h-full bg-[#22262d] p-5 clip-path-custom clip-path-none
-                  lg:rounded-[45px] lg:max-w-[80%] lg:min-w-[350px] lg:w-full lg:h-full lg:p-2.5
-                  xl:min-w-[1000px]"
+<div v-if="show" class="flex justify-center bg-black/20 pb-28" @click="closeProfile">
+  <div class="flex flex-col relative items-center pl-28 top-[-20px] xl:top-[0px] w-screen">
+      <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
-        <div class="flex">
-          <!-- Agenda List -->
-          <div class="hidden xl:block w-1/3 pl-5 pt-3">
-            <AgendaList :id="teacher.id"/>
-          </div>
+        
+            <!-- Main Info Items Container -->
+            <div class="w-full xl:w-2/3 flex flex-col items-center m-6">
+              <!-- Company Name -->
+              <div class="flex justify-center bg-accentBlue text-white w-5/6 md:w-3/5 m-3 md:ml-[125px] p-2 rounded-3xl">
+                {{ normalizedTeacher.name || 'N/A' }}
+              </div>
 
-          <!-- Main Info Items Container -->
-          <div class="w-2/3 relative flex flex-col space-y-10 mt-5
-          ">
-            <!-- Company Name -->
-            <div class="transform translate-x-[90%] bg-[#71bdba] text-[#22262d] p-3 mt-[1%] rounded-[35px] font-bold 
-                        text-2xl min-h-[15%] text-center
-                        2xl:w-[55%]
-                        xl:w-[55%]
-                        lg:w-[80%] lg:translate-x-[80%]
-                        md:w-[110%] md:translate-x-[20%]
-                        sm:w-[110%] sm:translate-x-[20%]">
-              {{ normalizedTeacher.compname || 'N/A' }}
+              <!-- Teacher Name -->
+              <div class="flex justify-center bg-accentPurple text-white w-5/6 md:w-3/5 m-3 md:ml-[-200px] p-2 rounded-3xl">
+                {{ normalizedTeacher.compname || 'N/A' }}
+              </div>
+
+              <!-- Address -->
+              <div class="flex justify-center bg-accentPink text-white w-5/6 md:w-3/5 m-3 md:ml-[200px] p-2 rounded-3xl">
+                {{ normalizedTeacher.details?.location || 'N/A' }}
+              </div>
+
+              <!-- Address -->
+              <div class="flex justify-center bg-accentYellow text-white w-5/6 md:w-3/5 m-3 md:ml-[-75px] p-2 rounded-3xl">
+                {{ normalizedTeacher.details?.syntramail || 'N/A' }}
+              </div>
+
+              <!-- <div v-for="item in [normalizedTeacher.details?.email || 'Email', normalizedTeacher.details?.phone || 'Phone', getCategoryDisplay || 'Category']" 
+              class="flex bg-red justify-center w-full m-1 p-2 rounded-3xl">
+                {{ item }}
+              </div> -->
             </div>
 
-            <!-- Teacher Name -->
-            <div class="transform translate-x-[40%] bg-[#9C91c5] text-[#22262d] p-3 rounded-[35px] 
-                        font-bold text-2xl min-h-[15%] w-[50%]  text-center
-                        2xl:w-[55%]
-                        xl:w-[55%]
-                        lg:w-[80%] lg:translate-x-[20%]
-                        md:w-[110%] md:translate-x-[20%]
-                        sm:w-[110%] sm:translate-x-[20%]">
-              {{ normalizedTeacher.name || 'N/A' }}
+            <!-- Agenda List -->
+            <div class="hidden xl:block w-2/5 h-1/2 m-6 mr-12">
+              <AgendaList :id="teacher.id"/>
+              <!-- City -->
+              <div class="flex flex-col p-2 rounded-3xl">
+                <div v-for="(item, index) in normalizedTeacher.category" 
+                  :key="index" 
+                  :style="{ backgroundColor: item.color }"
+                  class="flex justify-center text-white m-1 p-1 rounded-3xl">
+                  {{ item.name || 'N/A' }}
+                </div>
+              </div>
             </div>
+      </div>
 
-            <!-- Address -->
-            <div class="transform translate-x-[100%] bg-[#ee7766] text-[#22262d] p-3 rounded-[35px] 
-                        font-medium text-2xl min-h-[15%] w-[50%]  text-center
-                        2xl:w-[55%]
-                        xl:w-[55%]
-                        lg:w-[80%] lg:translate-x-[65%]
-                        md:w-[110%] md:translate-x-[20%]
-                        sm:w-[110%] sm:translate-x-[20%]">
-              <span class="font-bold">Address:</span>
-              {{ normalizedTeacher.details?.location || 'N/A' }}
-            </div>
-
-            <!-- City -->
-            <div class="transform translate-x-[50%] bg-[#fbba00] text-[#22262d] p-3 rounded-[35px] 
-                        font-medium text-2xl min-h-[15%] w-[50%]  text-center
-                        2xl:w-[55%]
-                        xl:w-[55%]
-                        lg:w-[80%] lg:translate-x-[10%]
-                        md:w-[110%] md:translate-x-[20%]
-                        sm:w-[110%] sm:translate-x-[20%]">
-              <span class="font-bold">City:</span>
-              {{ teacher.city || 'N/A' }}
-            </div>
-          </div>
-          
-          <!-- review -->
-          <div class="absolute bottom-5 h-[35%] right-5 bg-white rounded-[35px] p-2.5 flex flex-col gap-[4%]
-                      2xl:w-[60%]
-                      xl:w-[60%]
-                      lg:w-[60%]
-                      md:w-[60%]">
-            <!-- Average Rating Box -->
+      <!-- Side box -->
+      <div class="flex absolute top-[270px] xl:top-[310px] items-center xl:items-start xl:left-[89px]">
+        <div class="flex flex-col w-full bg-darkred items-center w-[370px] md:w-[551px] h-[200px] xl:h-[220px] gap-1 m-4 p-1 pl-2 pr-2 rounded-3xl" @click.stop>
+            <!-- Recent Reviews -->
+            <div class="flex justify-between w-full m-1">
+             <!-- Average Rating Box -->
             <div class="absolute top-2.7 left-2.5 w-[200px]">
               <AverageRating
                 :average-rating="averageRating" 
               />
             </div>
-            
-            <!-- Recent Reviews -->
-            <button 
-              @click="showReviewModal = true"
-              class="bg-[#22262d] text-white ml-auto min-w-[200px] py-2 rounded-[50px] font-bold text-xl hover:bg-opacity-90"
-            >
-              Give Review
-            </button>
-            <div class="flex-1 overflow-none">
-              <template v-if="recentReviews.length > 0">
-                <ReviewDisplay v-for="review in recentReviews" 
-                             :key="review.id" 
-                             :review="review" />
-              </template>
-              <div v-else class="h-full flex items-center justify-center text-gray-500 font-medium text-lg">
-                This teacher has not been reviewed yet
-              </div>
+              <div class="font-semibold text-2xl m-2">Reviews</div>
+              <button  v-if="user?.roles?.includes('user')"
+                @click="showReviewModal = true"
+                class="m-1">
+                Give Review
+              </button>
             </div>
-          </div>
+            <template v-if="recentReviews.length">
+              <ReviewDisplay 
+                v-for="review in recentReviews" 
+                :key="review.id" 
+                :review="review" 
+              />
+            </template>
+            <p v-else class="text-white flex bg-red justify-center w-full m-1 p-2 rounded-3xl">Nog geen reviews.</p>
 
         </div>
       </div>
@@ -111,33 +92,23 @@
         </div>
       </div>
 
-      <div class="absolute bottom-[15%] left-[9%] bg-[#920000] rounded-[45px] h-[26%] p-2.5 flex flex-col gap-[4%] z-[2]
-                  2xl:w-[31%] 
-                  xl:w-[31%] 
-                  lg:w-[31%]
-                  md:w-[31%]
-                  sm:w-[50%]" @click.stop>
-        <div v-for="item in [normalizedTeacher.details?.email || 'Email', normalizedTeacher.details?.phone || 'Phone', getCategoryDisplay || 'Category']" 
-             class="bg-[#ff3521] text-white p-[3%] rounded-[35px] font-bold text-3xl w-full h-[30%] text-center pt-[4%]
-">
-          {{ item }}
+      <!-- Logo box -->
+      <!-- <div class="flex absolute w-1/5 top-[75px] left-[1030px]">
+        <div class="flex justify-center bg-white border border-red border-4 m-3 p-1 rounded-3xl">
+          <img src="../../../public/assets/Logo.png" alt="Syntra Logo">
         </div>
-      </div>
-
-      <div class="absolute top-[26%] right-[10%] bg-white border-[3px] border-[#920000] rounded-[15px] z-[3]
-                  hidden xl:hidden 2xl:block">
-        <img src="../../../public/assets/Logo.png" alt="Syntra Logo" class="h-[130px] w-[180px] object-contain">
-      </div>
+      </div> -->
     </div>
   </div>
-
 </template>
 
 <script>
+
 import GiveReviews from './GiveReviews.vue'
 import ReviewDisplay from './ReviewDisplay.vue'
 import AverageRating from './AverageRating.vue'
 import axios from 'axios'
+
 
 export default {
   name: 'TeacherProfile',
@@ -149,7 +120,8 @@ export default {
   props: {
     show: Boolean,
     teacher: Object,
-    distance: [Number, String]
+    distance: [Number, String],
+    user: Object
   },
   data() {
     return {
@@ -174,15 +146,20 @@ export default {
       }
 
       return {
+        id: this.teacher.id,
         name: `${this.teacher.firstname} ${this.teacher.lastname}`,
-        compname: this.teacher.companyname,
-        category: this.teacher.category ?? [],
         lat: this.teacher.lat,
         lng: this.teacher.lng,
+        compname: this.teacher.companyname,
+        category: this.teacher.category ? [
+          {
+            name: this.teacher.category.name,
+            color: this.teacher.category.color
+          }
+        ] : [],
         details: {
-          location: `${this.teacher.street} ${this.teacher.streetnumber}`,
-          email: this.teacher.email,
-          phone: this.teacher.phone,
+          location: `${this.teacher.street} ${this.teacher.streetnumber}, ${this.teacher.zipcode} ${this.teacher.city}`,
+          syntramail: this.teacher.user?.email ?? 'No account',
           hours: 'Contact for availability'
         }
       };
@@ -221,18 +198,19 @@ export default {
 </script>
 
 <style>
-@media (max-width: 2200px) {
 .clip-path-custom {
-clip-path: polygon(0% 7.725%,0% 7.725%,0.056% 6.472%,0.22% 5.283%,0.481% 4.175%,0.832% 3.163%,1.262% 2.263%,1.765% 1.49%,2.329% 0.862%,2.948% 0.394%,3.611% 0.101%,4.31% 0%,95.69% 0%,95.69% 0%,96.389% 0.101%,97.052% 0.394%,97.671% 0.862%,98.235% 1.49%,98.738% 2.263%,99.168% 3.163%,99.519% 4.175%,99.78% 5.283%,99.944% 6.472%,100% 7.725%,100% 92.275%,100% 92.275%,99.944% 93.528%,99.78% 94.717%,99.519% 95.825%,99.168% 96.837%,98.738% 97.738%,98.235% 98.51%,97.671% 99.138%,97.052% 99.606%,96.389% 99.899%,95.69% 100%,50% 100%,40.596% 100%,40.596% 100%,39.896% 99.899%,39.233% 99.606%,38.615% 99.138%,38.05% 98.51%,37.548% 97.738%,37.117% 96.837%,36.766% 95.825%,36.505% 94.717%,36.342% 93.528%,36.285% 92.275%,36.285% 70.435%,36.285% 70.435%,36.229% 69.182%,36.066% 67.994%,35.804% 66.885%,35.454% 65.873%,35.023% 64.973%,34.521% 64.201%,33.956% 63.573%,33.337% 63.104%,32.674% 62.812%,31.975% 62.711%,4.31% 62.711%,4.31% 62.711%,3.611% 62.61%,2.948% 62.317%,2.329% 61.848%,1.765% 61.22%,1.262% 60.448%,0.832% 59.548%,0.481% 58.536%,0.22% 57.428%,0.056% 56.239%,0% 54.986%,0% 7.725%);
-border-radius: 45px;
-}
-}
-@media (max-width: 1380px) {
-.clip-path-none {
-clip-path: none;
-}
+  clip-path: polygon(0% 7.725%,0% 7.725%,0.056% 6.472%,0.22% 5.283%,0.481% 4.175%,0.832% 3.163%,1.262% 2.263%,1.765% 1.49%,2.329% 0.862%,2.948% 0.394%,3.611% 0.101%,4.31% 0%,95.69% 0%,95.69% 0%,96.389% 0.101%,97.052% 0.394%,97.671% 0.862%,98.235% 1.49%,98.738% 2.263%,99.168% 3.163%,99.519% 4.175%,99.78% 5.283%,99.944% 6.472%,100% 7.725%,100% 92.275%,100% 92.275%,99.944% 93.528%,99.78% 94.717%,99.519% 95.825%,99.168% 96.837%,98.738% 97.738%,98.235% 98.51%,97.671% 99.138%,97.052% 99.606%,96.389% 99.899%,95.69% 100%,50% 100%,40.596% 100%,40.596% 100%,39.896% 99.899%,39.233% 99.606%,38.615% 99.138%,38.05% 98.51%,37.548% 97.738%,37.117% 96.837%,36.766% 95.825%,36.505% 94.717%,36.342% 93.528%,36.285% 92.275%,36.285% 70.435%,36.285% 70.435%,36.229% 69.182%,36.066% 67.994%,35.804% 66.885%,35.454% 65.873%,35.023% 64.973%,34.521% 64.201%,33.956% 63.573%,33.337% 63.104%,32.674% 62.812%,31.975% 62.711%,4.31% 62.711%,4.31% 62.711%,3.611% 62.61%,2.948% 62.317%,2.329% 61.848%,1.765% 61.22%,1.262% 60.448%,0.832% 59.548%,0.481% 58.536%,0.22% 57.428%,0.056% 56.239%,0% 54.986%,0% 7.725%);
+  height: 500px;
+  width: 1100px;
 }
 
+@media (max-width: 1280px) {
+  .clip-path-custom {
+    clip-path: none;
+    height: 500px;
+    width: 80%;
+  }
+}
 .stars-only textarea, .stars-only button {
   display: none;
 }

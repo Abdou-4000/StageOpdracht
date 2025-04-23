@@ -172,7 +172,7 @@ function confirmDelete(userId) {
     const form = document.getElementById('deleteForm');
     
     // Update form action
-    form.action = `{{ route('super-admin.users.delete', '') }}/${userId}`;
+    form.action = "{{ url('super-admin/users') }}/" + userId;
     
     // Show modal
     modal.classList.remove('hidden');

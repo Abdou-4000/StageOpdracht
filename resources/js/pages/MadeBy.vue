@@ -3,20 +3,22 @@
 </script>
 
 <template>
+<div class="bg-white">
     <!-- Header -->
-    <div class="flex flex-row justify-between mt-52">
+    <div class="flex flex-row justify-between items-center pt-3">
         <!-- Logo -->
-        <div class="w-2/12 m-10">
+        <div class="w-1/3 sm:w-3/12 xl:w-2/12 p-2 pl-4">
             <img src="../../../public/assets/Logo.png" alt="Logo">
         </div>
-        <div class="flex m-8 mt-20">
-            <a class="flex text-white bg-red w-96 h-10 mr-10 p-2 justify-center rounded-full" href="/map">
+        <div class="flex">
+            <a class="flex text-white bg-red w-64 sm:w-96 h-10 mr-4 sm:mr-10 p-2 justify-center rounded-full" href="/map">
                 Kaart
             </a> 
         </div>
     </div>
+    <div class="flex flex-col items-center m-10">
     <!-- Made By -->
-    <div class="flex flex-row justify-between bg-gray-middle text-white w-[600px] m-4 ml-12 xl:ml-[550px] p-2 rounded-3xl">
+    <div class="flex flex-row justify-between bg-gray-middle text-white w-[400px] sm:w-[600px] m-4 ml-0 xl:ml-[250px] p-2 rounded-3xl">
         <div class="flex text-xl p-2">
             Zoë Dreessen
         </div>
@@ -33,7 +35,7 @@
             </a>
         </div>
     </div>
-    <div class="flex flex-row justify-between bg-red text-white w-[600px] m-4 mt-6 xl:mt-12 ml-12 xl:ml-[250px] p-2 rounded-3xl">
+    <div class="flex flex-row justify-between bg-red text-white w-[400px] sm:w-[600px] m-4 mt-6 xl:mt-8 ml-0 xl:ml-[-250px] p-2 rounded-3xl">
         <div class="flex text-xl p-2">
             Merlijn Ruysen
         </div>
@@ -50,7 +52,7 @@
             </a>
         </div>
     </div>
-    <div class="flex flex-row justify-between bg-gray-light text-white w-[600px] m-4 mt-6 xl:mt-12 ml-12 xl:ml-[650px] p-2 rounded-3xl">
+    <div class="flex flex-row justify-between bg-gray-light text-white w-[400px] sm:w-[600px] m-4 mt-6 xl:mt-8 ml-0 xl:ml-[450px] p-2 rounded-3xl">
         <div class="flex text-xl p-2">
             Abderrahman Arreffag
         </div>
@@ -62,7 +64,7 @@
             </a>
         </div>
     </div>
-    <div class="flex flex-row justify-between bg-darkred text-white w-[600px] m-4 mt-6 xl:mt-12 ml-12 xl:ml-[350px] p-2 rounded-3xl">
+    <div class="flex flex-row justify-between bg-darkred text-white w-[400px] sm:w-[600px] m-4 mt-6 xl:mt-8 ml-0 xl:ml-[-100px] p-2 rounded-3xl">
         <div class="flex text-xl p-2">
             Massimo De Nittis
         </div>
@@ -74,10 +76,12 @@
             </a>
         </div>
     </div>
+    </div>
     <!-- Footer -->
     <div class="w-screen mt-10 xl:mt-16">
         <FooterF/>
     </div>
+</div>
 </template>
 
 <style>

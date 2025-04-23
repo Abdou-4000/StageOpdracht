@@ -42,12 +42,12 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        $user->assignRole(Role::findByName('admin'));
+        $user->assignRole(Role::findByName('user'));
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return to_route('dashboard');
+        return to_route('map');
     }
 }
