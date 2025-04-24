@@ -20,6 +20,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid'; 
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
+import nlLocale from '@fullcalendar/core/locales/nl';
 
 const calendarRef = ref(null);
 const events = ref([]);
@@ -35,7 +36,7 @@ const props = defineProps({
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
   initialView: 'listWeek',
-  locale: 'nl',
+  locale: nlLocale,
   timeZone: 'local',
   firstDay: 1,
   allDaySlot: false,

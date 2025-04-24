@@ -101,6 +101,7 @@ export default {
       selectedTeacher: null,
       selectedTeacherDistance: 'N/A',
       teachers: [],
+      hoverPopup: null,
     }
   },
   async mounted() {
@@ -133,10 +134,10 @@ export default {
       this.createMarkers();
     },
     teachers(newVal) {
-    if (newVal.length > 0 && this.$refs.map) {
-      this.initMap(); // init when teachers and map are ready
-    }
-  }
+      if (newVal.length > 0 && this.$refs.map) {
+        this.initMap(); // init when teachers and map are ready
+      }
+    },
   },
   methods: {
     initMap() {
@@ -158,6 +159,12 @@ export default {
         if (this.teachers.length > 0) {
           this.createMarkers();
         }
+      });
+      this.hoverPopup = L.popup({
+        offset: L.point(0, -25),
+        className: 'hover-popup',
+        closeButton: false,
+        autoClose: false,
       });
     },
     initCategories() {
@@ -280,23 +287,18 @@ export default {
         `;
         
         // Add hover events
-        marker.on('mouseover', function(e) {
+        marker.on('mouseover', function() {
           if (!marker.isPopupOpen()) {
-            L.popup({
-              offset: L.point(0, -25),
-              className: 'hover-popup',
-              closeButton: false,
-              autoClose: false
-            })
-            .setLatLng(marker.getLatLng())
-            .setContent(hoverPopupContent)
-            .openOn(this.map);
+            this.hoverPopup
+              .setLatLng(marker.getLatLng())
+              .setContent(hoverPopupContent)
+              .openOn(this.map);
           }
         }.bind(this));
         
-        marker.on('mouseout', function(e) {
+        marker.on('mouseout', function() {
           if (!marker.isPopupOpen()) {
-            this.map.closePopup();
+            this.map.closePopup(this.hoverPopup);
           }
         }.bind(this));
         

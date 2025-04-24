@@ -29,7 +29,7 @@ const props = defineProps({
                 </a>
 
                 <!-- Admin button to adminpage -->
-                <a class="flex items-center text-gray-dark font-medium mr-4 hover:underline" :href="`/teachers`" v-if="user?.roles?.includes('admin')">
+                <a class="flex items-center text-gray-dark font-medium mr-4 hover:underline" :href="`/teachers`" v-if="user?.roles?.includes('admin') || user?.roles?.includes('super_admin')">
                     Beheer
                 </a>
             </div>

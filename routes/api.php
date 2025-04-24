@@ -29,6 +29,6 @@ Route::get('/teachers/{teacher}/reviews', [ReviewController::class, 'getTeacherR
 
 // Chat routes
 Route::group(['prefix' => 'chat'], function () {
-    Route::get('messages', [ChatMessageController::class, 'fetchMessages'])->middleware(['auth:sanctum', 'role:superadmin']);
-    Route::post('messages', [ChatMessageController::class, 'sendMessage'])->middleware(['auth:sanctum', 'role:superadmin']);
+    Route::get('messages', [ChatMessageController::class, 'fetchMessages'])->middleware(['auth:sanctum', 'role:super_admin']);
+    Route::post('messages', [ChatMessageController::class, 'sendMessage'])->middleware(['auth:sanctum', 'role:super_admin']);
 });

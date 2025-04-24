@@ -55,18 +55,18 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 });
 
 
-Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat')->middleware(['auth', 'role:superadmin']);
+Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat')->middleware(['auth', 'role:super_admin']);
 
 // CRUD routes (Teacher/Categories)
-Route::resource('teachers', TeacherController::class)->middleware(['auth', 'role:admin']);
-Route::resource('categories', CategoryController::class)->middleware(['auth', 'role:admin']);
+Route::resource('teachers', TeacherController::class)->middleware(['auth', 'role:admin|super_admin']);
+Route::resource('categories', CategoryController::class)->middleware(['auth', 'role:admin|super_admin']);
 
 // CSV import route
-Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import')->middleware(['auth', 'role:admin']);
+Route::post('/teachers/import', [TeacherController::class, 'import'])->name('teachers.import')->middleware(['auth', 'role:admin|super_admin']);
 
 // Export routes (Excel/PDF) 
-Route::get('/export-full-excel', [ExportController::class, 'exportExcel'])->middleware(['auth', 'role:admin']);
-Route::get('/export-pdf', [ExportController::class, 'exportPDF'])->middleware(['auth', 'role:admin']);
+Route::get('/export-full-excel', [ExportController::class, 'exportExcel'])->middleware(['auth', 'role:admin|super_admin']);
+Route::get('/export-pdf', [ExportController::class, 'exportPDF'])->middleware(['auth', 'role:admin|super_admin']);
 
 // Made by
 Route::get('/madeby', function () {
