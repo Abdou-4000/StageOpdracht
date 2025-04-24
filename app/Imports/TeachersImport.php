@@ -78,8 +78,10 @@ class TeachersImport implements ToModel, WithHeadingRow
             'city_id'       => $city_id,
             'lat'           => null, 
             'lng'           => null,
-            'user_id'       => $user->id,
         ]);
+
+        $teacher->user_id = $user->id;
+        $teacher->save();
 
         // Attach categories to teacher
         $categories = explode(',', $row['categories']);

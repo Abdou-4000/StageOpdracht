@@ -138,6 +138,9 @@ export default {
         this.initMap(); // init when teachers and map are ready
       }
     },
+    'map.getZoom'() {
+      this.createMarkers();
+    }
   },
   methods: {
     initMap() {
