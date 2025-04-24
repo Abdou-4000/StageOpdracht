@@ -21,7 +21,12 @@
           </div>
         </div>
         <!-- Form to collect event details -->
-        <div class="event-form flex w-3/5 lg:w-2/6 m-4 lg:mt-10 ml-10 lg:ml-4">
+        <div class="event-form flex flex-col w-3/5 lg:w-2/6 m-4 lg:mt-10 ml-10 lg:ml-4">
+            <div class="flex text-gray-dark text-justify mb-10 ml-3 mr-3">
+              Deze agenda geeft de algemene weekplanning weer als deze is ingesteld.
+              Een uitzondering kan worden aangemaakt door een dag te selecteren.
+              Uitzonderingen kunnen bewerkt of verwijderd worden door de uitzondering te selecteren.
+            </div>
             <form class="flex flex-col w-full" @submit.prevent="handleSubmit">
               <!-- titel -->
               <div v-if="submitButton" class="ml-3 text-2xl font-semibold">Uitzondering maken</div>
@@ -29,13 +34,13 @@
 
               <!-- Input for choosing the start time of an event -->
               <div class="flex justify-between m-2" v-if="showStartTime">
-                  <label class="flex p-2" for="start-time">Start Time</label>
+                  <label class="flex p-2" for="start-time">Starttijd</label>
                   <input v-model="startTime" type="time" id="start-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
               </div>
     
               <!-- Input for choosing the end time if an event -->
               <div class="flex justify-between m-2" v-if="showEndTime">
-                  <label class="flex p-2" for="end-time">End Time</label>
+                  <label class="flex p-2" for="end-time">Eindtijd</label>
                   <input v-model="endTime" type="time" id="end-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
               </div>
 
@@ -62,16 +67,16 @@
 
               <div class="flex justify-between m-2">
                 <!-- Button for adjusting events -->
-                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="changeButton" type="button" @click="saveChanges">Save Changes</button>
+                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="changeButton" type="button" @click="saveChanges">Verandering opslaan</button>
       
                 <!-- Button to save new events -->
-                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="submitButton" type="submit">Add exception</button>
+                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="submitButton" type="submit">Uitzondering toevoegen</button>
       
                 <!-- Cancel button -->
-                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="cancelButton" type="button" @click="resetForm">Cancel</button>
+                <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="cancelButton" type="button" @click="resetForm">Annuleren</button>
               </div>
                 <!-- Delete button -->
-                <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="deleteButton" type="button" @click="removeEvent">Delete</button>
+                <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="deleteButton" type="button" @click="removeEvent">Verwijderen</button>
             </form>
         </div>
       </div>
@@ -87,6 +92,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid'; 
 import listPlugin from '@fullcalendar/list'; 
 import rrulePlugin from '@fullcalendar/rrule';
+import nlLocale from '@fullcalendar/core/locales/nl';
 import axios from 'axios';
 
 const page = usePage();
@@ -115,7 +121,7 @@ const saveMessageType = ref('');
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, rrulePlugin],
   initialView: 'dayGridMonth',
-  locale: 'nl',
+  locale: nlLocale,
   timeZone: 'local',
   firstDay: 1,
   allDaySlot: false,

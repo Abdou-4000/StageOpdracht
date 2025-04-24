@@ -2,7 +2,7 @@
   <div class="flex flex-col xl:flex-row relative justify-center items-center xl:item-start w-full">
       <!-- map -->
       <div class="flex clip-path">
-        <div id="map" class="flex rounded-3xl z-0"></div>
+        <div ref="map" id="map" class="flex rounded-3xl z-0"></div>
       </div>
 
       <!-- Filter items -->
@@ -51,12 +51,12 @@
         <!-- Radius -->
         <div class="flex w-full md:w-1/3 xl:w-full">
         <div class="flex justify-between bg-gray-dark w-full m-1.5 ml-1 xl:ml-6 mr-1 xl:mr-6 p-3 pl-6 pr-6 rounded-3xl">
-          <div class="flex items-center">
+          <div class="flex items-center text-white">
             Straal
           </div>
           <div class="flex items-center">
             <input type="number" v-model.number="radius" id="radius-filter" min="1" max="50">
-            <p class="ml-1">km</p>
+            <p class="ml-1 text-white">km</p>
           </div>
         </div>
         </div>
@@ -101,6 +101,7 @@ export default {
       selectedTeacher: null,
       selectedTeacherDistance: 'N/A',
       teachers: [],
+      hoverPopup: null,
     }
   },
   async mounted() {
@@ -115,19 +116,12 @@ export default {
     }
     // Add console log for debugging
     console.log('Component mounted', this.teachers);
-    
-    // Wait for DOM and try multiple times if needed
-    const initializeMap = () => {
-      if (document.getElementById('map')) {
-        this.initMap();
-        this.initCategories();
-        this.requestLocation();
-      } else {
-        setTimeout(initializeMap, 100);
-      }
-    };
 
-    this.$nextTick(initializeMap);
+    this.initCategories();
+    this.$nextTick(() => {
+      this.requestLocation(); // when the map is ready
+    });
+    
   },
   watch: {
     selectedCategory() {
@@ -135,6 +129,14 @@ export default {
     },
     radius() {
       this.createMarkers();
+    },
+    searchQuery() {
+      this.createMarkers();
+    },
+    teachers(newVal) {
+      if (newVal.length > 0 && this.$refs.map) {
+        this.initMap(); // init when teachers and map are ready
+      }
     },
     'map.getZoom'() {
       this.createMarkers();
@@ -160,6 +162,12 @@ export default {
         if (this.teachers.length > 0) {
           this.createMarkers();
         }
+      });
+      this.hoverPopup = L.popup({
+        offset: L.point(0, -25),
+        className: 'hover-popup',
+        closeButton: false,
+        autoClose: false,
       });
     },
     initCategories() {
@@ -215,7 +223,7 @@ export default {
       // Apply category filter
       if (this.selectedCategory !== 'all') {
         filteredTeachers = filteredTeachers.filter(teacher => 
-          Array.isArray(teacher.category) && teacher.category.includes(this.selectedCategory)
+          Array.isArray(teacher.category) && teacher.category.map(cat => cat.name).includes(this.selectedCategory)
         );
       }
       
@@ -282,23 +290,18 @@ export default {
         `;
         
         // Add hover events
-        marker.on('mouseover', function(e) {
+        marker.on('mouseover', function() {
           if (!marker.isPopupOpen()) {
-            L.popup({
-              offset: L.point(0, -25),
-              className: 'hover-popup',
-              closeButton: false,
-              autoClose: false
-            })
-            .setLatLng(marker.getLatLng())
-            .setContent(hoverPopupContent)
-            .openOn(this.map);
+            this.hoverPopup
+              .setLatLng(marker.getLatLng())
+              .setContent(hoverPopupContent)
+              .openOn(this.map);
           }
         }.bind(this));
         
-        marker.on('mouseout', function(e) {
+        marker.on('mouseout', function() {
           if (!marker.isPopupOpen()) {
-            this.map.closePopup();
+            this.map.closePopup(this.hoverPopup);
           }
         }.bind(this));
         

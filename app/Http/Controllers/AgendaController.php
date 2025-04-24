@@ -12,7 +12,7 @@ class AgendaController extends Controller
         $user = auth()->user();
         $roles = $user->getRoleNames();
 
-        if ($user->hasRole('admin')) {
+        if ($user->hasAnyRole('admin', 'super_admin')) {
             // Admins can access any teacher's agenda
             return Inertia::render('Agenda', [
                 'teacherId' => $teacher->id,

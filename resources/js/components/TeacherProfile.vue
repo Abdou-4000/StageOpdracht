@@ -1,5 +1,5 @@
 <template>
-<div v-if="show" class="flex justify-center bg-black/20 pb-28" @click="closeProfile">
+<div v-if="show" class="flex justify-center bg-transparent pb-28" @click="closeProfile">
   <div class="flex flex-col relative items-center pl-28 top-[-20px] xl:top-[0px] w-screen">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
@@ -58,10 +58,10 @@
                 :average-rating="averageRating" 
               />
             </div>
-              <div class="font-semibold text-2xl m-2">Reviews</div>
+              <div class="font-semibold text-white text-2xl m-2">Reviews</div>
               <button  v-if="user?.roles?.includes('user')"
                 @click="showReviewModal = true"
-                class="m-1">
+                class="m-1 text-white">
                 Give Review
               </button>
             </div>

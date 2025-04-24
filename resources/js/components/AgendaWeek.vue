@@ -23,6 +23,10 @@
         </div>
         <!-- Form to collect event details -->
         <div class="event-form flex flex-col w-3/5 lg:w-2/6 m-4 lg:mt-10 ml-10 lg:ml-4">
+          <div class="flex text-gray-dark text-justify mb-10 ml-3 mr-3">
+            In deze agenda kan de algemene weekplanning ingesteld worden per type.
+            Sla de week op wanneer ze correct is ingevult.
+          </div>
           <form class="flex flex-col w-full" @submit.prevent="handleSubmit">
             <!-- titel -->
             <div v-if="submitButton" class="ml-3 text-2xl font-semibold">Planning maken</div>
@@ -30,19 +34,19 @@
 
             <!-- Input for choosing the start time of an event -->
             <div class="flex justify-between m-2">
-                <label class="flex p-2" for="start-time">Start Time</label>
+                <label class="flex p-2" for="start-time">Starttijd</label>
                 <input v-model="startTime" type="time" id="start-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
             </div>
     
             <!-- Input for choosing the end time if an event -->
             <div class="flex justify-between m-2">
-                <label class="flex p-2" for="end-time">End Time</label>
+                <label class="flex p-2" for="end-time">Eindtijd</label>
                 <input v-model="endTime" type="time" id="end-time" class="flex justify-center text-gray-dark flex border border-gray-300 p-2 w-1/4 rounded-3xl" required />
             </div>
 
             <div class="flex justify-between">
               <!-- Checkboxes to select which days the event will take place -->
-              <label class="ml-4 font-semibold">Days of the Week</label>
+              <label class="ml-4 font-semibold">Weekdagen</label>
 
               <!-- Checkbox for adjusting one or all matching events -->
               <label class="flex justify-end text-accentPink" v-if="showCheckbox">
@@ -88,20 +92,20 @@
             
             <div class="flex justify-between m-2">
               <!-- Button for adjusting events -->
-              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" type="button" v-if="changeButton" @click="saveChanges">Save Changes</button>
+              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" type="button" v-if="changeButton" @click="saveChanges">Verandering bewaren</button>
 
               <!-- Button to save new events -->
-              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="submitButton" type="submit">Add</button>
+              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" v-if="submitButton" type="submit">Toevoegen</button>
 
               <!-- Cancel button -->
-              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" type="button" @click="resetForm">Cancel</button>
+              <button class="bg-red text-white w-2/5 p-2 rounded-3xl" type="button" @click="resetForm">Annuleren</button>
             </div>
           </form>
           <!-- Button to save the week to the database -->
-          <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="saveWeekButton" @click="saveWeek">Save week</button>
+          <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="saveWeekButton" @click="saveWeek">Week opslaan</button>
 
           <!-- Button to delete events-->
-          <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="deleteButton" @click="deleteEvents">Delete Event</button>
+          <button class="text-red border border-red w-2/5 m-2 p-2 rounded-3xl" v-if="deleteButton" @click="deleteEvents">Verwijder</button>
         </div>
       </div>
     </div>

@@ -75,7 +75,7 @@
                     </div>
                 </a>
                 <!-- LinkedIn -->
-                <a href="https://www.linkedin.com/school/syntrapxl/" taget="_blank">
+                <a href="https://www.linkedin.com/school/syntrapxl/" target="_blank">
                     <div class="bg-gray-dark w-12 h-12 m-2 p-2 rounded-full flex justify-center items-center">
                         <svg width="26px" height="24px" viewBox="0 0 16 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>Shape</title>
