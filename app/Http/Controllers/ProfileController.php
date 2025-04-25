@@ -15,7 +15,7 @@ class ProfileController extends Controller
         $userId = auth()->id();
 
         // Find the teacher profile associated with the user or fail
-        $teacher = Teacher::with('category', 'user')->where('user_id', $userId)->firstOrFail();
+        $teacher = Teacher::with('city', 'category', 'user')->where('user_id', $userId)->firstOrFail();
 
         // Pass the teacher profile data to the Inertia page
         return Inertia::render('ProfileTeacher', [

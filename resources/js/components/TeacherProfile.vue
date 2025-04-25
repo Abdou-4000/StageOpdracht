@@ -1,6 +1,6 @@
 <template>
 <div v-if="show" class="flex justify-center bg-transparent pb-28" @click="closeProfile">
-  <div class="flex flex-col relative items-center pl-28 top-[-20px] xl:top-[0px] w-screen">
+  <div class="flex flex-col relative items-center xl:pl-28 top-[-20px] xl:top-[0px] w-screen">
       <div class="flex clip-path-custom rounded-3xl bg-gray-middle"
            @click.stop>
         
@@ -155,14 +155,12 @@ export default {
         lat: this.teacher.lat,
         lng: this.teacher.lng,
         compname: this.teacher.companyname,
-        category: this.teacher.category ? [
-          {
-            name: this.teacher.category.name,
-            color: this.teacher.category.color
-          }
-        ] : [],
+        category: this.teacher.category.map(cat => ({
+          name: cat.name,
+          color: cat.color
+        })),
         details: {
-          location: `${this.teacher.street} ${this.teacher.streetnumber}, ${this.teacher.zipcode} ${this.teacher.city}`,
+          location: `${this.teacher.street} ${this.teacher.streetnumber}, ${this.teacher.city.zipcode} ${this.teacher.city.name}`,
           syntramail: this.teacher.user?.email ?? 'No account',
           hours: 'Contact for availability'
         }
